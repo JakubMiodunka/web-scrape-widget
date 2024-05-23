@@ -9,6 +9,13 @@
         </xs:restriction>
     </xs:simpleType>
 </xs:attribute>
+<xs:attribute name="Type">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="WebsiteElement"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
 <xs:attribute name="Url">
     <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -38,6 +45,7 @@
         <xs:element name="NodeContentFilter" type="NodeContentFilterType"/>
     </xs:sequence>
     <xs:attribute ref="Identifier" use="required"/>
+    <xs:attribute ref="Type" use="required"/>
 </xs:complexType>
 <xs:complexType name="WebsiteType">
     <xs:attribute ref="Url" use="required"/>
