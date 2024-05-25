@@ -38,7 +38,7 @@
 <xs:complexType name="NodeContentFilterType">
     <xs:attribute ref="Regex" use="required"/>
 </xs:complexType>
-<xs:complexType name="WebDataSourceType">
+<xs:complexType name="DataSourceType">
     <xs:sequence>
         <xs:element name="WebSite" type="WebsiteType"/>
         <xs:element name="HtmlNode" type="HtmlNodeType"/>
@@ -52,5 +52,5 @@
 </xs:complexType>
 
 <!-- Elements-->
-<xs:element name="WebDataSource" type="WebDataSourceType"/>
+<xs:element name="DataSource" type="DataSourceType"/>
 </xs:schema>
