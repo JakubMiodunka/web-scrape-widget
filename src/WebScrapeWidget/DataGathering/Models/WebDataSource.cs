@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace WebScrapeWidget.Models;
+namespace WebScrapeWidget.DataGathering.Models;
 
 
 /// <summary>

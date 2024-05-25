@@ -1,4 +1,4 @@
-﻿namespace WebScrapeWidget.Models;
+﻿namespace WebScrapeWidget.DataGathering.Interfaces;
 
 /// <summary>
 /// Interface, which shall be implemented
@@ -8,7 +8,7 @@ public interface IDataSource
 {
     bool WasDataGathered { get; }
     string GatheredData { get; }
-    
+
     /// <summary>
     /// Triggers the process of gathering data from invoked data source.
     /// </summary>
