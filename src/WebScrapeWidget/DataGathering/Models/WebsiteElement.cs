@@ -3,6 +3,7 @@ using WebScrapeWidget.Utilities;
 
 using HtmlAgilityPack;
 using WebScrapeWidget.DataGathering.Interfaces;
+using System.Xml.Linq;
 
 namespace WebScrapeWidget.DataGathering.Models;
 
@@ -45,6 +46,27 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
     #endregion
 
     #region Class instantiation
+    public static bool IsWebsiteElementDefinition(string filePath)
+    {
+        const string WebsiteElementDefinitionSchema =
+            @"..\..\..\..\..\res\schemas\website_element_schema.xsd";
+
+        return FileSystemUtilities.ValidateXmlFile(filePath, WebsiteElementDefinitionSchema);
+    }
+
+    public static WebsiteElement FromFile(string filePath)
+    {
+        if (!IsWebsiteElementDefinition(filePath))
+        {
+            string argumentName = nameof(filePath);
+            string errorEmassage = $"Provided file is not website element definition: {filePath}";
+            throw new ArgumentException(errorEmassage, argumentName);
+        }
+
+        //TODO: Parse XML website element definition file.
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Creates a new representation of a website element.
     /// </summary>
