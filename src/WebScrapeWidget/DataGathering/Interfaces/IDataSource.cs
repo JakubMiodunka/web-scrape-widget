@@ -6,6 +6,7 @@
 /// </summary>
 public interface IDataSource
 {
+    uint Identifier { get; }
     bool WasDataGathered { get; }
     string GatheredData { get; }
 

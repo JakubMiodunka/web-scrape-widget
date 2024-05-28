@@ -1,9 +1,11 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
+
 using WebScrapeWidget.Utilities;
+using WebScrapeWidget.DataGathering.Interfaces;
 
 using HtmlAgilityPack;
-using WebScrapeWidget.DataGathering.Interfaces;
-using System.Xml.Linq;
+
 
 namespace WebScrapeWidget.DataGathering.Models;
 
@@ -46,6 +48,15 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
     #endregion
 
     #region Class instantiation
+    /// <summary>
+    /// Checks if provided file contains definition of a website element.
+    /// </summary>
+    /// <param name="filePath">
+    /// Path to *.xml file, which shall be checked.
+    /// </param>
+    /// <returns>
+    /// True or false, depending on check result.
+    /// </returns>
     public static bool IsWebsiteElementDefinition(string filePath)
     {
         const string WebsiteElementDefinitionSchema =
@@ -54,6 +65,18 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
         return FileSystemUtilities.ValidateXmlFile(filePath, WebsiteElementDefinitionSchema);
     }
 
+    /// <summary>
+    /// Creates a new representational of website element.
+    /// </summary>
+    /// <param name="filePath">
+    /// Path to *.xml file, containing definition of a website element.
+    /// </param>
+    /// <returns>
+    /// New website element representation created basing on provided file.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
+    /// </exception>
     public static WebsiteElement FromFile(string filePath)
     {
         if (!IsWebsiteElementDefinition(filePath))
@@ -63,8 +86,41 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
             throw new ArgumentException(errorEmassage, argumentName);
         }
 
-        //TODO: Parse XML website element definition file.
-        throw new NotImplementedException();
+        XElement dataSourceElement = XDocument.Load(filePath)
+            .Elements("DataSource")
+            .First();
+
+        uint identifier = dataSourceElement
+            .Attributes("Identifier")
+            .Select(attribute => attribute.Value)
+            .Select(uint.Parse)
+            .First();
+
+        XElement websiteElement = dataSourceElement
+            .Elements("WebsiteElement")
+            .First();
+
+        Uri websiteUrl = websiteElement
+            .Elements("Website")
+            .SelectMany(element => element.Attributes("Url"))
+            .Select(attribute => attribute.Value)
+            .Select(value => new Uri(value))
+            .First();
+
+        string htmlNodeXPath = websiteElement
+            .Elements("HtmlNode")
+            .SelectMany(element => element.Attributes("XPath"))
+            .Select(attribute => attribute.Value)
+            .First();
+
+        Regex nodeContentFilter = websiteElement
+            .Elements("NodeContentFilter")
+            .SelectMany(element => element.Attributes("Regex"))
+            .Select(attribute => attribute.Value)
+            .Select(value => new Regex(value))
+            .First();
+
+        return new WebsiteElement(identifier, websiteUrl, htmlNodeXPath, nodeContentFilter);
     }
 
     /// <summary>

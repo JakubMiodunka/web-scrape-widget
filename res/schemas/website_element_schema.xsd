@@ -2,20 +2,6 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1">
 <!-- Attributes-->
 <xs:attribute name="Identifier" type="xs:nonNegativeInteger"/>
-<xs:attribute name="Regex">
-    <xs:simpleType>
-        <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-        </xs:restriction>
-    </xs:simpleType>
-</xs:attribute>
-<xs:attribute name="Type">
-    <xs:simpleType>
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="WebsiteElement"/>
-        </xs:restriction>
-    </xs:simpleType>
-</xs:attribute>
 <xs:attribute name="Url">
     <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -30,25 +16,37 @@
         </xs:restriction>
     </xs:simpleType>
 </xs:attribute>
+<xs:attribute name="Regex">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
 
 <!-- Complex Types-->
+<xs:complexType name="WebsiteType">
+    <xs:attribute ref="Url" use="required"/>
+</xs:complexType>
 <xs:complexType name="HtmlNodeType">
     <xs:attribute ref="XPath" use="required"/>
 </xs:complexType>
 <xs:complexType name="NodeContentFilterType">
     <xs:attribute ref="Regex" use="required"/>
 </xs:complexType>
-<xs:complexType name="DataSourceType">
+<xs:complexType name="WebsiteElementType">
     <xs:sequence>
         <xs:element name="WebSite" type="WebsiteType"/>
         <xs:element name="HtmlNode" type="HtmlNodeType"/>
         <xs:element name="NodeContentFilter" type="NodeContentFilterType"/>
     </xs:sequence>
     <xs:attribute ref="Identifier" use="required"/>
-    <xs:attribute ref="Type" use="required"/>
 </xs:complexType>
-<xs:complexType name="WebsiteType">
-    <xs:attribute ref="Url" use="required"/>
+<xs:complexType name="DataSourceType">
+    <xs:sequence>
+        <xs:element name="WebsiteElement" type="WebsiteElementType"/>
+    </xs:sequence>
+    <xs:attribute ref="Identifier" use="required"/>
 </xs:complexType>
 
 <!-- Elements-->

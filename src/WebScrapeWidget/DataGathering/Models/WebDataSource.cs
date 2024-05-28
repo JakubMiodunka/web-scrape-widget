@@ -15,7 +15,7 @@ public abstract class WebDataSource
     #endregion
 
     #region Properties
-    public readonly uint Identifier;
+    public uint Identifier { get; init; }
     #endregion
 
     #region Class instantiation

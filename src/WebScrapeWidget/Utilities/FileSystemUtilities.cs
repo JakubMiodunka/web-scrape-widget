@@ -6,6 +6,53 @@ namespace WebScrapeWidget.Utilities;
 public static class FileSystemUtilities
 {
     /// <summary>
+    /// Checks if given file system entry exists and is a directory.
+    /// If either of above cases would not be fulfilled, according exception will be thrown.
+    /// </summary>
+    /// <param name="path">
+    /// Path to file system entry, which shall be validated.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown, when value of at least one argument will be considered as invalid.
+    /// </exception>
+    /// <exception cref="DirectoryNotFoundException">
+    /// Thrown, when provided file system entry does not exist in file system as directory.
+    /// </exception>
+    public static void ValidateDirectory(string path)
+    {
+        if (path is null)
+        {
+            string argumentName = nameof(path);
+            const string ErrorMessage = "Entry path is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        if (path == string.Empty)
+        {
+            string argumentName = nameof(path);
+            string errorMessage = $"Entry path is an empty string: {path}";
+            throw new ArgumentOutOfRangeException(argumentName, path, errorMessage);
+        }
+
+        if (!Directory.Exists(path))
+        {
+            if (File.Exists(path))
+            {
+                string errorMessage = $"Given entry is a file: {path}";
+                throw new DirectoryNotFoundException(errorMessage);
+            }
+            else
+            {
+                string errorMessage = $"Directory does not exist: {path}";
+                throw new DirectoryNotFoundException(errorMessage);
+            }
+        }
+    }
+
+    /// <summary>
     /// Checks if given file system entry exists, is a file and its extension
     /// matches the expected one.
     /// If either of above cases would not be fulfilled, according exception will be thrown.
@@ -23,7 +70,7 @@ public static class FileSystemUtilities
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
     /// <exception cref="FileNotFoundException">
-    /// Thrown, when given file system entry is not a file or does not exists.
+    /// Thrown, when provided file system entry does not exist in file system as file.
     /// </exception>
     /// <exception cref="IOException">
     /// Thrown, when provided file system entry has invalid extension.
