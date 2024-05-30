@@ -12,7 +12,7 @@ namespace WebScrapeWidget.DataGathering.Models;
 /// <summary>
 /// Representation of website element, which can be scraped to gather necessary data.
 /// </summary>
-public sealed class WebsiteElement : WebDataSource, IDataSource
+public sealed class WebsiteElement : DataSource, IDataSource
 {
     #region Static properties
     private static HtmlWeb? s_httpClient;
@@ -27,7 +27,7 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
     {
         get
         {
-            return _scrapedData is null;
+            return _scrapedData is not null;
         }
     }
     public string ScrapedData
@@ -90,10 +90,9 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
             .Elements("DataSource")
             .First();
 
-        uint identifier = dataSourceElement
-            .Attributes("Identifier")
+        string name = dataSourceElement
+            .Attributes("Name")
             .Select(attribute => attribute.Value)
-            .Select(uint.Parse)
             .First();
 
         XElement websiteElement = dataSourceElement
@@ -120,14 +119,14 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
             .Select(value => new Regex(value))
             .First();
 
-        return new WebsiteElement(identifier, websiteUrl, htmlNodeXPath, nodeContentFilter);
+        return new WebsiteElement(name, websiteUrl, htmlNodeXPath, nodeContentFilter);
     }
 
     /// <summary>
     /// Creates a new representation of a website element.
     /// </summary>
-    /// <param name="identifier">
-    /// Web data source unique identifier.
+    /// <param name="name">
+    /// Unique name of represented data source.
     /// </param>
     /// <param name="websiteUrl">
     /// HTTPS-based URL of a website, which element shall be represented.
@@ -145,8 +144,8 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
-    public WebsiteElement(uint identifier, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
-        : base(identifier)
+    public WebsiteElement(string name, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
+        : base(name)
     {
         if (websiteUrl is null)
         {
@@ -165,14 +164,14 @@ public sealed class WebsiteElement : WebDataSource, IDataSource
         if (htmlNodeXPath is null)
         {
             string argumentName = nameof(htmlNodeXPath);
-            const string ErrorMessage = "Provided HTML node XPath i a null reference:";
+            const string ErrorMessage = "Provided HTML node XPath is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
         if (htmlNodeXPath == string.Empty)
         {
             string argumentName = nameof(htmlNodeXPath);
-            const string ErrorMessage = "Provided HTML node XPath i an empty string:";
+            const string ErrorMessage = "Provided HTML node XPath is an empty string:";
             throw new ArgumentOutOfRangeException(argumentName, htmlNodeXPath, ErrorMessage);
         }
 

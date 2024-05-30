@@ -1,0 +1,4 @@
+
+<AppConfig>
+    <DataSourcesStorage Path="..\..\..\..\..\config\sources" RecursiveSearch="disabled"/>
+</AppConfig>

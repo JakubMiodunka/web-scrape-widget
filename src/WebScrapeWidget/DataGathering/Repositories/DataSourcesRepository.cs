@@ -50,12 +50,16 @@ public sealed class DataSourcesRepository
     /// Path to directory, where *.xml files containing data sources definitions
     /// are stored.
     /// </param>
-    public DataSourcesRepository(string directoryPath)
+    /// /// <param name="recursiveSearch">
+    /// Flag, which specifies if provided directory shall be searched recursively.
+    /// Recursive search is disabled by default.
+    /// </param>
+    public DataSourcesRepository(string directoryPath, bool recursiveSearch = false)
     {
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
         DirectoryPath = directoryPath;
-        _dataSources = CreateDataSources();
+        _dataSources = CreateDataSources(recursiveSearch);
 
         GatherDataFromAllSources();
     }
@@ -64,13 +68,18 @@ public sealed class DataSourcesRepository
     /// Creates data sources from *.xml files contained by directory,
     /// to which repository is referring to.
     /// </summary>
+    /// <param name="recursiveSearch">
+    /// Flag, which specifies if provided directory shall be searched recursively.
+    /// </param>
     /// <returns>
     /// Data sources created basing on *.xml files contained by directory,
     /// to which repository is referring to.
     /// </returns>
-    private IDataSource[] CreateDataSources()
+    private IDataSource[] CreateDataSources(bool recursiveSearch)
     {
-        return Directory.EnumerateFiles(DirectoryPath, "*.xml")
+        var searchOption  = (recursiveSearch) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+        return Directory.EnumerateFiles(DirectoryPath, "*.xml", searchOption)
             .Select(CreateDataSourceFromFile)
             .ToArray();
     }
@@ -95,16 +104,16 @@ public sealed class DataSourcesRepository
     /// <summary>
     /// Checks if data source with provided identifier is contained by the repository.
     /// </summary>
-    /// <param name="identifier">
-    /// Data source identifier, which shall be checked.
+    /// <param name="name">
+    /// Data source name, which shall be checked.
     /// </param>
     /// <returns>
     /// True or false, depending on check result.
     /// </returns>
-    public bool ContainsDataSource(uint identifier)
+    public bool ContainsDataSource(string name)
     {
         return _dataSources
-            .Where(dataSource => dataSource.Identifier == identifier)
+            .Where(dataSource => dataSource.Name == name)
             .Any();
     }
 
@@ -112,8 +121,8 @@ public sealed class DataSourcesRepository
     /// Provides access to data gathered from data source,
     /// which has specified identifier assigned.
     /// </summary>
-    /// <param name="identifier">
-    /// Identifier of data source, from which gathered data shall be obtained.
+    /// <param name="name">
+    /// Name of data source, from which gathered data shall be obtained.
     /// </param>
     /// <returns>
     /// Data gathered from data source, which has specified identified assigned.
@@ -121,16 +130,16 @@ public sealed class DataSourcesRepository
     /// <exception cref="InvalidOperationException">
     /// Thrown, when repository does not contain data source with specified identifier. 
     /// </exception>
-    public string GetDataFromSource(uint identifier)
+    public string GetDataFromSource(string name)
     {
-        if (!ContainsDataSource(identifier))
+        if (!ContainsDataSource(name))
         {
-            string errorMessage = $"Data source with provided identifier does not exist in repository: {identifier}";
+            string errorMessage = $"Data source with provided name does not exist in repository: {name}";
             throw new InvalidOperationException(errorMessage);
         }
 
         return _dataSources
-            .Where(dataSource => dataSource.Identifier == identifier)
+            .Where(dataSource => dataSource.Name == name)
             .First()
             .GatheredData;
     }

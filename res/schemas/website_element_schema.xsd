@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1">
 <!-- Attributes-->
-<xs:attribute name="Identifier" type="xs:nonNegativeInteger"/>
+<xs:attribute name="Name">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
 <xs:attribute name="Url">
     <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -36,17 +42,16 @@
 </xs:complexType>
 <xs:complexType name="WebsiteElementType">
     <xs:sequence>
-        <xs:element name="WebSite" type="WebsiteType"/>
+        <xs:element name="Website" type="WebsiteType"/>
         <xs:element name="HtmlNode" type="HtmlNodeType"/>
         <xs:element name="NodeContentFilter" type="NodeContentFilterType"/>
     </xs:sequence>
-    <xs:attribute ref="Identifier" use="required"/>
 </xs:complexType>
 <xs:complexType name="DataSourceType">
     <xs:sequence>
         <xs:element name="WebsiteElement" type="WebsiteElementType"/>
     </xs:sequence>
-    <xs:attribute ref="Identifier" use="required"/>
+    <xs:attribute ref="Name" use="required"/>
 </xs:complexType>
 
 <!-- Elements-->

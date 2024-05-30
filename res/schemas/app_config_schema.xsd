@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1">
+<!-- Attributes-->
+<xs:attribute name="Path">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
+<xs:attribute name="RecursiveSearch">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="enabled"/>
+            <xs:enumeration value="disabled"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
+
+<!-- Complex Types-->
+<xs:complexType name="DataSourcesStorageType">
+    <xs:attribute ref="Path" use="required"/>
+    <xs:attribute ref="RecursiveSearch" use="required"/>
+</xs:complexType>
+<xs:complexType name="AppConfigType">
+    <xs:sequence>
+        <xs:element name="DataSourcesStorage" type="DataSourcesStorageType"/>
+    </xs:sequence>
+</xs:complexType>
+
+<!-- Elements-->
+<xs:element name="AppConfig" type="AppConfigType"/>
+</xs:schema>
