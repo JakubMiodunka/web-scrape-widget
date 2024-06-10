@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrapeWidget", "WebScrapeWidget\WebScrapeWidget.csproj", "{7A964CDB-FC54-47A0-9FB9-78D16DFA60C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrapeWidget", "WebScrapeWidget\WebScrapeWidget.csproj", "{40AEEA43-D946-45AB-9A95-1C19ACB5C431}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7A964CDB-FC54-47A0-9FB9-78D16DFA60C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A964CDB-FC54-47A0-9FB9-78D16DFA60C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A964CDB-FC54-47A0-9FB9-78D16DFA60C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A964CDB-FC54-47A0-9FB9-78D16DFA60C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40AEEA43-D946-45AB-9A95-1C19ACB5C431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40AEEA43-D946-45AB-9A95-1C19ACB5C431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40AEEA43-D946-45AB-9A95-1C19ACB5C431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40AEEA43-D946-45AB-9A95-1C19ACB5C431}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3F7B0356-DA8F-41F3-B08D-60AB47667BE4}
+		SolutionGuid = {991A01BD-3163-4093-9DA9-1FDE09F9AA86}
 	EndGlobalSection
 EndGlobal

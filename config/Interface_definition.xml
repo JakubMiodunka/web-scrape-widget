@@ -1,0 +1,7 @@
+<InterfaceDefinition>
+    <Tab Name="TestTab">
+        <Section Name="TestSection">
+            <Entry Label="TestEntry" DataSourceName="TestSource"/>
+        </Section>
+    </Tab>
+</InterfaceDefinition>

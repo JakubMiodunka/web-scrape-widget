@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1">
+<!-- Attributes-->
+<xs:attribute name="Name">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
+<xs:attribute name="Label">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
+<xs:attribute name="DataSourceName">
+    <xs:simpleType>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
+
+<!-- Complex Types-->
+<xs:complexType name="EntryType">
+    <xs:attribute ref="Label" use="required"/>
+    <xs:attribute ref="DataSourceName" use="required"/>
+</xs:complexType>
+<xs:complexType name="SectionType">
+    <xs:sequence>
+        <xs:element name="Entry" type="EntryType" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="Name" use="required"/>
+</xs:complexType>
+<xs:complexType name="TabType">
+    <xs:sequence>
+        <xs:element name="Section" type="SectionType" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute ref="Name" use="required"/>
+</xs:complexType>
+<xs:complexType name="InterfaceDefinitionType">
+    <xs:sequence>
+        <xs:element name="Tab" type="TabType" maxOccurs="unbounded"/>
+    </xs:sequence>
+</xs:complexType>
+
+<!-- Elements-->
+<xs:element name="InterfaceDefinition" type="InterfaceDefinitionType"/>
+</xs:schema>

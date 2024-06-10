@@ -32,6 +32,7 @@ public sealed class AppConfig
     #region Properties
     public readonly string DataSourcesStorage;
     public readonly bool DataSourcesStorageRecursiveSearch;
+    public readonly string InterfaceDefinitionPath;
     #endregion
 
     #region Class instantiation
@@ -75,6 +76,30 @@ public sealed class AppConfig
             .Elements("AppConfig")
             .First();
 
+        return FromXml(appConfigElement);
+    }
+
+    /// <summary>
+    /// Creates a new container for program configuration values using provided XML element.
+    /// </summary>
+    /// <param name="appConfigElement">
+    /// XML element, containing program configuration values.
+    /// </param>
+    /// <returns>
+    /// New class instance containing configuration values obtained from provided XML element.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    private static AppConfig FromXml(XElement appConfigElement)
+    {
+        if (appConfigElement is null)
+        {
+            string argumentName = nameof(appConfigElement);
+            const string ErrorMessage = "Provided XML element is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
         XElement dataSourcesStorageElement = appConfigElement
             .Elements("DataSourcesStorage")
             .First();
@@ -90,7 +115,13 @@ public sealed class AppConfig
             .Select(value => value == "enabled")
             .First();
 
-        return new AppConfig(dataSourcesStorage, dataSourcesStorageRecursiveSearch);
+        string interfaceDefinitionPath = appConfigElement
+            .Elements("InterfaceDefinition")
+            .Attributes("Path")
+            .Select(attribute => attribute.Value)
+            .First();
+
+        return new AppConfig(dataSourcesStorage, dataSourcesStorageRecursiveSearch, interfaceDefinitionPath);
     }
 
     /// <summary>
@@ -102,12 +133,19 @@ public sealed class AppConfig
     /// <param name="dataSourcesStorageRecursiveSearch">
     /// Flag, which specifies if data sources storage directory shall be searched recursively.
     /// </param>
-    private AppConfig(string dataSourcesStorage, bool dataSourcesStorageRecursiveSearch)
+    /// <param name="interfaceDefinitionPath">
+    /// Path to *.xml file, which content defines the appearance of application interface.
+    /// </param>
+    private AppConfig(string dataSourcesStorage, bool dataSourcesStorageRecursiveSearch, string interfaceDefinitionPath)
     {
         FileSystemUtilities.ValidateDirectory(dataSourcesStorage);
-
+        
         DataSourcesStorage = dataSourcesStorage;
         DataSourcesStorageRecursiveSearch = dataSourcesStorageRecursiveSearch;
+
+        FileSystemUtilities.ValidateFile(interfaceDefinitionPath, ".xml");
+
+        InterfaceDefinitionPath = interfaceDefinitionPath;
     }
     #endregion
 }

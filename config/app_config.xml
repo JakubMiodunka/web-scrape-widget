@@ -1,4 +1,5 @@
 
 <AppConfig>
     <DataSourcesStorage Path="..\..\..\..\..\config\sources" RecursiveSearch="disabled"/>
+    <InterfaceDefinition Path="..\..\..\..\..\config\Interface_definition.xml"/>
 </AppConfig>

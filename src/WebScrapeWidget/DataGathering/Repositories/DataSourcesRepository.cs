@@ -1,4 +1,6 @@
-﻿using WebScrapeWidget.DataGathering.Interfaces;
+﻿using System.IO;
+
+using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.DataGathering.Models;
 using WebScrapeWidget.Utilities;
 
@@ -52,9 +54,8 @@ public sealed class DataSourcesRepository
     /// </param>
     /// /// <param name="recursiveSearch">
     /// Flag, which specifies if provided directory shall be searched recursively.
-    /// Recursive search is disabled by default.
     /// </param>
-    public DataSourcesRepository(string directoryPath, bool recursiveSearch = false)
+    public DataSourcesRepository(string directoryPath, bool recursiveSearch)
     {
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
@@ -127,7 +128,7 @@ public sealed class DataSourcesRepository
     /// <returns>
     /// Data gathered from data source, which has specified identified assigned.
     /// </returns>
-    /// <exception cref="InvalidOperationException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when repository does not contain data source with specified identifier. 
     /// </exception>
     public string GetDataFromSource(string name)
@@ -135,7 +136,7 @@ public sealed class DataSourcesRepository
         if (!ContainsDataSource(name))
         {
             string errorMessage = $"Data source with provided name does not exist in repository: {name}";
-            throw new InvalidOperationException(errorMessage);
+            throw new ArgumentOutOfRangeException(errorMessage);
         }
 
         return _dataSources

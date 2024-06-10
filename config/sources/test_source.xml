@@ -1,5 +1,5 @@
 
-<DataSource Name="Test">
+<DataSource Name="TestSource">
     <WebsiteElement>
         <Website Url="https://www.bankier.pl/waluty/kursy-walut/nbp/EUR"/>
         <HtmlNode XPath="/html/body/div[3]/div/div[2]/div/div[1]/div[1]/div/div[1]"/>

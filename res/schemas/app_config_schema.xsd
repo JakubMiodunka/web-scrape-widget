@@ -22,9 +22,13 @@
     <xs:attribute ref="Path" use="required"/>
     <xs:attribute ref="RecursiveSearch" use="required"/>
 </xs:complexType>
+<xs:complexType name="InterfaceDefinitionType">
+    <xs:attribute ref="Path" use="required"/>
+</xs:complexType>
 <xs:complexType name="AppConfigType">
     <xs:sequence>
         <xs:element name="DataSourcesStorage" type="DataSourcesStorageType"/>
+        <xs:element name="InterfaceDefinition" type="InterfaceDefinitionType"/>
     </xs:sequence>
 </xs:complexType>
 
