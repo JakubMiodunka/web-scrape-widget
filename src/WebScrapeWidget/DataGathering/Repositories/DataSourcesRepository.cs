@@ -12,6 +12,26 @@ namespace WebScrapeWidget.DataGathering.Repositories;
 /// </summary>
 public sealed class DataSourcesRepository
 {
+    #region Singleton
+    public static DataSourcesRepository Instance
+    {
+        get
+        {
+            if (s_instance is null)
+            {
+                string directoryPath = AppConfig.Instance.DataSourcesStorage;
+                bool recursiveSearch = AppConfig.Instance.DataSourcesStorageRecursiveSearch;
+
+                s_instance = new DataSourcesRepository(directoryPath, recursiveSearch);
+            }
+
+            return s_instance;
+        }
+    }
+
+    private static DataSourcesRepository? s_instance;
+    #endregion
+
     #region Properties
     public readonly string DirectoryPath;
     
@@ -55,7 +75,7 @@ public sealed class DataSourcesRepository
     /// /// <param name="recursiveSearch">
     /// Flag, which specifies if provided directory shall be searched recursively.
     /// </param>
-    public DataSourcesRepository(string directoryPath, bool recursiveSearch)
+    public  DataSourcesRepository(string directoryPath, bool recursiveSearch)
     {
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
@@ -97,6 +117,7 @@ public sealed class DataSourcesRepository
             .Select(dataSource => dataSource.GatherData())
             .ToArray();
 
+        //TODO: Infinite waiting - to fix.
         Task.WaitAll(dataGatheringtasks);
     }
     #endregion

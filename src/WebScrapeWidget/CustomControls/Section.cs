@@ -4,6 +4,10 @@ using System.Windows.Controls;
 
 namespace WebScrapeWidget.CustomControls;
 
+/// <summary>
+/// Custom WPF control build around System.Windows.Controls.GroupBox.
+/// Its content contains key-value entries.
+/// </summary>
 public sealed class Section : GroupBox
 {
     #region Properties
@@ -11,6 +15,19 @@ public sealed class Section : GroupBox
     #endregion
 
     #region Class instantiation
+    /// <summary>
+    /// Creates a new section corresponding to definition
+    /// contained by provided XML element.
+    /// </summary>
+    /// <param name="sectionElement">
+    /// XML element, containing section definition.
+    /// </param>
+    /// <returns>
+    /// New section corresponding to definition contained by provided XML element.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
     public static Section FromXml(XElement sectionElement)
     {
         if (sectionElement is null)
@@ -33,13 +50,30 @@ public sealed class Section : GroupBox
         return new Section(name, entries);
     }
 
-    private static Grid PrepareGrid()
+    /// <summary>
+    /// Generates grid divided into specified number of columns.
+    /// </summary>
+    /// <param name="columns">
+    /// Number of columns, which generated grid shall contain.
+    /// </param>
+    /// <returns>
+    /// New grid divided into specified number of columns.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown ,when value of at least one argument will be considered as invalid.
+    /// </exception>
+    private static Grid GenerateGrid(int columns)
     {
-        const int columns = 2;
-
+        if(columns <= 0)
+        {
+            string argumentName = nameof(columns);
+            string errorMessage = $"Number of grid columns shall be greater than zero: {columns}";
+            throw new ArgumentOutOfRangeException(argumentName, columns, errorMessage);
+        }
+        
         var grid = new Grid();
 
-        for (int i = 0; i < columns; i++)
+        while (grid.ColumnDefinitions.Count() < columns)
         {
             var newColumnDefinition = new ColumnDefinition();
             grid.ColumnDefinitions.Add(newColumnDefinition);
@@ -48,6 +82,24 @@ public sealed class Section : GroupBox
         return grid;
     }
 
+    /// <summary>
+    /// Creates a new section instance..
+    /// </summary>
+    /// <param name="name">
+    /// Name, which shall be assigned to created section.
+    /// </param>
+    /// <param name="entries">
+    /// Collection of entries, which shall be contained by created section.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown ,when value of at least one argument will be considered as invalid.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
+    /// </exception>
     private Section(string name, IEnumerable<Entry> entries)
     {
         if (name is null)
@@ -79,13 +131,37 @@ public sealed class Section : GroupBox
         }
 
         Header = name;
-        _grid = PrepareGrid();
+
+        _grid = GenerateGrid(2);
 
         AddChild(_grid);
         entries.ToList().ForEach(AddEntry);
     }
-  
-    public void AddEntry(Entry entry)
+
+    /// <summary>
+    /// Adds a new row to section grid.
+    /// </summary>
+    /// <returns>
+    /// Index of added row.
+    /// </returns>
+    private int AddRow()
+    {
+        var rowDefinition = new RowDefinition();
+        _grid.RowDefinitions.Add(rowDefinition);
+
+        return _grid.RowDefinitions.Count() - 1;
+    }
+
+    /// <summary>
+    /// Adds provided entry to section grid.
+    /// </summary>
+    /// <param name="entry">
+    /// Entry, which shall be added to section grid.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    private void AddEntry(Entry entry)
     {
         if (entry is null)
         {
@@ -94,10 +170,7 @@ public sealed class Section : GroupBox
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        var rowDefinition = new RowDefinition();
-        _grid.RowDefinitions.Add(rowDefinition);
-
-        int rowIndex = _grid.RowDefinitions.Count() - 1;
+        int rowIndex = AddRow();
 
         Grid.SetRow(entry.Label, rowIndex);
         Grid.SetColumn(entry.Label, 0);

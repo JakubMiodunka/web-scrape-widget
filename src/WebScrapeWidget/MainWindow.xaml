@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" Name="scroll">
+        <ScrollViewer Name="Content" HorizontalScrollBarVisibility="Auto">
         </ScrollViewer>
     </Grid>
 </Window>

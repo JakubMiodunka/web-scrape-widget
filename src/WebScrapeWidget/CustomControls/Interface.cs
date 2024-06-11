@@ -52,7 +52,7 @@ public class Interface : TabControl
         }
 
         XElement interfaceElement = XDocument.Load(filePath)
-            .Elements("Interface")
+            .Elements("InterfaceDefinition")
             .First();
 
         return FromXml(interfaceElement);

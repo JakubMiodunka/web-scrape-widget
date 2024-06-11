@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WebScrapeWidget.CustomControls;
+using WebScrapeWidget.DataGathering.Repositories;
 
 
 namespace WebScrapeWidget
@@ -19,13 +20,10 @@ namespace WebScrapeWidget
     {      
         public MainWindow()
         {
-            const string filePath = @"C:\Users\Jakub Miodunka\Desktop\WebScrapeWidget\interface.xml";
-            var inteface = Interface.FromFile(filePath);
-
-            
+            var inteface = Interface.FromFile(AppConfig.Instance.InterfaceDefinitionPath);
 
             InitializeComponent();
-            scroll.Content = inteface;
+            Content.Content = inteface;
         }
     }
 }
