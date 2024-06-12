@@ -11,7 +11,7 @@ namespace WebScrapeWidget.CustomControls;
 public sealed class Section : GroupBox
 {
     #region Properties
-    private readonly Grid _grid;
+    private readonly Grid _content;
     #endregion
 
     #region Class instantiation
@@ -132,9 +132,9 @@ public sealed class Section : GroupBox
 
         Header = name;
 
-        _grid = GenerateGrid(2);
+        _content = GenerateGrid(2);
 
-        AddChild(_grid);
+        AddChild(_content);
         entries.ToList().ForEach(AddEntry);
     }
 
@@ -147,16 +147,16 @@ public sealed class Section : GroupBox
     private int AddRow()
     {
         var rowDefinition = new RowDefinition();
-        _grid.RowDefinitions.Add(rowDefinition);
+        _content.RowDefinitions.Add(rowDefinition);
 
-        return _grid.RowDefinitions.Count() - 1;
+        return _content.RowDefinitions.Count() - 1;
     }
 
     /// <summary>
-    /// Adds provided entry to section grid.
+    /// Adds provided entry to content of the section.
     /// </summary>
     /// <param name="entry">
-    /// Entry, which shall be added to section grid.
+    /// Entry, which shall be added to section content.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -174,11 +174,11 @@ public sealed class Section : GroupBox
 
         Grid.SetRow(entry.Label, rowIndex);
         Grid.SetColumn(entry.Label, 0);
-        _grid.Children.Add(entry.Label);
+        _content.Children.Add(entry.Label);
 
         Grid.SetRow(entry.Value, rowIndex);
         Grid.SetColumn(entry.Value, 1);
-        _grid.Children.Add(entry.Value);
+        _content.Children.Add(entry.Value);
     }
     #endregion
 }

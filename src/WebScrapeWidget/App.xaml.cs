@@ -7,22 +7,27 @@ using WebScrapeWidget.DataGathering.Repositories;
 
 namespace WebScrapeWidget
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    //TODO: Doc-string.
     public partial class App : Application
     {
-        public void Program()
+        /// <summary>
+        /// Implementation of System.Windows.StartupEventHandler,
+        /// which performs startup procedure of the application.
+        /// </summary>
+        /// <param name="sender">
+        /// The object that raised startup event.
+        /// </param>
+        /// <param name="eventData">
+        /// Event data.
+        /// </param>
+        public async void ApplicationStartup(object sender, StartupEventArgs eventData)
         {
-            DataSourcesRepository PrepareDataSourcesRepository()
-            {
-                string directoryPath = AppConfig.Instance.DataSourcesStorage;
-                bool recursiveSearch = AppConfig.Instance.DataSourcesStorageRecursiveSearch;
+            await DataSourcesRepository.InitializeSingleton();
 
-                return new DataSourcesRepository(directoryPath, recursiveSearch);
-            }
-
-            DataSourcesRepository dataSourcesRepository = PrepareDataSourcesRepository();
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
+            
+            MainWindow = mainWindow;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+
 using System.Windows.Controls;
 
 
@@ -11,7 +12,7 @@ namespace WebScrapeWidget.CustomControls;
 public sealed class Tab : TabItem
 {
     #region Properties
-    private readonly Grid _grid;
+    private readonly StackPanel _content;
     #endregion
 
     #region Class instantiation
@@ -57,7 +58,7 @@ public sealed class Tab : TabItem
     /// Tab name.
     /// </param>
     /// <param name="sections">
-    /// Collection of sections, which shall be placed on tab grid.
+    /// Collection of sections, which shall be contained by created tab.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -100,37 +101,10 @@ public sealed class Tab : TabItem
 
         Header = name;
 
-        _grid = new Grid();
-        AddChild(_grid);
-
-        sections.ToList().ForEach(AddSection);
-    }
-
-    /// <summary>
-    /// Adds provided section to the tab grid.
-    /// </summary>
-    /// <param name="section">
-    /// Section, which shall be added to the grid of the tab.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
-    public void AddSection(GroupBox section)
-    {
-        if (section is null)
-        {
-            string argumentName = nameof(section);
-            const string ErrorMessage = "Provided section is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        var newRowDefinition = new RowDefinition();
-        _grid.RowDefinitions.Add(newRowDefinition);
-
-        int newRowIndex = _grid.RowDefinitions.Count() - 1;
-        Grid.SetRow(section, newRowIndex);
-
-        _grid.Children.Add(section);
+        _content = new StackPanel();
+        sections.ToList().ForEach(section => _content.Children.Add(section));
+        
+        AddChild(_content);
     }
     #endregion
 }
