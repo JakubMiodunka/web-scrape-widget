@@ -12,6 +12,7 @@ namespace WebScrapeWidget.CustomControls;
 public sealed class Tab : TabItem
 {
     #region Properties
+    private readonly Section[] _sections;
     private readonly StackPanel _content;
     #endregion
 
@@ -100,11 +101,22 @@ public sealed class Tab : TabItem
         }
 
         Header = name;
+        _sections = sections.ToArray();
 
         _content = new StackPanel();
-        sections.ToList().ForEach(section => _content.Children.Add(section));
-        
+
+        _sections.ToList().ForEach(section => _content.Children.Add(section));
         AddChild(_content);
+    }
+    #endregion
+
+    #region Content update
+    /// <summary>
+    /// Performs the update of tab content.
+    /// </summary>
+    public void UpdateContent()
+    {
+        _sections.ToList().ForEach(section => section.UpdateContent());
     }
     #endregion
 }

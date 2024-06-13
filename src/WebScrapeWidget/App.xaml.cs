@@ -22,7 +22,7 @@ namespace WebScrapeWidget
         /// </param>
         public async void ApplicationStartup(object sender, StartupEventArgs eventData)
         {
-            await DataSourcesRepository.InitializeSingleton();
+            await DataSourcesRepository.Instance.GatherDataFromAllSources();
 
             var mainWindow = new MainWindow();
             mainWindow.Show();

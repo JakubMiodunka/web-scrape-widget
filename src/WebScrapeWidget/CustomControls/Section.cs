@@ -11,6 +11,7 @@ namespace WebScrapeWidget.CustomControls;
 public sealed class Section : GroupBox
 {
     #region Properties
+    private readonly Entry[] _entries;
     private readonly Grid _content;
     #endregion
 
@@ -131,11 +132,12 @@ public sealed class Section : GroupBox
         }
 
         Header = name;
+        _entries = entries.ToArray();
 
         _content = GenerateGrid(2);
 
+        _entries.ToList().ForEach(AddEntry);
         AddChild(_content);
-        entries.ToList().ForEach(AddEntry);
     }
 
     /// <summary>
@@ -179,6 +181,16 @@ public sealed class Section : GroupBox
         Grid.SetRow(entry.Value, rowIndex);
         Grid.SetColumn(entry.Value, 1);
         _content.Children.Add(entry.Value);
+    }
+    #endregion
+
+    #region Content update
+    /// <summary>
+    /// Performs the update of section content.
+    /// </summary>
+    public void UpdateContent()
+    {
+        _entries.ToList().ForEach(entry => entry.UpdateValue());
     }
     #endregion
 }

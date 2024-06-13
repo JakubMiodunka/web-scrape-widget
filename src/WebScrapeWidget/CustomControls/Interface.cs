@@ -12,6 +12,10 @@ namespace WebScrapeWidget.CustomControls;
 /// </summary>
 public class Interface : TabControl
 {
+    #region Properties
+    private readonly Tab[] _tabs;
+    #endregion
+
     #region Class instantiation
     /// <summary>
     /// Checks if provided file can be used to obtain
@@ -116,7 +120,19 @@ public class Interface : TabControl
             throw new ArgumentException(argumentName, ErrorMessage);
         }
 
-        tabs.ToList().ForEach(tab => Items.Add(tab));
+        _tabs = tabs.ToArray();
+
+        _tabs.ToList().ForEach(tab => Items.Add(tab));
+    }
+    #endregion
+
+    #region Content update
+    /// <summary>
+    /// Performs the update of custom WPF control content.
+    /// </summary>
+    public void UpdateContent()
+    {
+        _tabs.ToList().ForEach(tab => tab.UpdateContent());
     }
     #endregion
 }

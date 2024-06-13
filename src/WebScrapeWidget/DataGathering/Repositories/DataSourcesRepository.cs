@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿// Ignore Spelling: Timestamp
+
+using System.IO;
 
 using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.DataGathering.Models;
@@ -11,11 +13,9 @@ namespace WebScrapeWidget.DataGathering.Repositories;
 /// Repository, that provided access to a pool of data sources.
 /// </summary>
 /// <remarks>
-/// Repository is implemented as singleton.
-/// To gain access to singleton instance it is necessary to initialize it using
-/// DataSourcesRepository.InitializeSingleton method, which is asynchronous.
-/// Result of access to not initialized singleton instance will cause towing an exception.
-/// This approach was utilized to avoid deadlocks ex. with UI thread.
+/// Keep in mind, that initially data from all sources contained by the repository is not gathered
+/// and attempt to accedes it will result in raised exception.
+/// To gather data from sources use DataSourcesRepository.GatherDataFromAllSources method.
 /// </remarks>
 public sealed class DataSourcesRepository
 {
@@ -26,46 +26,26 @@ public sealed class DataSourcesRepository
         {
             if (s_instance is null)
             {
-                const string ErrorMessage = "Singleton of data sources repository was not initialized:";
-                throw new InvalidOperationException(ErrorMessage);
+                string directoryPath = AppConfig.Instance.DataSourcesStorage;
+                bool recursiveSearch = AppConfig.Instance.DataSourcesStorageRecursiveSearch;
+
+                s_instance = new DataSourcesRepository(directoryPath, recursiveSearch);
             }
 
             return s_instance;
         }
     }
 
-    /// <summary>
-    /// Initializes repository singleton instance.
-    /// </summary>
-    /// <returns>
-    /// Task, which will be completed, when initialization
-    /// of repository singleton instance will be finished.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown, when repository singleton instance is already initialized.
-    /// </exception>
-    public static async Task InitializeSingleton()
-    {
-        if (s_instance is not null)
-        {
-            const string ErrorMessage = "Singleton of data sources repository was already initialized:";
-            throw new InvalidOperationException(ErrorMessage);
-        }
-
-        string directoryPath = AppConfig.Instance.DataSourcesStorage;
-        bool recursiveSearch = AppConfig.Instance.DataSourcesStorageRecursiveSearch;
-
-        var instance = new DataSourcesRepository(directoryPath, recursiveSearch);
-
-        await instance.GatherDataFromAllSources();
-
-        s_instance = instance;
-    }
-
     private static DataSourcesRepository? s_instance;
     #endregion
 
     #region Properties
+    public DateTime UpdateTimestamp
+    {
+        get;
+        private set;
+    }
+
     public readonly string DirectoryPath;
     
     private readonly IDataSource[] _dataSources;
@@ -143,13 +123,15 @@ public sealed class DataSourcesRepository
     /// Task, which will be completed, when data will be gathered
     /// from all data sources contained by the repository.
     /// </returns>
-    private async Task GatherDataFromAllSources()
+    public async Task GatherDataFromAllSources()
     {
         Task[] dataGatheringtasks = _dataSources
             .Select(dataSource => dataSource.GatherData())
             .ToArray();
 
         await Task.WhenAll(dataGatheringtasks);
+
+        UpdateTimestamp = DateTime.Now;
     }
     #endregion
 

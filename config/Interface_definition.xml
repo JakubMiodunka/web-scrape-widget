@@ -1,7 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <InterfaceDefinition>
-    <Tab Name="TestTab">
-        <Section Name="TestSection">
-            <Entry Label="TestEntry" DataSourceName="TestSource"/>
+    <Tab Name="Economy">
+        <Section Name="Currencies Exchange Rates">
+            <Entry Label="PLN/USD" DataSourceName="nbp-pln-usd"/>
+            <Entry Label="PLN/EUR" DataSourceName="nbp-pln-eur"/>
+            <Entry Label="PLN/GPB" DataSourceName="nbp-pln-gbp"/>
+        </Section>
+    </Tab>
+    <Tab Name="Weather">
+        <Section Name="Cracow">
+            <Entry Label="Current Temperature [°C]" DataSourceName="interia-cracow-current-temperature"/>
+            <Entry Label="Current Pressure [hPa]" DataSourceName="interia-cracow-current-pressure"/>
+            <Entry Label="Current Wind Speed [km/h]" DataSourceName="interia-cracow-current-wind-speed"/>
+        </Section>
+        <Section Name="London">
+            <Entry Label="Current Temperature [°C]" DataSourceName="interia-london-current-temperature"/>
+            <Entry Label="Current Pressure [hPa]" DataSourceName="interia-london-current-pressure"/>
+            <Entry Label="Current Wind Speed [km/h]" DataSourceName="interia-london-current-wind-speed"/>
         </Section>
     </Tab>
 </InterfaceDefinition>

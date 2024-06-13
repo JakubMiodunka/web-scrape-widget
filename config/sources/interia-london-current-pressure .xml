@@ -1,0 +1,7 @@
+<DataSource Name="interia-london-current-pressure">
+    <WebsiteElement>
+        <Website Url="https://pogoda.interia.pl/prognoza-szczegolowa-londyn,cId,62348"/>
+        <HtmlNode XPath="/html/body/div[4]/section/div[2]/div[1]/div/ul/li[3]/span"/>
+        <NodeContentFilter Regex="\d*"/>
+    </WebsiteElement>
+</DataSource>

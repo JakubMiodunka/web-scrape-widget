@@ -6,8 +6,14 @@
         xmlns:local="clr-namespace:WebScrapeWidget"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <ScrollViewer Name="MainContent" HorizontalScrollBarVisibility="Auto">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Data">
+                <MenuItem Header="Update" Click="UpdateData"/>
+            </MenuItem>
+        </Menu>
+        <TextBlock Name="LastUpdateTextBlock" DockPanel.Dock="Bottom"/>
+        <ScrollViewer Name="DataScrollViewer" HorizontalScrollBarVisibility="Auto">
         </ScrollViewer>
-    </Grid>
+    </DockPanel>
 </Window>

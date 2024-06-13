@@ -1,0 +1,7 @@
+<DataSource Name="nbp-pln-usd">
+    <WebsiteElement>
+        <Website Url="https://nbp.pl/statystyka-i-sprawozdawczosc/kursy/tabela-a/"/>
+        <HtmlNode XPath="/html/body/main/div/section/div/figure/table/tbody/tr[2]/td[3]"/>
+        <NodeContentFilter Regex="\d*[,.]\d*"/>
+    </WebsiteElement>
+</DataSource>

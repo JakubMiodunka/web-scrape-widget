@@ -14,6 +14,8 @@ public sealed class Entry
     #region Properties
     public readonly TextBlock Label;
     public readonly TextBlock Value;
+
+    private readonly string _dataSourceName;
     #endregion
 
     #region Class instantiation
@@ -98,10 +100,22 @@ public sealed class Entry
         }
 
         Label = new TextBlock();
-        Label.Text = label;
-
         Value = new TextBlock();
-        Value.Text = DataSourcesRepository.Instance.GetDataFromSource(dataSourceName);
+
+        _dataSourceName = dataSourceName;
+
+        Label.Text = label;
+        UpdateValue();
+    }
+    #endregion
+
+    #region Content update
+    /// <summary>
+    /// Performs the update of entry value.
+    /// </summary>
+    public void UpdateValue()
+    {
+        Value.Text = DataSourcesRepository.Instance.GetDataFromSource(_dataSourceName);
     }
     #endregion
 }
