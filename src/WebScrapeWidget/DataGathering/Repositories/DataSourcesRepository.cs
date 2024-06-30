@@ -163,7 +163,7 @@ public sealed class DataSourcesRepository
     /// Data gathered from data source, which has specified identified assigned.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown, when repository does not contain data source with specified identifier. 
+    /// Thrown, when repository does not contain data source with specified name. 
     /// </exception>
     public string GetDataFromSource(string name)
     {
@@ -177,6 +177,32 @@ public sealed class DataSourcesRepository
             .Where(dataSource => dataSource.Name == name)
             .First()
             .GatheredData;
+    }
+
+    /// <summary>
+    /// Adds provided object to a subscribers of specified data source.
+    /// </summary>
+    /// <param name="newSubscriber">
+    /// Object, which shall be added to subscribers list of specified data source.
+    /// </param>
+    /// <param name="dataSourceName">
+    /// Name of data source, to which subscribers list provided object shall be added.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown, when repository does not contain data source with specified name. 
+    /// </exception>
+    public void AddSubscriberToSource(IDataSourceSubscriber newSubscriber, string dataSourceName)
+    {
+        if (!ContainsDataSource(dataSourceName))
+        {
+            string errorMessage = $"Data source with provided name does not exist in repository: {dataSourceName}";
+            throw new ArgumentOutOfRangeException(errorMessage);
+        }
+
+        _dataSources
+            .Where(dataSource => dataSource.Name == dataSourceName)
+            .First()
+            .AddSubscriber(newSubscriber);
     }
     #endregion
 }

@@ -1,5 +1,6 @@
 ﻿namespace WebScrapeWidget.DataGathering.Interfaces;
 
+
 /// <summary>
 /// Interface, which shall be implemented
 /// by all types of data sources used within the application.
@@ -17,4 +18,12 @@ public interface IDataSource
     /// Returns data gathered from web source.
     /// </returns>
     Task GatherData();
+
+    /// <summary>
+    /// Adds a new object to subscribers list of data source.
+    /// </summary>
+    /// <param name="subscriber">
+    /// Object, which shall be added to data source subscriber list.
+    /// </param>
+    void AddSubscriber(IDataSourceSubscriber subscriber);
 }

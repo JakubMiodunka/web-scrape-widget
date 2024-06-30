@@ -22,29 +22,6 @@ public sealed class WebsiteElement : DataSource, IDataSource
     public readonly Uri WebsiteUrl;
     public readonly string HtmlNodeXPath;
     public readonly Regex NodeContentFilter;
-
-    public bool IsScraped
-    {
-        get
-        {
-            return _scrapedData is not null;
-        }
-    }
-    public string ScrapedData
-    {
-        get
-        {
-            if (_scrapedData is null)
-            {
-                const string ErrorMessage = "Attempting to access scraped data before the scraping.";
-                throw new InvalidOperationException(ErrorMessage);
-            }
-
-            return _scrapedData;
-        }
-    }
-
-    private string? _scrapedData;
     #endregion
 
     #region Class instantiation
@@ -204,7 +181,8 @@ public sealed class WebsiteElement : DataSource, IDataSource
 
     #region Scraping
     /// <summary>
-    /// Performs scraping of website element.
+    /// Performs scraping of website element and notifies
+    /// subscribers with new value of gathered data.
     /// </summary>
     /// <returns>
     /// Scraped website content.
@@ -212,7 +190,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="InvalidOperationException">
     /// Thrown, when HTTP client is not initialized.
     /// </exception>
-    public async Task Scrape()
+    public async Task GatherData()
     {
         if (s_httpClient is null)
         {
@@ -226,35 +204,9 @@ public sealed class WebsiteElement : DataSource, IDataSource
         HtmlNode scrapedNode = HtmlUtilities.FilterNode(scrapedWebsite, HtmlNodeXPath);
         string scrapedContent = HtmlUtilities.FilterNodeContent(scrapedNode, NodeContentFilter);
 
-        _scrapedData = scrapedContent;
-    }
-    #endregion
+        _gatheredData = scrapedContent;
 
-    #region Implementation of IDataSource interface.
-    public bool WasDataGathered
-    {
-        get
-        {
-            return IsScraped;
-        }
-    }
-    public string GatheredData
-    {
-        get
-        {
-            return ScrapedData;
-        }
-    }
-
-    /// <summary>
-    /// Implementation of IDataSource interface.
-    /// </summary>
-    /// <returns>
-    /// Returns data gathered from web source.
-    /// </returns>
-    public async Task GatherData()
-    {
-        await Scrape();
+        NotifySubscribers();
     }
     #endregion
 }

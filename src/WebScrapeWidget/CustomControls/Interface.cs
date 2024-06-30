@@ -125,14 +125,4 @@ public class Interface : TabControl
         _tabs.ToList().ForEach(tab => Items.Add(tab));
     }
     #endregion
-
-    #region Content update
-    /// <summary>
-    /// Performs the update of custom WPF control content.
-    /// </summary>
-    public void UpdateContent()
-    {
-        _tabs.ToList().ForEach(tab => tab.UpdateContent());
-    }
-    #endregion
 }

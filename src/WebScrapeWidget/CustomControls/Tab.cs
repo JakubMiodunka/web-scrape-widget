@@ -109,14 +109,4 @@ public sealed class Tab : TabItem
         AddChild(_content);
     }
     #endregion
-
-    #region Content update
-    /// <summary>
-    /// Performs the update of tab content.
-    /// </summary>
-    public void UpdateContent()
-    {
-        _sections.ToList().ForEach(section => section.UpdateContent());
-    }
-    #endregion
 }

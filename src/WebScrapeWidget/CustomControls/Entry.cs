@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using WebScrapeWidget.DataGathering.Repositories;
+using WebScrapeWidget.DataGathering.Interfaces;
 
 
 namespace WebScrapeWidget.CustomControls;
@@ -9,7 +10,7 @@ namespace WebScrapeWidget.CustomControls;
 /// <summary>
 /// Container for key-value pair, held within System.Windows.Controls.TextBlock type objects.
 /// </summary>
-public sealed class Entry
+public sealed class Entry : IDataSourceSubscriber
 {
     #region Properties
     public readonly TextBlock Label;
@@ -61,7 +62,7 @@ public sealed class Entry
     /// String, which shall be used as label for value shown by the entry.
     /// </param>
     /// <param name="dataSourceName">
-    /// Name of data source, from which value shown by the entry shall be gathered.
+    /// Name of data source, to which entry shall be subscribed.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -100,22 +101,40 @@ public sealed class Entry
         }
 
         Label = new TextBlock();
+        Label.Text = label;
+
         Value = new TextBlock();
+        Value.Text = "-";
 
         _dataSourceName = dataSourceName;
-
-        Label.Text = label;
-        UpdateValue();
+        DataSourcesRepository.Instance.AddSubscriberToSource(this, _dataSourceName);
     }
     #endregion
 
-    #region Content update
+    #region Notifications
     /// <summary>
-    /// Performs the update of entry value.
+    /// Invoked by subscribed data source, when new data will be gathered.
     /// </summary>
-    public void UpdateValue()
+    /// <param name="gatheredData">
+    /// Data, with which entry value shall be updated.
+    /// </param>
+    public void Notify(string gatheredData)
     {
-        Value.Text = DataSourcesRepository.Instance.GetDataFromSource(_dataSourceName);
+        if (gatheredData is null)
+        {
+            string argumentName = nameof(gatheredData);
+            const string ErrorMessage = "Provided data is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        if (gatheredData == string.Empty)
+        {
+            string argumentName = nameof(gatheredData);
+            const string ErrorMessage = "Provided data is an empty string:";
+            throw new ArgumentOutOfRangeException(argumentName, gatheredData, ErrorMessage);
+        }
+
+        Value.Text = gatheredData;
     }
     #endregion
 }

@@ -183,14 +183,4 @@ public sealed class Section : GroupBox
         _content.Children.Add(entry.Value);
     }
     #endregion
-
-    #region Content update
-    /// <summary>
-    /// Performs the update of section content.
-    /// </summary>
-    public void UpdateContent()
-    {
-        _entries.ToList().ForEach(entry => entry.UpdateValue());
-    }
-    #endregion
 }

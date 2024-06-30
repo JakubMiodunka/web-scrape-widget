@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Data;
+using System.Windows;
 
 using WebScrapeWidget.CustomControls;
 using WebScrapeWidget.DataGathering.Repositories;
@@ -28,15 +29,14 @@ namespace WebScrapeWidget
             var dataSourcesRepository = DataSourcesRepository.Instance;
             await dataSourcesRepository.GatherDataFromAllSources();
 
-            _interface.UpdateContent();
             LastUpdateTextBlockUpdate();
         }
 
         //TODO: Doc-string.
         private void LastUpdateTextBlockUpdate()
         {
-            var dataSourcesRepository = DataSourcesRepository.Instance; ;
-            string isoTimestamp = dataSourcesRepository.UpdateTimestamp.ToString("s");
+            DateTime updateTimestamp = DataSourcesRepository.Instance.UpdateTimestamp;
+            string isoTimestamp = (updateTimestamp == DateTime.MinValue) ? "-" : updateTimestamp.ToString("s");
 
             LastUpdateTextBlock.Text = $"Last update: {isoTimestamp}";
         }
