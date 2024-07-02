@@ -1,4 +1,4 @@
-<DataSource Name="interia-london-current-wind-speed">
+<DataSource Name="interia-london-current-wind-speed" RefreshRate="PT1H">
     <WebsiteElement>
         <Website Url="https://pogoda.interia.pl/prognoza-szczegolowa-londyn,cId,62348"/>
         <HtmlNode XPath="/html/body/div[4]/section/div[2]/div[1]/div/ul/li[4]/span"/>

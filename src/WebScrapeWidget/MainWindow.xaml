@@ -9,10 +9,9 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Data">
-                <MenuItem Header="Update" Click="UpdateData"/>
+                <MenuItem Header="Gather Data" Click="GatherData"/>
             </MenuItem>
         </Menu>
-        <TextBlock Name="LastUpdateTextBlock" DockPanel.Dock="Bottom"/>
         <ScrollViewer Name="DataScrollViewer" HorizontalScrollBarVisibility="Auto">
         </ScrollViewer>
     </DockPanel>

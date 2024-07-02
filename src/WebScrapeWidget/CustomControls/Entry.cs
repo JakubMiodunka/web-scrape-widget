@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿// Ignore Spelling: Timestamp
+
+using System.Xml.Linq;
 using System.Windows.Controls;
 
 using WebScrapeWidget.DataGathering.Repositories;
@@ -15,6 +17,7 @@ public sealed class Entry : IDataSourceSubscriber
     #region Properties
     public readonly TextBlock Label;
     public readonly TextBlock Value;
+    public readonly TextBlock Timestamp;
 
     private readonly string _dataSourceName;
     #endregion
@@ -106,6 +109,9 @@ public sealed class Entry : IDataSourceSubscriber
         Value = new TextBlock();
         Value.Text = "-";
 
+        Timestamp = new TextBlock();
+        Timestamp.Text = "-";
+
         _dataSourceName = dataSourceName;
         DataSourcesRepository.Instance.AddSubscriberToSource(this, _dataSourceName);
     }
@@ -118,7 +124,16 @@ public sealed class Entry : IDataSourceSubscriber
     /// <param name="gatheredData">
     /// Data, with which entry value shall be updated.
     /// </param>
-    public void Notify(string gatheredData)
+    /// <param name="refreshTimestamp">
+    /// Timestamp, when data contained by subscribed data source was refreshed.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown ,when value of at least one argument will be considered as invalid.
+    /// </exception>
+    public void Notify(string gatheredData, DateTime refreshTimestamp)
     {
         if (gatheredData is null)
         {
@@ -134,7 +149,15 @@ public sealed class Entry : IDataSourceSubscriber
             throw new ArgumentOutOfRangeException(argumentName, gatheredData, ErrorMessage);
         }
 
+        if (refreshTimestamp > DateTime.Now)
+        {
+            string argumentName = nameof(refreshTimestamp);
+            string errorMessage = $"Provided refresh timestamp is invalid: {refreshTimestamp}";
+            throw new ArgumentOutOfRangeException(argumentName, refreshTimestamp, errorMessage);
+        }
+
         Value.Text = gatheredData;
+        Timestamp.Text = refreshTimestamp.ToString("s");
     }
     #endregion
 }

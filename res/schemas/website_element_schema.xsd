@@ -8,6 +8,13 @@
         </xs:restriction>
     </xs:simpleType>
 </xs:attribute>
+<xs:attribute name="RefreshRate">
+    <xs:simpleType>
+        <xs:restriction base="xs:duration">
+            <xs:minExclusive value="PT0S"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:attribute>
 <xs:attribute name="Url">
     <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -52,6 +59,7 @@
         <xs:element name="WebsiteElement" type="WebsiteElementType"/>
     </xs:sequence>
     <xs:attribute ref="Name" use="required"/>
+    <xs:attribute ref="RefreshRate" use="required"/>
 </xs:complexType>
 
 <!-- Elements-->

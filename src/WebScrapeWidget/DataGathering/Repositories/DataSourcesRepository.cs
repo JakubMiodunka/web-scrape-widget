@@ -1,5 +1,6 @@
 ﻿// Ignore Spelling: Timestamp
 
+using System.Data;
 using System.IO;
 
 using WebScrapeWidget.DataGathering.Interfaces;
@@ -40,12 +41,6 @@ public sealed class DataSourcesRepository
     #endregion
 
     #region Properties
-    public DateTime UpdateTimestamp
-    {
-        get;
-        private set;
-    }
-
     public readonly string DirectoryPath;
     
     private readonly IDataSource[] _dataSources;
@@ -115,6 +110,34 @@ public sealed class DataSourcesRepository
             .Select(CreateDataSourceFromFile)
             .ToArray();
     }
+    #endregion
+
+    #region Data gathering
+    /// <summary>
+    /// Starts the process of infinite, periodic data gathering
+    /// from all sources cantoned by repository.
+    /// </summary>
+    /// <remarks>
+    /// Refresh rate of every data source is individual.
+    /// </remarks>
+    /// <returns>
+    /// Task corresponding to status periodic data gathering process,
+    /// which never be completed as process is infinite.
+    /// </returns>
+    public async Task StartPeriodicDataGathering()
+    {
+        while (true)
+        {
+            await Task.Delay(1000);
+
+            DateTime currentTimestamp = DateTime.Now;
+
+            _dataSources
+                .Where(source => (currentTimestamp - source.LastRefreshTimestamp) >= source.RefreshRate)
+                .ToList()
+                .ForEach(dataSource => dataSource.GatherData());
+        }
+    }
 
     /// <summary>
     /// Gathers data from all sources contained by repository.
@@ -130,8 +153,6 @@ public sealed class DataSourcesRepository
             .ToArray();
 
         await Task.WhenAll(dataGatheringtasks);
-
-        UpdateTimestamp = DateTime.Now;
     }
     #endregion
 

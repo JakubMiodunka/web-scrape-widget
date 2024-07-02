@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 
 using WebScrapeWidget.Utilities;
@@ -72,6 +73,12 @@ public sealed class WebsiteElement : DataSource, IDataSource
             .Select(attribute => attribute.Value)
             .First();
 
+        TimeSpan refreshRate = dataSourceElement
+            .Attributes("RefreshRate")
+            .Select(attribute => attribute.Value)
+            .Select(XmlConvert.ToTimeSpan)
+            .First();
+
         XElement websiteElement = dataSourceElement
             .Elements("WebsiteElement")
             .First();
@@ -96,7 +103,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
             .Select(value => new Regex(value))
             .First();
 
-        return new WebsiteElement(name, websiteUrl, htmlNodeXPath, nodeContentFilter);
+        return new WebsiteElement(name, refreshRate, websiteUrl, htmlNodeXPath, nodeContentFilter);
     }
 
     /// <summary>
@@ -104,6 +111,9 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// </summary>
     /// <param name="name">
     /// Unique name of represented data source.
+    /// </param>
+    /// <param name="refreshRate">
+    /// Refresh rate of data gathered from source expressed in time period.
     /// </param>
     /// <param name="websiteUrl">
     /// HTTPS-based URL of a website, which element shall be represented.
@@ -121,8 +131,8 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
-    public WebsiteElement(string name, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
-        : base(name)
+    public WebsiteElement(string name, TimeSpan refreshRate, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
+        : base(name, refreshRate)
     {
         if (websiteUrl is null)
         {
@@ -185,7 +195,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// subscribers with new value of gathered data.
     /// </summary>
     /// <returns>
-    /// Scraped website content.
+    /// Task related to scraping.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown, when HTTP client is not initialized.
@@ -205,6 +215,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
         string scrapedContent = HtmlUtilities.FilterNodeContent(scrapedNode, NodeContentFilter);
 
         _gatheredData = scrapedContent;
+        LastRefreshTimestamp = DateTime.Now;
 
         NotifySubscribers();
     }

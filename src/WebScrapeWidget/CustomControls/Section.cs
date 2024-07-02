@@ -134,7 +134,7 @@ public sealed class Section : GroupBox
         Header = name;
         _entries = entries.ToArray();
 
-        _content = GenerateGrid(2);
+        _content = GenerateGrid(3);
 
         _entries.ToList().ForEach(AddEntry);
         AddChild(_content);
@@ -181,6 +181,10 @@ public sealed class Section : GroupBox
         Grid.SetRow(entry.Value, rowIndex);
         Grid.SetColumn(entry.Value, 1);
         _content.Children.Add(entry.Value);
+
+        Grid.SetRow(entry.Timestamp, rowIndex);
+        Grid.SetColumn(entry.Timestamp, 2);
+        _content.Children.Add(entry.Timestamp);
     }
     #endregion
 }

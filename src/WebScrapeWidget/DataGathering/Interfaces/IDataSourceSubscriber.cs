@@ -1,4 +1,6 @@
-﻿namespace WebScrapeWidget.DataGathering.Interfaces;
+﻿// Ignore Spelling: Timestamp
+
+namespace WebScrapeWidget.DataGathering.Interfaces;
 
 
 /// <summary>
@@ -9,8 +11,11 @@ public interface IDataSourceSubscriber
     /// <summary>
     /// Shall be invoked by subscribed data source, when new data will be gathered.
     /// </summary>
-    /// <param name="data">
+    /// <param name="gatheredData">
     /// New value of data contained by subscribed data source.
     /// </param>
-    public void Notify(string data);
+    /// <param name="refreshTimestamp">
+    /// Timestamp, when data contained by subscribed data source was refreshed.
+    /// </param>
+    public void Notify(string gatheredData, DateTime refreshTimestamp);
 }

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
 using WebScrapeWidget.CustomControls;
 using WebScrapeWidget.DataGathering.Repositories;
@@ -20,25 +19,13 @@ namespace WebScrapeWidget
             InitializeComponent();
 
             DataScrollViewer.Content = _interface;
-            LastUpdateTextBlockUpdate();
         }
 
         //TODO: Doc-string.
-        public async void UpdateData(object sender, RoutedEventArgs eventData)
+        public async void GatherData(object sender, RoutedEventArgs eventData)
         {
             var dataSourcesRepository = DataSourcesRepository.Instance;
             await dataSourcesRepository.GatherDataFromAllSources();
-
-            LastUpdateTextBlockUpdate();
-        }
-
-        //TODO: Doc-string.
-        private void LastUpdateTextBlockUpdate()
-        {
-            DateTime updateTimestamp = DataSourcesRepository.Instance.UpdateTimestamp;
-            string isoTimestamp = (updateTimestamp == DateTime.MinValue) ? "-" : updateTimestamp.ToString("s");
-
-            LastUpdateTextBlock.Text = $"Last update: {isoTimestamp}";
         }
     }
 }

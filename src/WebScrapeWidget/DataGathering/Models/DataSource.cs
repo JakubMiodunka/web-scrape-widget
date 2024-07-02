@@ -1,4 +1,6 @@
-﻿using WebScrapeWidget.DataGathering.Interfaces;
+﻿// Ignore Spelling: Timestamp
+
+using WebScrapeWidget.DataGathering.Interfaces;
 
 namespace WebScrapeWidget.DataGathering.Models;
 
@@ -36,6 +38,8 @@ public abstract class DataSource
             return _gatheredData;
         }
     }
+    public TimeSpan RefreshRate { get; init; }
+    public DateTime LastRefreshTimestamp { get; protected set; }
 
     protected string? _gatheredData;
     protected List<IDataSourceSubscriber> _subscribers;
@@ -48,10 +52,17 @@ public abstract class DataSource
     /// <param name="name">
     /// Unique name of represented data source.
     /// </param>
+    /// <param name="refreshRate">
+    /// Refresh rate of data gathered from source expressed in time period.
+    /// Shall be not smaller than 1 second.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when provided data source name is already occupied. 
     /// </exception>
-    protected DataSource(string name)
+    protected DataSource(string name, TimeSpan refreshRate)
     {
         if (name is null)
         {
@@ -74,9 +85,18 @@ public abstract class DataSource
             throw new ArgumentOutOfRangeException(argumentName, name, errorMessage);
         }
 
+        if (refreshRate < new TimeSpan(0, 0, 1))
+        {
+            string argumentName = nameof(refreshRate);
+            string errorMessage = $"Provided value of refresh rate is invalid: {refreshRate}";
+            throw new ArgumentOutOfRangeException(argumentName, refreshRate, errorMessage);
+        }
+
         s_occupiedNames.Add(name);
         
         Name = name;
+        RefreshRate = refreshRate;
+        LastRefreshTimestamp = DateTime.MinValue;
 
         _subscribers = new List<IDataSourceSubscriber>();
     }
@@ -119,7 +139,7 @@ public abstract class DataSource
     /// </summary>
     protected void NotifySubscribers()
     {
-        _subscribers.ForEach(subscriber => subscriber.Notify(GatheredData));
+        _subscribers.ForEach(subscriber => subscriber.Notify(GatheredData, LastRefreshTimestamp));
     }
     #endregion
 }

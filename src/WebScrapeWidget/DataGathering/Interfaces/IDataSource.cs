@@ -1,4 +1,6 @@
-﻿namespace WebScrapeWidget.DataGathering.Interfaces;
+﻿// Ignore Spelling: Timestamp
+
+namespace WebScrapeWidget.DataGathering.Interfaces;
 
 
 /// <summary>
@@ -10,12 +12,14 @@ public interface IDataSource
     string Name { get; }
     bool WasDataGathered { get; }
     string GatheredData { get; }
+    TimeSpan RefreshRate { get; }
+    DateTime LastRefreshTimestamp { get; }
 
     /// <summary>
     /// Triggers the process of gathering data from invoked data source.
     /// </summary>
     /// <returns>
-    /// Returns data gathered from web source.
+    /// Task related to data gathering process.
     /// </returns>
     Task GatherData();
 
