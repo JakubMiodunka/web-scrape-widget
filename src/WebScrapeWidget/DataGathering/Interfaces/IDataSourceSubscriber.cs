@@ -14,8 +14,11 @@ public interface IDataSourceSubscriber
     /// <param name="gatheredData">
     /// New value of data contained by subscribed data source.
     /// </param>
+    /// <param name="dataUnit">
+    /// Unit, in which new data contained by subscribed source is presented.
+    /// </param>
     /// <param name="refreshTimestamp">
     /// Timestamp, when data contained by subscribed data source was refreshed.
     /// </param>
-    public void Notify(string gatheredData, DateTime refreshTimestamp);
+    public void Notify(string gatheredData, string dataUnit, DateTime refreshTimestamp);
 }

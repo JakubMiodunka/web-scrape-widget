@@ -1,4 +1,5 @@
-<DataSource Name="nbp-pln-usd" RefreshRate="PT1H">
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSource Name="nbp-pln-usd" DataUnit="" RefreshRate="PT1H">
     <WebsiteElement>
         <Website Url="https://nbp.pl/statystyka-i-sprawozdawczosc/kursy/tabela-a/"/>
         <HtmlNode XPath="/html/body/main/div/section/div/figure/table/tbody/tr[2]/td[3]"/>

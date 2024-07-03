@@ -119,6 +119,8 @@ public sealed class DataSourcesRepository
     /// </summary>
     /// <remarks>
     /// Refresh rate of every data source is individual.
+    /// Maximal possible refresh rate for 
+    /// a data source is 1 second - refresh rates not divisible by 1 second will be rounded.
     /// </remarks>
     /// <returns>
     /// Task corresponding to status periodic data gathering process,
@@ -171,33 +173,6 @@ public sealed class DataSourcesRepository
         return _dataSources
             .Where(dataSource => dataSource.Name == name)
             .Any();
-    }
-
-    /// <summary>
-    /// Provides access to data gathered from data source,
-    /// which has specified identifier assigned.
-    /// </summary>
-    /// <param name="name">
-    /// Name of data source, from which gathered data shall be obtained.
-    /// </param>
-    /// <returns>
-    /// Data gathered from data source, which has specified identified assigned.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown, when repository does not contain data source with specified name. 
-    /// </exception>
-    public string GetDataFromSource(string name)
-    {
-        if (!ContainsDataSource(name))
-        {
-            string errorMessage = $"Data source with provided name does not exist in repository: {name}";
-            throw new ArgumentOutOfRangeException(errorMessage);
-        }
-
-        return _dataSources
-            .Where(dataSource => dataSource.Name == name)
-            .First()
-            .GatheredData;
     }
 
     /// <summary>

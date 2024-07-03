@@ -12,7 +12,7 @@
                 <MenuItem Header="Gather Data" Click="GatherData"/>
             </MenuItem>
         </Menu>
-        <ScrollViewer Name="DataScrollViewer" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Name="MainUserInterface" HorizontalScrollBarVisibility="Auto">
         </ScrollViewer>
     </DockPanel>
 </Window>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <InterfaceDefinition>
     <Tab Name="Economy">
         <Section Name="Currencies Exchange Rates">
@@ -9,14 +9,14 @@
     </Tab>
     <Tab Name="Weather">
         <Section Name="Cracow">
-            <Entry Label="Current Temperature [°C]" DataSourceName="interia-cracow-current-temperature"/>
-            <Entry Label="Current Pressure [hPa]" DataSourceName="interia-cracow-current-pressure"/>
-            <Entry Label="Current Wind Speed [km/h]" DataSourceName="interia-cracow-current-wind-speed"/>
+            <Entry Label="Temperature" DataSourceName="interia-cracow-current-temperature"/>
+            <Entry Label="Atmospheric Pressure" DataSourceName="interia-cracow-current-pressure"/>
+            <Entry Label="Wind Speed" DataSourceName="interia-cracow-current-wind-speed"/>
         </Section>
         <Section Name="London">
-            <Entry Label="Current Temperature [°C]" DataSourceName="interia-london-current-temperature"/>
-            <Entry Label="Current Pressure [hPa]" DataSourceName="interia-london-current-pressure"/>
-            <Entry Label="Current Wind Speed [km/h]" DataSourceName="interia-london-current-wind-speed"/>
+            <Entry Label="Temperature" DataSourceName="interia-london-current-temperature"/>
+            <Entry Label="Atmospheric Pressure" DataSourceName="interia-london-current-pressure"/>
+            <Entry Label="Wind Speed" DataSourceName="interia-london-current-wind-speed"/>
         </Section>
     </Tab>
 </InterfaceDefinition>

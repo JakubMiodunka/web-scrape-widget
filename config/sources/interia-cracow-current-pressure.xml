@@ -1,4 +1,5 @@
-<DataSource Name="interia-cracow-current-pressure" RefreshRate="PT1H">
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSource Name="interia-cracow-current-pressure" DataUnit="hPa" RefreshRate="PT1H">
     <WebsiteElement>
         <Website Url="https://pogoda.interia.pl/prognoza-szczegolowa-krakow,cId,4970"/>
         <HtmlNode XPath="/html/body/div[4]/section/div[2]/div[1]/div/ul/li[3]/span"/>

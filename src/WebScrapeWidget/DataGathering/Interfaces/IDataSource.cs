@@ -12,6 +12,8 @@ public interface IDataSource
     string Name { get; }
     bool WasDataGathered { get; }
     string GatheredData { get; }
+
+    string DataUnit { get; }
     TimeSpan RefreshRate { get; }
     DateTime LastRefreshTimestamp { get; }
 

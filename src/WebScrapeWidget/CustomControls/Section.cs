@@ -6,7 +6,8 @@ namespace WebScrapeWidget.CustomControls;
 
 /// <summary>
 /// Custom WPF control build around System.Windows.Controls.GroupBox.
-/// Its content contains key-value entries.
+/// It displays content of contained instances of WebScrapeWidget.CustomControls.Entry class
+/// arranged in table-like structure.
 /// </summary>
 public sealed class Section : GroupBox
 {

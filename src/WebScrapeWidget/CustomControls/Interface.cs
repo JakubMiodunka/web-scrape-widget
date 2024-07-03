@@ -6,9 +6,9 @@ using WebScrapeWidget.Utilities;
 
 namespace WebScrapeWidget.CustomControls;
 
-// TODO: Think about better name for this class.
 /// <summary>
 /// Custom WPF control build around System.Windows.Controls.TabControl.
+/// Contains the main part of application interface.
 /// </summary>
 public class Interface : TabControl
 {

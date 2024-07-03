@@ -14,6 +14,10 @@ namespace WebScrapeWidget.CustomControls;
 /// </summary>
 public sealed class Entry : IDataSourceSubscriber
 {
+    #region Constants
+    private const string NotInitialisedTextBlockContent = "-";
+    #endregion
+
     #region Properties
     public readonly TextBlock Label;
     public readonly TextBlock Value;
@@ -107,10 +111,10 @@ public sealed class Entry : IDataSourceSubscriber
         Label.Text = label;
 
         Value = new TextBlock();
-        Value.Text = "-";
+        Value.Text = NotInitialisedTextBlockContent;
 
         Timestamp = new TextBlock();
-        Timestamp.Text = "-";
+        Timestamp.Text = NotInitialisedTextBlockContent;
 
         _dataSourceName = dataSourceName;
         DataSourcesRepository.Instance.AddSubscriberToSource(this, _dataSourceName);
@@ -124,6 +128,11 @@ public sealed class Entry : IDataSourceSubscriber
     /// <param name="gatheredData">
     /// Data, with which entry value shall be updated.
     /// </param>
+    /// <param name="dataUnit">
+    /// Unit, in which delivered data contained by subscribed source is presented.
+    /// It will be added as suffix to value presented by the entry.
+    /// If empty string will be provided, suffix won't be added.
+    /// </param>
     /// <param name="refreshTimestamp">
     /// Timestamp, when data contained by subscribed data source was refreshed.
     /// </param>
@@ -133,7 +142,7 @@ public sealed class Entry : IDataSourceSubscriber
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown ,when value of at least one argument will be considered as invalid.
     /// </exception>
-    public void Notify(string gatheredData, DateTime refreshTimestamp)
+    public void Notify(string gatheredData, string dataUnit, DateTime refreshTimestamp)
     {
         if (gatheredData is null)
         {
@@ -149,6 +158,13 @@ public sealed class Entry : IDataSourceSubscriber
             throw new ArgumentOutOfRangeException(argumentName, gatheredData, ErrorMessage);
         }
 
+        if (dataUnit is null)
+        {
+            string argumentName = nameof(dataUnit);
+            const string ErrorMessage = "Provided data unit is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
         if (refreshTimestamp > DateTime.Now)
         {
             string argumentName = nameof(refreshTimestamp);
@@ -156,7 +172,7 @@ public sealed class Entry : IDataSourceSubscriber
             throw new ArgumentOutOfRangeException(argumentName, refreshTimestamp, errorMessage);
         }
 
-        Value.Text = gatheredData;
+        Value.Text = (dataUnit == string.Empty) ? gatheredData : $"{gatheredData} {dataUnit}";
         Timestamp.Text = refreshTimestamp.ToString("s");
     }
     #endregion

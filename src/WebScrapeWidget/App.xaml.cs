@@ -10,12 +10,17 @@ namespace WebScrapeWidget
     //TODO: Doc-string.
     public partial class App : Application
     {
-        //TODO: Doc-string.
-        private async void ApplicationStartup(object sender, StartupEventArgs eventData)
+        /// <summary>
+        /// Application startup procedure.
+        /// </summary>
+        /// <param name="sender">
+        /// The object, that raised the event.
+        /// </param>
+        /// <param name="eventArguments">
+        /// Arguments of raised event.
+        /// </param>
+        private async void ApplicationStartup(object sender, StartupEventArgs eventArguments)
         {
-            MainWindow = new MainWindow();
-            MainWindow.Show();
-
             await DataSourcesRepository.Instance.StartPeriodicDataGathering();
         }
     }

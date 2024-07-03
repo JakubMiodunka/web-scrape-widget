@@ -18,7 +18,7 @@ namespace WebScrapeWidget
 
             InitializeComponent();
 
-            DataScrollViewer.Content = _interface;
+            MainUserInterface.Content = _interface;
         }
 
         //TODO: Doc-string.

@@ -38,6 +38,7 @@ public abstract class DataSource
             return _gatheredData;
         }
     }
+    public string DataUnit { get; init; }
     public TimeSpan RefreshRate { get; init; }
     public DateTime LastRefreshTimestamp { get; protected set; }
 
@@ -52,6 +53,9 @@ public abstract class DataSource
     /// <param name="name">
     /// Unique name of represented data source.
     /// </param>
+    /// <param name="dataUnit">
+    /// Unit, in which data gathered from source is presented.
+    /// </param>
     /// <param name="refreshRate">
     /// Refresh rate of data gathered from source expressed in time period.
     /// Shall be not smaller than 1 second.
@@ -62,7 +66,7 @@ public abstract class DataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when provided data source name is already occupied. 
     /// </exception>
-    protected DataSource(string name, TimeSpan refreshRate)
+    protected DataSource(string name, string dataUnit, TimeSpan refreshRate)
     {
         if (name is null)
         {
@@ -85,6 +89,13 @@ public abstract class DataSource
             throw new ArgumentOutOfRangeException(argumentName, name, errorMessage);
         }
 
+        if (dataUnit is null)
+        {
+            string argumentName = nameof(dataUnit);
+            const string ErrorMessage = "Provided data unit is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
         if (refreshRate < new TimeSpan(0, 0, 1))
         {
             string argumentName = nameof(refreshRate);
@@ -95,6 +106,7 @@ public abstract class DataSource
         s_occupiedNames.Add(name);
         
         Name = name;
+        DataUnit = dataUnit;
         RefreshRate = refreshRate;
         LastRefreshTimestamp = DateTime.MinValue;
 
@@ -139,7 +151,7 @@ public abstract class DataSource
     /// </summary>
     protected void NotifySubscribers()
     {
-        _subscribers.ForEach(subscriber => subscriber.Notify(GatheredData, LastRefreshTimestamp));
+        _subscribers.ForEach(subscriber => subscriber.Notify(GatheredData, DataUnit, LastRefreshTimestamp));
     }
     #endregion
 }
