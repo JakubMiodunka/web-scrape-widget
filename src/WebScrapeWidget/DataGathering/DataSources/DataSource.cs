@@ -2,8 +2,8 @@
 
 using WebScrapeWidget.DataGathering.Interfaces;
 
-namespace WebScrapeWidget.DataGathering.Models;
 
+namespace WebScrapeWidget.DataGathering.DataSources;
 
 /// <summary>
 /// Base class for all more specific types of data sources.

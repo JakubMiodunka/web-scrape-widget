@@ -43,39 +43,60 @@ public sealed class CultureContext : IDisposable
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
-    public CultureContext(string cultureName)
+    public static CultureContext FromCultureName(string swapCultureName)
     {
-        if (cultureName is null)
+        if (swapCultureName is null)
         {
-            string argumentName = nameof(cultureName);
+            string argumentName = nameof(swapCultureName);
             const string ErrorMessage = "Provided culture name is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (cultureName == string.Empty)
+        if (swapCultureName == string.Empty)
         {
-            string argumentName = nameof(cultureName);
+            string argumentName = nameof(swapCultureName);
             const string ErrorMessage = "Provided culture name is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, cultureName, ErrorMessage);
+            throw new ArgumentOutOfRangeException(argumentName, swapCultureName, ErrorMessage);
         }
 
-        CultureInfo swappedCulture;
+        CultureInfo swapCulture;
 
         try
         {
-            swappedCulture = new CultureInfo(cultureName);
+            swapCulture = new CultureInfo(swapCultureName);
         }
         catch (CultureNotFoundException)
         {
-            string argumentName = nameof(cultureName);
-            string errorMessage = $"Provided culture name is invalid: {cultureName}";
-            throw new ArgumentOutOfRangeException(argumentName, cultureName, errorMessage);
+            string argumentName = nameof(swapCultureName);
+            string errorMessage = $"Provided culture name is invalid: {swapCultureName}";
+            throw new ArgumentOutOfRangeException(argumentName, swapCultureName, errorMessage);
+        }
+
+        return new CultureContext(swapCulture);
+    }
+
+    /// <summary>
+    /// Creates a new culture context and swaps the culture used by the thread.
+    /// </summary>
+    /// <param name="swapCulture">
+    /// Culture, to which thread culture shall be swapped.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    public CultureContext(CultureInfo swapCulture)
+    {
+        if (swapCulture is null)
+        {
+            string argumentName = nameof(swapCulture);
+            const string ErrorMessage = "Provided culture is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
         OriginalCulture = CultureInfo.CurrentCulture;
-        SwappedCulture = swappedCulture;
+        SwappedCulture = swapCulture;
 
-        CultureInfo.CurrentCulture = swappedCulture;
+        CultureInfo.CurrentCulture = SwappedCulture;
     }
     #endregion
 

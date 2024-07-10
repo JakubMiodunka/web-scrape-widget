@@ -4,7 +4,7 @@ using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.Utilities;
 
 
-namespace WebScrapeWidget.DataGathering.Models;
+namespace WebScrapeWidget.DataGathering.DataSources;
 
 /// <summary>
 /// Special data source, which monitors the usage of machine CPU.
@@ -33,7 +33,7 @@ public sealed class ProcessorUsage : DataSource, IDataSource
     {
         
         // Validity of values passed to constructor of PerformanceCounter depends on currently used culture.
-        using (var cultureContext = new CultureContext("en-US"))
+        using (var cultureContext = CultureContext.FromCultureName("en-US"))
         {
             _performanceCounter = new PerformanceCounter("Processor Information", "% Processor Utility", "_Total");
         }

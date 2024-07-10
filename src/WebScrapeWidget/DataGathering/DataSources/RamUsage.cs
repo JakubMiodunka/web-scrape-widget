@@ -4,13 +4,13 @@ using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.Utilities;
 
 
-namespace WebScrapeWidget.DataGathering.Models;
+namespace WebScrapeWidget.DataGathering.DataSources;
 
 /// <summary>
 /// Special data source, which monitors the usage of machine RAM.
 /// </summary>
 /// <remarks>
-/// Currently not fully accurate to WIndows Tass manager (divination: approx. +4%).
+/// Currently not fully accurate to WIndows Tass manager (divination: from +1% to +4%).
 /// </remarks>
 public sealed class RamUsage : DataSource, IDataSource
 {
@@ -33,7 +33,7 @@ public sealed class RamUsage : DataSource, IDataSource
     {
 
         // Validity of values passed to constructor of PerformanceCounter depends on currently used culture.
-        using (var cultureContext = new CultureContext("en-US"))
+        using (var cultureContext = CultureContext.FromCultureName("en-US"))
         {
             _performanceCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
         }

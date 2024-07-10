@@ -16,7 +16,7 @@ namespace WebScrapeWidget
         {
             _interface = Interface.FromFile(AppConfig.Instance.InterfaceDefinitionPath);
 
-            DataSourcesRepository.Instance.RemoveNotSubscribedSources();
+            DataSourcesRepository.Instance.RemoveNotSubscribedDataSources();
 
             InitializeComponent();
 

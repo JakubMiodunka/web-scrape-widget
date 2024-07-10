@@ -8,7 +8,7 @@ using WebScrapeWidget.DataGathering.Interfaces;
 using HtmlAgilityPack;
 
 
-namespace WebScrapeWidget.DataGathering.Models;
+namespace WebScrapeWidget.DataGathering.DataSources;
 
 /// <summary>
 /// Representation of website element, which can be scraped to gather necessary data.

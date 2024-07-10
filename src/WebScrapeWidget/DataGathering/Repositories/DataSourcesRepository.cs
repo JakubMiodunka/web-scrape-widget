@@ -3,8 +3,8 @@
 using System.Data;
 using System.IO;
 
+using WebScrapeWidget.DataGathering.DataSources;
 using WebScrapeWidget.DataGathering.Interfaces;
-using WebScrapeWidget.DataGathering.Models;
 using WebScrapeWidget.Utilities;
 
 
@@ -219,7 +219,7 @@ public sealed class DataSourcesRepository
     /// <summary>
     /// Removes not subscribed data sources from repository.
     /// </summary>
-    public void RemoveNotSubscribedSources()
+    public void RemoveNotSubscribedDataSources()
     {
         _dataSources
             .Where(source => !source.IsSubscribed)
