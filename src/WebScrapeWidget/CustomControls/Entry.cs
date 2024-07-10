@@ -117,7 +117,7 @@ public sealed class Entry : IDataSourceSubscriber
         Timestamp.Text = NotInitialisedTextBlockContent;
 
         _dataSourceName = dataSourceName;
-        DataSourcesRepository.Instance.AddSubscriberToSource(this, _dataSourceName);
+        DataSourcesRepository.Instance.AddSubscriberToDataSource(this, _dataSourceName);
     }
     #endregion
 

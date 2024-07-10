@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <InterfaceDefinition>
+    <Tab Name="PC Performance">
+        <Section Name="Resources">
+            <Entry Label="Processor Usage" DataSourceName="processor-usage"/>
+            <Entry Label="Memory Usage" DataSourceName="ram-usage"/>
+        </Section>
+    </Tab>
     <Tab Name="Economy">
         <Section Name="Currencies Exchange Rates">
             <Entry Label="PLN/USD" DataSourceName="nbp-pln-usd"/>
@@ -19,4 +25,5 @@
             <Entry Label="Wind Speed" DataSourceName="interia-london-current-wind-speed"/>
         </Section>
     </Tab>
+    
 </InterfaceDefinition>

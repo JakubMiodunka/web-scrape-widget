@@ -41,6 +41,14 @@ public abstract class DataSource
     public string DataUnit { get; init; }
     public TimeSpan RefreshRate { get; init; }
     public DateTime LastRefreshTimestamp { get; protected set; }
+    public bool IsSubscribed
+    {
+        get
+        {
+            return _subscribers.Any();
+        }
+    }
+
 
     protected string? _gatheredData;
     protected List<IDataSourceSubscriber> _subscribers;

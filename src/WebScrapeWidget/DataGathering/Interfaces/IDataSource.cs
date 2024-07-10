@@ -12,10 +12,10 @@ public interface IDataSource
     string Name { get; }
     bool WasDataGathered { get; }
     string GatheredData { get; }
-
     string DataUnit { get; }
     TimeSpan RefreshRate { get; }
     DateTime LastRefreshTimestamp { get; }
+    bool IsSubscribed { get; }
 
     /// <summary>
     /// Triggers the process of gathering data from invoked data source.

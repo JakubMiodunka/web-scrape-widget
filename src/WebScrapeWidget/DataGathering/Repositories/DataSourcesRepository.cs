@@ -43,7 +43,7 @@ public sealed class DataSourcesRepository
     #region Properties
     public readonly string DirectoryPath;
     
-    private readonly IDataSource[] _dataSources;
+    private readonly List<IDataSource> _dataSources;
     #endregion
 
     #region Class instantiation
@@ -88,7 +88,22 @@ public sealed class DataSourcesRepository
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
         DirectoryPath = directoryPath;
-        _dataSources = CreateDataSources(recursiveSearch);
+        _dataSources = new List<IDataSource>();
+
+        _dataSources.AddRange(CreateSpecialDataSources());
+        _dataSources.AddRange(CreateDataSources(recursiveSearch));
+    }
+
+    /// <summary>
+    /// Creates special data sources.
+    /// </summary>
+    /// <returns></returns>
+    private IDataSource[] CreateSpecialDataSources()
+    {
+        var processorUsage = new ProcessorUsage("processor-usage", TimeSpan.FromSeconds(1));
+        var ramUsage = new RamUsage("ram-usage", TimeSpan.FromSeconds(1));
+
+        return [processorUsage, ramUsage];
     }
 
     /// <summary>
@@ -187,7 +202,7 @@ public sealed class DataSourcesRepository
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when repository does not contain data source with specified name. 
     /// </exception>
-    public void AddSubscriberToSource(IDataSourceSubscriber newSubscriber, string dataSourceName)
+    public void AddSubscriberToDataSource(IDataSourceSubscriber newSubscriber, string dataSourceName)
     {
         if (!ContainsDataSource(dataSourceName))
         {
@@ -199,6 +214,17 @@ public sealed class DataSourcesRepository
             .Where(dataSource => dataSource.Name == dataSourceName)
             .First()
             .AddSubscriber(newSubscriber);
+    }
+    
+    /// <summary>
+    /// Removes not subscribed data sources from repository.
+    /// </summary>
+    public void RemoveNotSubscribedSources()
+    {
+        _dataSources
+            .Where(source => !source.IsSubscribed)
+            .ToList()
+            .ForEach(source => _dataSources.Remove(source));
     }
     #endregion
 }

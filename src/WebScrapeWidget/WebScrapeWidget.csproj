@@ -9,9 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataGathering\Models\" />
     <Folder Include="DataGathering\Repositories\" />
-    <Folder Include="Utilities\" />
   </ItemGroup>
 
   <ItemGroup>
