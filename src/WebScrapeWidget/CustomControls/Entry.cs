@@ -22,8 +22,6 @@ public sealed class Entry : IDataSourceSubscriber
     public readonly TextBlock Label;
     public readonly TextBlock Value;
     public readonly TextBlock Timestamp;
-
-    private readonly string _dataSourceName;
     #endregion
 
     #region Class instantiation
@@ -116,8 +114,7 @@ public sealed class Entry : IDataSourceSubscriber
         Timestamp = new TextBlock();
         Timestamp.Text = NotInitialisedTextBlockContent;
 
-        _dataSourceName = dataSourceName;
-        DataSourcesRepository.Instance.AddSubscriberToDataSource(this, _dataSourceName);
+        DataSourcesRepository.Instance.AddSubscriberToDataSource(this, dataSourceName);
     }
     #endregion
 

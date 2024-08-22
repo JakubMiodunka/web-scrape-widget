@@ -10,7 +10,7 @@ namespace WebScrapeWidget.DataGathering.DataSources;
 /// Special data source, which monitors the usage of machine RAM.
 /// </summary>
 /// <remarks>
-/// Currently not fully accurate to WIndows Tass manager (divination: from +1% to +4%).
+/// Currently not fully accurate to Windows Task manager (divination: from +1% to +4%).
 /// </remarks>
 public sealed class RamUsage : DataSource, IDataSource
 {
