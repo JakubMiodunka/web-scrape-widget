@@ -5,6 +5,7 @@ using System.Windows.Controls;
 
 using WebScrapeWidget.DataGathering.Repositories;
 using WebScrapeWidget.DataGathering.Interfaces;
+using System.Text;
 
 
 namespace WebScrapeWidget.CustomControls;
@@ -24,7 +25,7 @@ public sealed class Entry : IDataSourceSubscriber
     public readonly TextBlock Timestamp;
     #endregion
 
-    #region Class instantiation
+    #region Class instantiation 
     /// <summary>
     /// Creates a new entry corresponding to definition
     /// contained by provided XML element.
@@ -114,7 +115,9 @@ public sealed class Entry : IDataSourceSubscriber
         Timestamp = new TextBlock();
         Timestamp.Text = NotInitialisedTextBlockContent;
 
-        DataSourcesRepository.Instance.AddSubscriberToDataSource(this, dataSourceName);
+        DataSourcesRepository.Instance
+            .GetDataSource(dataSourceName)
+            .AddSubscriber(this);
     }
     #endregion
 

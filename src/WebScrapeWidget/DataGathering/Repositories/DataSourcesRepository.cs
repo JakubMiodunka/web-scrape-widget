@@ -175,45 +175,40 @@ public sealed class DataSourcesRepository
 
     #region Interactions
     /// <summary>
-    /// Checks if data source with provided identifier is contained by the repository.
+    /// Searches through repository for data source with specified name.
     /// </summary>
-    /// <param name="name">
-    /// Data source name, which shall be checked.
+    /// <param name="dataSourceName">
+    /// Name of data source, which shall be returned.
     /// </param>
     /// <returns>
-    /// True or false, depending on check result.
+    /// Data source contained by the repository, with specified name.
     /// </returns>
-    public bool ContainsDataSource(string name)
-    {
-        return _dataSources
-            .Where(dataSource => dataSource.Name == name)
-            .Any();
-    }
-
-    /// <summary>
-    /// Adds provided object to a subscribers of specified data source.
-    /// </summary>
-    /// <param name="newSubscriber">
-    /// Object, which shall be added to subscribers list of specified data source.
-    /// </param>
-    /// <param name="dataSourceName">
-    /// Name of data source, to which subscribers list provided object shall be added.
-    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when repository does not contain data source with specified name. 
     /// </exception>
-    public void AddSubscriberToDataSource(IDataSourceSubscriber newSubscriber, string dataSourceName)
+    public IDataSource GetDataSource(string dataSourceName)
     {
-        if (!ContainsDataSource(dataSourceName))
+        if (dataSourceName is null)
+        {
+            string argumentName = nameof(dataSourceName);
+            const string ErrorMessage = "Provided data source name is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        try
+        {
+            return _dataSources
+                .Where(dataSource => dataSource.Name == dataSourceName)
+                .First();
+        }
+        catch (InvalidOperationException)
         {
             string errorMessage = $"Data source with provided name does not exist in repository: {dataSourceName}";
             throw new ArgumentOutOfRangeException(errorMessage);
         }
-
-        _dataSources
-            .Where(dataSource => dataSource.Name == dataSourceName)
-            .First()
-            .AddSubscriber(newSubscriber);
     }
     
     /// <summary>
