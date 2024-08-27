@@ -56,8 +56,14 @@
         <xs:element name="NodeContentFilter" type="NodeContentFilterType"/>
     </xs:sequence>
 </xs:complexType>
+<xs:complexType name="DescriptionType">
+    <xs:simpleContent>
+        <xs:extension base="xs:string"/>
+    </xs:simpleContent>
+</xs:complexType>
 <xs:complexType name="DataSourceType">
     <xs:sequence>
+        <xs:element name="Description" type="DescriptionType"/>
         <xs:element name="WebsiteElement" type="WebsiteElementType"/>
     </xs:sequence>
     <xs:attribute ref="Name" use="required"/>

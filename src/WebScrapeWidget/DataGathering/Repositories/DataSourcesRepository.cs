@@ -88,10 +88,7 @@ public sealed class DataSourcesRepository
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
         DirectoryPath = directoryPath;
-        _dataSources = new List<IDataSource>();
-
-        _dataSources.AddRange(CreateSpecialDataSources());
-        _dataSources.AddRange(CreateDataSources(recursiveSearch));
+        _dataSources = [.. CreateSpecialDataSources(), .. CreateDataSources(recursiveSearch)];
     }
 
     /// <summary>
@@ -101,7 +98,7 @@ public sealed class DataSourcesRepository
     private IDataSource[] CreateSpecialDataSources()
     {
         var processorUsage = new ProcessorUsage("processor-usage", TimeSpan.FromSeconds(1));
-        var ramUsage = new RamUsage("ram-usage", TimeSpan.FromSeconds(1));
+        var ramUsage = new RamUsage("ram-usage", TimeSpan.FromSeconds(3));
 
         return [processorUsage, ramUsage];
     }

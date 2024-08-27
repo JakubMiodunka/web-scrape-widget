@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DataSource Name="interia-cracow-current-temperature" DataUnit="&#176;C" RefreshRate="PT1H">
+    <Description>
+        Current temperature in Cracow Poland.
+        Data originates from interia.pl portal.
+    </Description>
     <WebsiteElement>
         <Website Url="https://pogoda.interia.pl/prognoza-szczegolowa-krakow,cId,4970"/>
         <HtmlNode XPath="/html/body/div[4]/section/div[2]/div[1]/div/div[3]/div"/>

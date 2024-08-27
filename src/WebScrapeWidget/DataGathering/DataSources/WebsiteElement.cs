@@ -73,6 +73,11 @@ public sealed class WebsiteElement : DataSource, IDataSource
             .Select(attribute => attribute.Value)
             .First();
 
+        string description = dataSourceElement
+            .Elements("Description")
+            .First()
+            .Value;
+
         string dataUnit = dataSourceElement
             .Attributes("DataUnit")
             .Select(attribute => attribute.Value)
@@ -108,7 +113,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
             .Select(value => new Regex(value))
             .First();
 
-        return new WebsiteElement(name, dataUnit, refreshRate, websiteUrl, htmlNodeXPath, nodeContentFilter);
+        return new WebsiteElement(name, description, dataUnit, refreshRate, websiteUrl, htmlNodeXPath, nodeContentFilter);
     }
 
     /// <summary>
@@ -116,6 +121,9 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// </summary>
     /// <param name="name">
     /// Unique name of represented data source.
+    /// </param>
+    /// <param name="description">
+    /// Description of created data source.
     /// </param>
     /// <param name="dataUnit">
     /// Unit, in which data gathered from source is presented.
@@ -139,8 +147,8 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
-    public WebsiteElement(string name, string dataUnit, TimeSpan refreshRate, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
-        : base(name, dataUnit, refreshRate)
+    public WebsiteElement(string name, string description, string dataUnit, TimeSpan refreshRate, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
+        : base(name, description, dataUnit, refreshRate)
     {
         if (websiteUrl is null)
         {

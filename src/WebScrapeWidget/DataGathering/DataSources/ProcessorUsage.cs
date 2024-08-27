@@ -14,6 +14,10 @@ namespace WebScrapeWidget.DataGathering.DataSources;
 /// </remarks>
 public sealed class ProcessorUsage : DataSource, IDataSource
 {
+    #region Constants
+    private const string DataSourceDescription = "Current CPU usage.";
+    #endregion
+
     #region Properties
     private readonly PerformanceCounter _performanceCounter;
     #endregion
@@ -29,7 +33,7 @@ public sealed class ProcessorUsage : DataSource, IDataSource
     /// Refresh rate of data gathered from source expressed in time period.
     /// Shall be not smaller than 1 second.
     /// </param>
-    public ProcessorUsage(string name, TimeSpan refreshRate) : base(name, "%", refreshRate)
+    public ProcessorUsage(string name, TimeSpan refreshRate) : base(name, DataSourceDescription, "%", refreshRate)
     {
         
         // Validity of values passed to constructor of PerformanceCounter depends on currently used culture.

@@ -182,21 +182,32 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
+        const string Indentation = "  ";
+
+        string[] descriptionLines = dataSource.Description
+            .Split('\n')
+            .Select(line => $"{Indentation}{line}")
+            .ToArray();
+
         var toolTipContent = new StringBuilder();
 
-        toolTipContent.AppendLine("Data source:");
-        toolTipContent.AppendLine($"\tName: {dataSource.Name}");
-        toolTipContent.AppendLine($"\tRefresh rate: {dataSource.RefreshRate}");
+        toolTipContent.AppendLine($"Name:");
+        toolTipContent.AppendLine($"{Indentation}{dataSource.Name}");
+        toolTipContent.AppendLine($"Description:");
+        toolTipContent.AppendLine($"{string.Join('\n', descriptionLines)}");
+        toolTipContent.AppendLine($"Refresh rate:");
+        toolTipContent.AppendLine($"{Indentation}{dataSource.RefreshRate}");
+        toolTipContent.AppendLine($"Last refresh:");
 
         if (dataSource.LastRefreshTimestamp == DateTime.MinValue)
         {
-            toolTipContent.AppendLine($"\tLast refresh: {UnknownValueIndicator}");
+            toolTipContent.Append($"{Indentation}{UnknownValueIndicator}");
         }
         else
         {
-            toolTipContent.AppendLine($"\tLast refresh: {dataSource.LastRefreshTimestamp.ToString("s")}");
+            toolTipContent.Append($"{Indentation}{dataSource.LastRefreshTimestamp.ToString("s")}");
         }
-
+      
         ToolTip = toolTipContent.ToString();
     }
     #endregion

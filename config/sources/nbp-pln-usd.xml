@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DataSource Name="nbp-pln-usd" DataUnit="" RefreshRate="PT1H">
+    <Description>
+        Current PLN/USD exchange rate published by National Bank of Poland.
+    </Description>
     <WebsiteElement>
         <Website Url="https://nbp.pl/statystyka-i-sprawozdawczosc/kursy/tabela-a/"/>
         <HtmlNode XPath="/html/body/main/div/section/div/figure/table/tbody/tr[2]/td[3]"/>

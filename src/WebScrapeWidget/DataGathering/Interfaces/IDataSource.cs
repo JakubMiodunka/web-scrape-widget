@@ -10,6 +10,7 @@ namespace WebScrapeWidget.DataGathering.Interfaces;
 public interface IDataSource
 {
     string Name { get; }
+    string Description { get; }
     bool WasDataGathered { get; }
     string GatheredData { get; }
     string DataUnit { get; }

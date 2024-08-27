@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DataSource Name="interia-london-current-temperature" DataUnit="&#176;C" RefreshRate="PT1H">
+    <Description>
+        Current temperature in London UK.
+        Data originates from interia.pl portal.
+    </Description>
     <WebsiteElement>
         <Website Url="https://pogoda.interia.pl/prognoza-szczegolowa-londyn,cId,62348"/>
         <HtmlNode XPath="/html/body/div[4]/section/div[2]/div[1]/div/div[3]/div"/>
