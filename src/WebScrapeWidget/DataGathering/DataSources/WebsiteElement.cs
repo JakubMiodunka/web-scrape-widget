@@ -208,7 +208,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="InvalidOperationException">
     /// Thrown, when HTTP client is not initialized.
     /// </exception>
-    public async Task GatherData()
+    public new async Task GatherData()
     {
         if (s_httpClient is null)
         {

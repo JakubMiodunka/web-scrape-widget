@@ -12,10 +12,6 @@ namespace WebScrapeWidget.CustomControls;
 /// </summary>
 public class Interface : TabControl
 {
-    #region Properties
-    private readonly Tab[] _tabs;
-    #endregion
-
     #region Class instantiation
     /// <summary>
     /// Checks if provided file can be used to obtain
@@ -35,8 +31,8 @@ public class Interface : TabControl
     }
 
     /// <summary>
-    /// Creates a new custom WPF control corresponding to application user interface
-    /// defined within provided file.
+    /// Creates a new custom WPF control corresponding to definition of user interface
+    /// provided within specified file.
     /// </summary>
     /// <param name="filePath">
     /// Path to *.xml file, containing user interface definition.
@@ -63,10 +59,10 @@ public class Interface : TabControl
     }
 
     /// <summary>
-    /// Creates a new custom WPF control corresponding to application user interface
-    /// defined within provided XML element.
+    /// Creates a new custom WPF control corresponding to definition of user interface
+    /// provided within specified XML element.
     /// </summary>
-    /// <param name="InterfaceDefinitionElement">
+    /// <param name="interfaceDefinitionElement">
     /// XML element, containing user interface definition.
     /// </param>
     /// <returns>
@@ -75,16 +71,16 @@ public class Interface : TabControl
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    private static Interface FromXml(XElement InterfaceDefinitionElement)
+    private static Interface FromXml(XElement interfaceDefinitionElement)
     {
-        if (InterfaceDefinitionElement is null)
+        if (interfaceDefinitionElement is null)
         {
-            string argumentName = nameof(InterfaceDefinitionElement);
+            string argumentName = nameof(interfaceDefinitionElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        Tab[] tabs = InterfaceDefinitionElement
+        Tab[] tabs = interfaceDefinitionElement
             .Elements("Tab")
             .Select(Tab.FromXml)
             .ToArray();
@@ -120,9 +116,7 @@ public class Interface : TabControl
             throw new ArgumentException(argumentName, ErrorMessage);
         }
 
-        _tabs = tabs.ToArray();
-
-        _tabs.ToList().ForEach(tab => Items.Add(tab));
+        tabs.ToList().ForEach(tab => Items.Add(tab));
     }
     #endregion
 }

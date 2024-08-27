@@ -50,14 +50,14 @@ public sealed class ProcessorUsage : DataSource, IDataSource
     /// <returns>
     /// Task related to data gathering process.
     /// </returns>
-    public async Task GatherData()
+    public new async Task GatherData()
     {
         await Task.Yield();
 
-        double processorUsadge = Convert.ToDouble(_performanceCounter.NextValue());
-        processorUsadge = Math.Round(processorUsadge);
+        double processorUsage = Convert.ToDouble(_performanceCounter.NextValue());
+        processorUsage = Math.Round(processorUsage);
         
-        _gatheredData = processorUsadge.ToString();
+        _gatheredData = processorUsage.ToString();
         LastRefreshTimestamp = DateTime.Now;
 
         NotifySubscribers();

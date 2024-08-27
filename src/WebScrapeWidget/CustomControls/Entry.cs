@@ -1,31 +1,31 @@
 ﻿// Ignore Spelling: Timestamp
 
-using System.Xml.Linq;
-using System.Windows.Controls;
-
-using WebScrapeWidget.DataGathering.Repositories;
-using WebScrapeWidget.DataGathering.Interfaces;
 using System.Text;
+using System.Windows.Controls;
+using System.Xml.Linq;
+
+using WebScrapeWidget.DataGathering.Interfaces;
+using WebScrapeWidget.DataGathering.Repositories;
 
 
 namespace WebScrapeWidget.CustomControls;
 
 /// <summary>
-/// Container for key-value pair, held within System.Windows.Controls.TextBlock type objects.
+/// Custom WPF control build around System.Windows.Controls.Grid.
+/// Displays details about data contained by subscribed data source.
 /// </summary>
-public sealed class Entry : IDataSourceSubscriber
+internal sealed class Entry : Grid, IDataSourceSubscriber
 {
     #region Constants
-    private const string NotInitialisedTextBlockContent = "-";
+    private const string UnknownValueIndicator = "-";
     #endregion
 
     #region Properties
-    public readonly TextBlock Label;
-    public readonly TextBlock Value;
-    public readonly TextBlock Timestamp;
+    private readonly TextBlock _label;
+    private readonly TextBlock _value;
     #endregion
 
-    #region Class instantiation 
+    #region Class instantiation
     /// <summary>
     /// Creates a new entry corresponding to definition
     /// contained by provided XML element.
@@ -39,7 +39,7 @@ public sealed class Entry : IDataSourceSubscriber
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    public static Entry FromXml(XElement entryElement)
+    internal static Entry FromXml(XElement entryElement)
     {
         if (entryElement is null)
         {
@@ -76,7 +76,7 @@ public sealed class Entry : IDataSourceSubscriber
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown ,when value of at least one argument will be considered as invalid.
     /// </exception>
-    private Entry(string label, string dataSourceName)
+    private Entry(string label, string dataSourceName) : base()
     {
         if (label is null)
         {
@@ -106,18 +106,29 @@ public sealed class Entry : IDataSourceSubscriber
             throw new ArgumentOutOfRangeException(argumentName, dataSourceName, ErrorMessage);
         }
 
-        Label = new TextBlock();
-        Label.Text = label;
+        while (ColumnDefinitions.Count() < 2)
+        {
+            var newColumnDefinition = new ColumnDefinition();
+            ColumnDefinitions.Add(newColumnDefinition);
+        }
+        
+        _label = new TextBlock();
+        _label.Text = label;
+        SetColumn(_label, 0);
+        Children.Add( _label);
 
-        Value = new TextBlock();
-        Value.Text = NotInitialisedTextBlockContent;
+        _value = new TextBlock();
+        _value.TextAlignment = System.Windows.TextAlignment.Right;
+        _value.Text = UnknownValueIndicator;
+        SetColumn(_value, 1);
+        Children.Add( _value);
 
-        Timestamp = new TextBlock();
-        Timestamp.Text = NotInitialisedTextBlockContent;
+        IDataSource dataSource = DataSourcesRepository.Instance
+            .GetDataSource(dataSourceName);
 
-        DataSourcesRepository.Instance
-            .GetDataSource(dataSourceName)
-            .AddSubscriber(this);
+        UpdateToolTip(dataSource);
+
+        dataSource.AddSubscriber(this);
     }
     #endregion
 
@@ -125,55 +136,68 @@ public sealed class Entry : IDataSourceSubscriber
     /// <summary>
     /// Invoked by subscribed data source, when new data will be gathered.
     /// </summary>
-    /// <param name="gatheredData">
-    /// Data, with which entry value shall be updated.
-    /// </param>
-    /// <param name="dataUnit">
-    /// Unit, in which delivered data contained by subscribed source is presented.
-    /// It will be added as suffix to value presented by the entry.
-    /// If empty string will be provided, suffix won't be added.
-    /// </param>
-    /// <param name="refreshTimestamp">
-    /// Timestamp, when data contained by subscribed data source was refreshed.
+    /// <param name="sender">
+    /// Instance of data source, which sends the notification.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown ,when value of at least one argument will be considered as invalid.
-    /// </exception>
-    public void Notify(string gatheredData, string dataUnit, DateTime refreshTimestamp)
+    public void Notify(IDataSource sender)
     {
-        if (gatheredData is null)
+        if (sender is null)
         {
-            string argumentName = nameof(gatheredData);
-            const string ErrorMessage = "Provided data is a null reference:";
+            string argumentName = nameof(sender);
+            const string ErrorMessage = "Provided sender instance is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (gatheredData == string.Empty)
+        if (sender.DataUnit == string.Empty)
         {
-            string argumentName = nameof(gatheredData);
-            const string ErrorMessage = "Provided data is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, gatheredData, ErrorMessage);
+            _value.Text = sender.GatheredData;
+        }
+        else
+        {
+            _value.Text = $"{sender.GatheredData} {sender.DataUnit}";
         }
 
-        if (dataUnit is null)
+        UpdateToolTip(sender);
+    }
+
+    /// <summary>
+    /// Updates the content of control tool tip
+    /// with details about provided data source.
+    /// </summary>
+    /// <param name="dataSource">
+    /// Data source, which will be used to update control tool tip content.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    private void UpdateToolTip(IDataSource dataSource)
+    {
+        if (dataSource is null)
         {
-            string argumentName = nameof(dataUnit);
-            const string ErrorMessage = "Provided data unit is a null reference:";
+            string argumentName = nameof(dataSource);
+            const string ErrorMessage = "Provided data source is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (refreshTimestamp > DateTime.Now)
+        var toolTipContent = new StringBuilder();
+
+        toolTipContent.AppendLine("Data source:");
+        toolTipContent.AppendLine($"\tName: {dataSource.Name}");
+        toolTipContent.AppendLine($"\tRefresh rate: {dataSource.RefreshRate}");
+
+        if (dataSource.LastRefreshTimestamp == DateTime.MinValue)
         {
-            string argumentName = nameof(refreshTimestamp);
-            string errorMessage = $"Provided refresh timestamp is invalid: {refreshTimestamp}";
-            throw new ArgumentOutOfRangeException(argumentName, refreshTimestamp, errorMessage);
+            toolTipContent.AppendLine($"\tLast refresh: {UnknownValueIndicator}");
+        }
+        else
+        {
+            toolTipContent.AppendLine($"\tLast refresh: {dataSource.LastRefreshTimestamp.ToString("s")}");
         }
 
-        Value.Text = (dataUnit == string.Empty) ? gatheredData : $"{gatheredData} {dataUnit}";
-        Timestamp.Text = refreshTimestamp.ToString("s");
+        ToolTip = toolTipContent.ToString();
     }
     #endregion
 }

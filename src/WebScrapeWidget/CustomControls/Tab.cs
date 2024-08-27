@@ -9,13 +9,8 @@ namespace WebScrapeWidget.CustomControls;
 /// Custom WPF control build around System.Windows.Controls.TabItem.
 /// Its content is divided into sections.
 /// </summary>
-public sealed class Tab : TabItem
+internal sealed class Tab : TabItem
 {
-    #region Properties
-    private readonly Section[] _sections;
-    private readonly StackPanel _content;
-    #endregion
-
     #region Class instantiation
     /// <summary>
     /// Creates a new tab corresponding to definition
@@ -30,7 +25,7 @@ public sealed class Tab : TabItem
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    public static Tab FromXml(XElement tabElement)
+    internal static Tab FromXml(XElement tabElement)
     {
         if (tabElement is null)
         {
@@ -101,12 +96,11 @@ public sealed class Tab : TabItem
         }
 
         Header = name;
-        _sections = sections.ToArray();
 
-        _content = new StackPanel();
+        var content = new StackPanel();
+        sections.ToList().ForEach(section => content.Children.Add(section));
 
-        _sections.ToList().ForEach(section => _content.Children.Add(section));
-        AddChild(_content);
+        AddChild(content);
     }
     #endregion
 }

@@ -50,7 +50,7 @@ public sealed class RamUsage : DataSource, IDataSource
     /// <returns>
     /// Task related to data gathering process.
     /// </returns>
-    public async Task GatherData()
+    public new async Task GatherData()
     {
         await Task.Yield();
 

@@ -10,7 +10,7 @@ namespace WebScrapeWidget.DataGathering.DataSources;
 /// It manages the data shared between all instances
 /// of derivative classes and secures their integrity.
 /// </summary>
-public abstract class DataSource
+public abstract class DataSource : IDataSource
 {
     #region Static properties
     private static List<string> s_occupiedNames = new List<string>();
@@ -48,7 +48,6 @@ public abstract class DataSource
             return _subscribers.Any();
         }
     }
-
 
     protected string? _gatheredData;
     protected List<IDataSourceSubscriber> _subscribers;
@@ -155,11 +154,32 @@ public abstract class DataSource
     }
 
     /// <summary>
-    /// Notifies all subscribers about current value of data gathered from data source.
+    /// Notifies all subscribers about new value of data gathered from data source.
     /// </summary>
     protected void NotifySubscribers()
     {
-        _subscribers.ForEach(subscriber => subscriber.Notify(GatheredData, DataUnit, LastRefreshTimestamp));
+        _subscribers.ForEach(subscriber => subscriber.Notify(this));
+    }
+    #endregion
+
+    #region Data gathering
+    /// <summary>
+    /// Dummy implementation of data gathering mechanism of data source.
+    /// Shall be overwritten by derivative classes - non abstract
+    /// implementations of data sources.
+    /// </summary>
+    /// <returns>
+    /// Failed task.
+    /// </returns>
+    /// <exception cref="NotImplementedException">
+    /// Thrown, when derivative class does not implement data gathering mechanism.
+    /// </exception>
+    public async Task GatherData()
+    {
+        const string ErrorMessage = "Data gathering mechanism not implemented:";
+        var exception = new NotImplementedException(ErrorMessage);
+
+        await Task.FromException(exception);
     }
     #endregion
 }

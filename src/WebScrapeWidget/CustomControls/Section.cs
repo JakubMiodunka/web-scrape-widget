@@ -1,21 +1,15 @@
-﻿using System.Xml.Linq;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using System.Xml.Linq;
 
 
 namespace WebScrapeWidget.CustomControls;
 
 /// <summary>
 /// Custom WPF control build around System.Windows.Controls.GroupBox.
-/// It displays content of contained instances of WebScrapeWidget.CustomControls.Entry class
-/// arranged in table-like structure.
+/// Its content is divided into entries.
 /// </summary>
-public sealed class Section : GroupBox
+internal sealed class Section : GroupBox
 {
-    #region Properties
-    private readonly Entry[] _entries;
-    private readonly Grid _content;
-    #endregion
-
     #region Class instantiation
     /// <summary>
     /// Creates a new section corresponding to definition
@@ -30,7 +24,7 @@ public sealed class Section : GroupBox
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    public static Section FromXml(XElement sectionElement)
+    internal static Section FromXml(XElement sectionElement)
     {
         if (sectionElement is null)
         {
@@ -53,39 +47,7 @@ public sealed class Section : GroupBox
     }
 
     /// <summary>
-    /// Generates grid divided into specified number of columns.
-    /// </summary>
-    /// <param name="columns">
-    /// Number of columns, which generated grid shall contain.
-    /// </param>
-    /// <returns>
-    /// New grid divided into specified number of columns.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown ,when value of at least one argument will be considered as invalid.
-    /// </exception>
-    private static Grid GenerateGrid(int columns)
-    {
-        if(columns <= 0)
-        {
-            string argumentName = nameof(columns);
-            string errorMessage = $"Number of grid columns shall be greater than zero: {columns}";
-            throw new ArgumentOutOfRangeException(argumentName, columns, errorMessage);
-        }
-        
-        var grid = new Grid();
-
-        while (grid.ColumnDefinitions.Count() < columns)
-        {
-            var newColumnDefinition = new ColumnDefinition();
-            grid.ColumnDefinitions.Add(newColumnDefinition);
-        }
-
-        return grid;
-    }
-
-    /// <summary>
-    /// Creates a new section instance..
+    /// Creates a new section instance.
     /// </summary>
     /// <param name="name">
     /// Name, which shall be assigned to created section.
@@ -133,59 +95,11 @@ public sealed class Section : GroupBox
         }
 
         Header = name;
-        _entries = entries.ToArray();
 
-        _content = GenerateGrid(3);
+        var content = new StackPanel();
+        entries.ToList().ForEach(entry => content.Children.Add(entry));
 
-        _entries.ToList().ForEach(AddEntry);
-        AddChild(_content);
-    }
-
-    /// <summary>
-    /// Adds a new row to section grid.
-    /// </summary>
-    /// <returns>
-    /// Index of added row.
-    /// </returns>
-    private int AddRow()
-    {
-        var rowDefinition = new RowDefinition();
-        _content.RowDefinitions.Add(rowDefinition);
-
-        return _content.RowDefinitions.Count() - 1;
-    }
-
-    /// <summary>
-    /// Adds provided entry to content of the section.
-    /// </summary>
-    /// <param name="entry">
-    /// Entry, which shall be added to section content.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
-    private void AddEntry(Entry entry)
-    {
-        if (entry is null)
-        {
-            string argumentName = nameof(entry);
-            const string ErrorMessage = "Provided entry is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        int rowIndex = AddRow();
-
-        Grid.SetRow(entry.Label, rowIndex);
-        Grid.SetColumn(entry.Label, 0);
-        _content.Children.Add(entry.Label);
-
-        Grid.SetRow(entry.Value, rowIndex);
-        Grid.SetColumn(entry.Value, 1);
-        _content.Children.Add(entry.Value);
-
-        Grid.SetRow(entry.Timestamp, rowIndex);
-        Grid.SetColumn(entry.Timestamp, 2);
-        _content.Children.Add(entry.Timestamp);
+        AddChild(content);
     }
     #endregion
 }
