@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppConfig>
+    <ErrorReportsStorage Path="..\..\..\..\..\deb"/>
+    <DataSourcesStorage Path="..\..\..\..\..\cfg\sources" RecursiveSearch="disabled"/>
+    <InterfaceDefinition Path="..\..\..\..\..\cfg\interface_definition.xml"/>
+</AppConfig>

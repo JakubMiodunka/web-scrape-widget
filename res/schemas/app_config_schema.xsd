@@ -18,6 +18,9 @@
 </xs:attribute>
 
 <!-- Complex Types-->
+<xs:complexType name="ErrorReportsStorageType">
+    <xs:attribute ref="Path" use="required"/>
+</xs:complexType>
 <xs:complexType name="DataSourcesStorageType">
     <xs:attribute ref="Path" use="required"/>
     <xs:attribute ref="RecursiveSearch" use="required"/>
@@ -27,6 +30,7 @@
 </xs:complexType>
 <xs:complexType name="AppConfigType">
     <xs:sequence>
+        <xs:element name="ErrorReportsStorage" type="ErrorReportsStorageType"/>
         <xs:element name="DataSourcesStorage" type="DataSourcesStorageType"/>
         <xs:element name="InterfaceDefinition" type="InterfaceDefinitionType"/>
     </xs:sequence>

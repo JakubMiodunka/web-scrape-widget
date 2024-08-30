@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<DataSource Name="nbp-pln-usd" DataUnit="" RefreshRate="PT1H">
+<DataSource Name1="nbp-pln-usd" DataUnit="" RefreshRate="PT1H">
     <Description>
         Current PLN/USD exchange rate published by National Bank of Poland.
     </Description>

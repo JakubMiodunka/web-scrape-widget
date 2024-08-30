@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1">
+    <!-- Attributes-->
+    <xs:attribute name="Timestamp">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:pattern value="\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\dZ"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="Type">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="Class">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="Method">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+
+    <!-- Complex Types-->
+    <xs:complexType name="SourceType">
+        <xs:attribute ref="Class" use="required"/>
+        <xs:attribute ref="Method" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ExceptionType">
+        <xs:sequence>
+            <xs:element name="Source" type="SourceType"/>
+            <xs:element name="Message" type="xs:string"/>
+            <xs:element name="StackTrace" type="xs:string"/>
+            <xs:element name="InnerException" type="InnerExceptionType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="InnerExceptionType">
+        <xs:sequence>
+            <xs:element name="Exception" type="ExceptionType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ErrorReportType">
+        <xs:sequence>
+            <xs:element name="Exception" type="ExceptionType"/>
+        </xs:sequence>
+        <xs:attribute ref="Timestamp" use="required"/>
+    </xs:complexType>
+
+    <!-- Elements-->
+    <xs:element name="ErrorReport" type="ErrorReportType"/>
+</xs:schema>

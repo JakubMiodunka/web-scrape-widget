@@ -12,7 +12,7 @@ namespace WebScrapeWidget;
 public sealed class AppConfig
 {
     #region Singleton
-    private const string AppConfigFilePath = @"..\..\..\..\..\config\app_config.xml";
+    private const string AppConfigFilePath = @"..\..\..\..\..\cfg\app_config.xml";
     public static AppConfig Instance
     {
         get
@@ -30,6 +30,7 @@ public sealed class AppConfig
     #endregion
 
     #region Properties
+    public readonly string ErrorReportsStorage;
     public readonly string DataSourcesStorage;
     public readonly bool DataSourcesStorageRecursiveSearch;
     public readonly string InterfaceDefinitionPath;
@@ -100,6 +101,12 @@ public sealed class AppConfig
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
+        string errorReportsStorage = appConfigElement
+            .Elements("ErrorReportsStorage")
+            .Attributes("Path")
+            .Select(attribute => attribute.Value)
+            .First();
+
         XElement dataSourcesStorageElement = appConfigElement
             .Elements("DataSourcesStorage")
             .First();
@@ -121,12 +128,15 @@ public sealed class AppConfig
             .Select(attribute => attribute.Value)
             .First();
 
-        return new AppConfig(dataSourcesStorage, dataSourcesStorageRecursiveSearch, interfaceDefinitionPath);
+        return new AppConfig(errorReportsStorage, dataSourcesStorage, dataSourcesStorageRecursiveSearch, interfaceDefinitionPath);
     }
 
     /// <summary>
     /// Creates a new container for program configuration values.
     /// </summary>
+    /// <param name="errorReportsStorage">
+    /// Path to directory, where error report files shall be saved.
+    /// </param>
     /// <param name="dataSourcesStorage">
     /// Path to directory, where files containing data sources definitions are stored.
     /// </param>
@@ -136,15 +146,15 @@ public sealed class AppConfig
     /// <param name="interfaceDefinitionPath">
     /// Path to *.xml file, which content defines the appearance of application interface.
     /// </param>
-    private AppConfig(string dataSourcesStorage, bool dataSourcesStorageRecursiveSearch, string interfaceDefinitionPath)
+    private AppConfig(string errorReportsStorage, string dataSourcesStorage, bool dataSourcesStorageRecursiveSearch, string interfaceDefinitionPath)
     {
+        FileSystemUtilities.ValidateDirectory(errorReportsStorage);
         FileSystemUtilities.ValidateDirectory(dataSourcesStorage);
-        
-        DataSourcesStorage = dataSourcesStorage;
-        DataSourcesStorageRecursiveSearch = dataSourcesStorageRecursiveSearch;
-
         FileSystemUtilities.ValidateFile(interfaceDefinitionPath, ".xml");
 
+        ErrorReportsStorage = errorReportsStorage;
+        DataSourcesStorage = dataSourcesStorage;
+        DataSourcesStorageRecursiveSearch = dataSourcesStorageRecursiveSearch;
         InterfaceDefinitionPath = interfaceDefinitionPath;
     }
     #endregion

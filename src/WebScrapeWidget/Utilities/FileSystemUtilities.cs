@@ -65,6 +65,11 @@ public static class FileSystemUtilities
     /// <param name="expectedExtension">
     /// File extension, which shall be conceited as valid for validated file.
     /// </param>
+    /// <param name="shallExist">
+    /// Specifies if provided file system entry shall exists within file system as file.
+    /// Useful, when there is a need to check if specified path is not already
+    /// in use by other file in file system.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
@@ -75,9 +80,10 @@ public static class FileSystemUtilities
     /// Thrown, when provided file system entry does not exist in file system as file.
     /// </exception>
     /// <exception cref="IOException">
-    /// Thrown, when provided file system entry has invalid extension.
+    /// Thrown, either when provided file system entry has invalid extension
+    /// or it exists within file system but shall not.
     /// </exception>
-    public static void ValidateFile(string filePath, string? expectedExtension = null)
+    public static void ValidateFile(string filePath, string? expectedExtension = null, bool shallExist = true)
     {
         if (filePath is null)
         {
@@ -100,20 +106,31 @@ public static class FileSystemUtilities
             throw new ArgumentOutOfRangeException(argumentName, filePath, errorMessage);
         }
 
-        if (!File.Exists(filePath))
+        if (shallExist)
         {
-            if (Directory.Exists(filePath))
+            if (!File.Exists(filePath))
             {
-                string errorMessage = $"Given entry is a directory: {filePath}";
-                throw new FileNotFoundException(errorMessage, filePath);
-            }
-            else
-            {
-                string errorMessage = $"File does not exist: {filePath}";
-                throw new FileNotFoundException(errorMessage, filePath);
+                if (Directory.Exists(filePath))
+                {
+                    string errorMessage = $"Given entry is a directory: {filePath}";
+                    throw new FileNotFoundException(errorMessage, filePath);
+                }
+                else
+                {
+                    string errorMessage = $"File does not exist: {filePath}";
+                    throw new FileNotFoundException(errorMessage, filePath);
+                }
             }
         }
-
+        else
+        {
+            if (File.Exists(filePath))
+            {
+                string errorMessage = $"File already exist: {filePath}";
+                throw new IOException(errorMessage);
+            }
+        }
+        
         if (expectedExtension is not null)
         {
             string fileExtension = Path.GetExtension(filePath);

@@ -18,6 +18,8 @@ namespace WebScrapeWidget.DataGathering.Repositories;
 /// and attempt to accedes it will result in raised exception.
 /// To gather data from sources use DataSourcesRepository.GatherDataFromAllSources method.
 /// </remarks>
+/// TODO: Currently DataSourceRepository.Instance is called by multiple threads - maybe it will be worth
+/// to introduce some kind of lock mechanism during repository instantiation.
 public sealed class DataSourcesRepository
 {
     #region Singleton
