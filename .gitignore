@@ -4,3 +4,5 @@ src/.vs/
 # Directories used during application build.
 src/WebScrapeWidget/bin/
 src/WebScrapeWidget/obj/
+src/WebScrapeWidgetTests/bin/
+src/WebScrapeWidgetTests/obj/
