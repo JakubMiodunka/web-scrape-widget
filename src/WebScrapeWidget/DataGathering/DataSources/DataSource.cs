@@ -7,15 +7,9 @@ namespace WebScrapeWidget.DataGathering.DataSources;
 
 /// <summary>
 /// Base class for all more specific types of data sources.
-/// It manages the data shared between all instances
-/// of derivative classes and secures their integrity.
 /// </summary>
 public abstract class DataSource : IDataSource
 {
-    #region Static properties
-    private static List<string> s_occupiedNames = new List<string>();
-    #endregion
-
     #region Properties
     public string Name { get; init; }
     public string Description { get; init; }
@@ -105,7 +99,7 @@ public abstract class DataSource : IDataSource
     /// </param>
     /// <param name="refreshRate">
     /// Refresh rate of data gathered from source expressed in time period.
-    /// Shall be not smaller than 1 second.
+    /// Shall be not smaller than 2 second.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -129,13 +123,6 @@ public abstract class DataSource : IDataSource
             throw new ArgumentOutOfRangeException(argumentName, name, ErrorMessage);
         }
 
-        if (s_occupiedNames.Contains(name))
-        {
-            string argumentName = nameof(name);
-            string errorMessage = $"Provided data source name already in use: {name}";
-            throw new ArgumentOutOfRangeException(argumentName, name, errorMessage);
-        }
-
         if (description is null)
         {
             string argumentName = nameof(description);
@@ -150,15 +137,13 @@ public abstract class DataSource : IDataSource
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (refreshRate < new TimeSpan(0, 0, 1))
+        if (refreshRate < TimeSpan.FromSeconds(2))
         {
             string argumentName = nameof(refreshRate);
             string errorMessage = $"Provided value of refresh rate is invalid: {refreshRate}";
             throw new ArgumentOutOfRangeException(argumentName, refreshRate, errorMessage);
         }
-
-        s_occupiedNames.Add(name);
-        
+       
         Name = name;
         Description = NormalizeMultilineString(description);
         DataUnit = dataUnit;

@@ -4,30 +4,29 @@ using WebScrapeWidget.CustomControls;
 using WebScrapeWidget.DataGathering.Repositories;
 
 
-namespace WebScrapeWidget
+namespace WebScrapeWidget;
+
+//TODO: Doc-string.
+public partial class MainWindow : Window
 {
+    private readonly Interface _interface;
+    
     //TODO: Doc-string.
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        private readonly Interface _interface;
-        
-        //TODO: Doc-string.
-        public MainWindow()
-        {
-            _interface = Interface.FromFile(AppConfig.Instance.InterfaceDefinitionPath);
+        _interface = Interface.FromFile(AppConfig.Instance.InterfaceDefinitionPath);
 
-            DataSourcesRepository.Instance.RemoveNotSubscribedDataSources();
+        DataSourcesRepository.Instance.RemoveNotSubscribedDataSources();
 
-            InitializeComponent();
+        InitializeComponent();
 
-            MainUserInterface.Content = _interface;
-        }
+        MainUserInterface.Content = _interface;
+    }
 
-        //TODO: Doc-string.
-        public async void GatherData(object sender, RoutedEventArgs eventData)
-        {
-            var dataSourcesRepository = DataSourcesRepository.Instance;
-            await dataSourcesRepository.GatherDataFromAllSources();
-        }
+    //TODO: Doc-string.
+    public async void GatherData(object sender, RoutedEventArgs eventData)
+    {
+        var dataSourcesRepository = DataSourcesRepository.Instance;
+        await dataSourcesRepository.GatherDataFromAllSources();
     }
 }

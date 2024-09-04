@@ -163,6 +163,7 @@ public static class FileSystemUtilities
     public static bool ValidateXmlFile(string filePath, string schemaPath)
     {
         ValidateFile(filePath, ".xml");
+        ValidateFile(schemaPath, ".xsd");
 
         var schemaSet = new XmlSchemaSet();
         schemaSet.Add(null, schemaPath);

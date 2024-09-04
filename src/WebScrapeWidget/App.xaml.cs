@@ -1,5 +1,7 @@
 ﻿// Ignore Spelling: App
 
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using WebScrapeWidget.DataGathering.Repositories;
@@ -34,17 +36,36 @@ namespace WebScrapeWidget
         /// <param name="eventArguments">
         /// Arguments of raised event.
         /// </param>
-        /// TODO: Re-factor and improve.
         private void HandleException(object sender, DispatcherUnhandledExceptionEventArgs eventArguments)
         {
-            var errorReport = new ErrorReport(eventArguments.Exception);
-            errorReport.SaveAsXml();
+            Exception unhandledException = eventArguments.Exception;
 
-            const string ErrorMessage = "Unexpected error occurred.\nError report was saved in default location.";
+            var errorReport = new ErrorReport(unhandledException);
+            string errorReportFilePath = "x";// errorReport.SaveAsXml();
 
-            MessageBox.Show(ErrorMessage);
+            const string Heading = "Unhanded Exception";
+            const MessageBoxButton Button = MessageBoxButton.OK;
+            const MessageBoxImage Image = MessageBoxImage.Error;
 
-            Shutdown();
+            var errorMessage = new StringBuilder();
+
+            errorMessage.AppendLine($"During application runtime unhanded exception occurred.");
+            errorMessage.AppendLine("Incident will be saved as error report file and application will be closed.");
+            errorMessage.AppendLine();
+            errorMessage.AppendLine($"Error message:");
+            errorMessage.AppendLine(unhandledException.Message);
+            errorMessage.AppendLine();
+            errorMessage.AppendLine($"Saved error report:");
+            errorMessage.AppendLine(Path.GetFullPath(errorReportFilePath));
+
+            MessageBoxResult result = MessageBox.Show(errorMessage.ToString(), Heading, Button, Image);
+
+            switch (result)
+            {
+                default:
+                    Shutdown();
+                    break;
+            }
         }
     }
 }

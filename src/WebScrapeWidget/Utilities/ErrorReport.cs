@@ -1,6 +1,7 @@
 ﻿// Ignore Spelling: Timestamp
 
 using System.IO;
+using System.Security.Principal;
 using System.Xml.Linq;
 
 
@@ -9,6 +10,8 @@ namespace WebScrapeWidget.Utilities
     /// <summary>
     /// Error report, which can be saved for diagnostics poorhouses.
     /// </summary>
+    /// TODO: Fix the loop where error report cannot obtain storage director from
+    /// app config so throws exception which shall be handled once again.
     public sealed class ErrorReport
     {
         #region Constants
@@ -109,7 +112,7 @@ namespace WebScrapeWidget.Utilities
         /// </returns>
         public XElement AsXElement()
         {
-            string timestamp = Timestamp.ToString("s");
+            string timestamp = Timestamp.ToString("yyyy-MM-ddTHH:mm:sszzz");
 
             var errorReportElement = new XElement("ErrorReport",
                 new XAttribute("Timestamp", timestamp),
@@ -129,7 +132,7 @@ namespace WebScrapeWidget.Utilities
         /// </returns>
         private string GenerateFilePath()
         {
-            const string FileNamePrefix = "error_report_";
+            const string FileNamePrefix = "web_scrape_widget_error_report_";
             const string FileExtension = ".xml";
             
             /*
@@ -137,7 +140,7 @@ namespace WebScrapeWidget.Utilities
              * as it would contain characters not allowed in file names
              * in Windows operating system.
              */
-            const string TimestampFormat = "yyyyMMddHHmmss";
+            const string TimestampFormat = "yyyyMMdd_HHmmssfff";
             string timestamp = Timestamp.ToString(TimestampFormat);
 
             string fileName = $"{FileNamePrefix}{timestamp}";
@@ -163,19 +166,30 @@ namespace WebScrapeWidget.Utilities
 
             var xmlDocument = new XDocument(AsXElement());
 
-            xmlDocument.Save(filePath);
+            xmlDocument.Save(filePath, SaveOptions.None);
 
-            FileSystemUtilities.ValidateXmlFile(filePath, ErrorReportSchema);
+            bool isErrorReportValid = FileSystemUtilities.ValidateXmlFile(filePath, ErrorReportSchema);
+
+            // TODO: Re-factor and improve.
+            if (!isErrorReportValid)
+            {
+                throw new FormatException();
+            }
         }
 
         /// <summary>
         /// Saves error report as XML file in default location.
         /// </summary>
-        public void SaveAsXml()
+        /// <returns>
+        /// File path, under which error report was saved.
+        /// </returns>
+        public string SaveAsXml()
         {
             string filePath = GenerateFilePath();
 
             SaveAsXml(filePath);
+
+            return filePath;
         }
         #endregion
     }

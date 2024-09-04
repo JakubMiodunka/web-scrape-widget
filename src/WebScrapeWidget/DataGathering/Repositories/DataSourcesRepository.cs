@@ -16,10 +16,7 @@ namespace WebScrapeWidget.DataGathering.Repositories;
 /// <remarks>
 /// Keep in mind, that initially data from all sources contained by the repository is not gathered
 /// and attempt to accedes it will result in raised exception.
-/// To gather data from sources use DataSourcesRepository.GatherDataFromAllSources method.
 /// </remarks>
-/// TODO: Currently DataSourceRepository.Instance is called by multiple threads - maybe it will be worth
-/// to introduce some kind of lock mechanism during repository instantiation.
 public sealed class DataSourcesRepository
 {
     #region Singleton
@@ -70,8 +67,7 @@ public sealed class DataSourcesRepository
             return WebsiteElement.FromFile(filePath);
         }
 
-        string errorMessage = 
-            $"Data source creation basing on provided file is not supported: {filePath}";
+        string errorMessage = $"Data source creation basing on provided file is not supported: {filePath}";
         throw new NotSupportedException(errorMessage);
     }
 
@@ -90,7 +86,13 @@ public sealed class DataSourcesRepository
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
         DirectoryPath = directoryPath;
-        _dataSources = [.. CreateSpecialDataSources(), .. CreateDataSources(recursiveSearch)];
+        _dataSources = new List<IDataSource>();
+
+        IDataSource[] dataSources = CreateDataSources(recursiveSearch);
+        AddDataSources(dataSources);
+
+        IDataSource[] specialDataSources = CreateSpecialDataSources();
+        AddDataSources(specialDataSources);
     }
 
     /// <summary>
@@ -99,7 +101,7 @@ public sealed class DataSourcesRepository
     /// <returns></returns>
     private IDataSource[] CreateSpecialDataSources()
     {
-        var processorUsage = new ProcessorUsage("processor-usage", TimeSpan.FromSeconds(1));
+        var processorUsage = new ProcessorUsage("processor-usage", TimeSpan.FromSeconds(2));
         var ramUsage = new RamUsage("ram-usage", TimeSpan.FromSeconds(3));
 
         return [processorUsage, ramUsage];
@@ -144,14 +146,16 @@ public sealed class DataSourcesRepository
     {
         while (true)
         {
-            await Task.Delay(1000);
-
             DateTime currentTimestamp = DateTime.Now;
 
-            _dataSources
+            Task[] dataGatheringTasks = _dataSources
                 .Where(source => (currentTimestamp - source.LastRefreshTimestamp) >= source.RefreshRate)
-                .ToList()
-                .ForEach(dataSource => dataSource.GatherData());
+                .Select(dataSource => dataSource.GatherData())
+                .ToArray();
+
+            await Task.WhenAll(dataGatheringTasks);
+
+            await Task.Delay(1000);
         }
     }
 
@@ -173,6 +177,86 @@ public sealed class DataSourcesRepository
     #endregion
 
     #region Interactions
+    /// <summary>
+    /// Adds provided data source to repository.
+    /// </summary>
+    /// <param name="dataSource">
+    /// Data source, which shall be added to repository.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown, when repository does not contain data source with specified name. 
+    /// </exception>
+    private void AddDataSource(IDataSource dataSource)
+    {
+        if (dataSource is null)
+        {
+            string argumentName = nameof(dataSource);
+            const string ErrorMessage = "Provided data source is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        if (ContainsDataSource(dataSource.Name))
+        {
+            string argumentName = nameof(dataSource);
+            string errorMessage = $"Data source with specified name already exists in repository: {dataSource.Name}";
+            throw new ArgumentException(errorMessage, argumentName);
+        }
+
+        _dataSources.Add(dataSource);
+    }
+
+    /// <summary>
+    /// Adds provided data sources to repository.
+    /// </summary>
+    /// <param name="dataSources">
+    /// Collection of data sources, which shall be added to repository.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
+    /// </exception>
+    private void AddDataSources(IEnumerable<IDataSource> dataSources)
+    {
+        if (dataSources is null)
+        {
+            string argumentName = nameof(dataSources);
+            const string ErrorMessage = "Provided data sources collection is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        if (dataSources.Contains(null))
+        {
+            string argumentName = nameof(dataSources);
+            string ErrorMessage = "Provided data sources collection contains a null reference:";
+            throw new ArgumentException(ErrorMessage, argumentName);
+        }
+
+        dataSources
+            .ToList()
+            .ForEach(AddDataSource);
+    }
+
+    /// <summary>
+    /// Checks if repository contains data source with specified name.
+    /// </summary>
+    /// <param name="dataSourceName">
+    /// Name of data source, which shall be checked.
+    /// </param>
+    /// <returns>
+    /// True or false, depending on check result.
+    /// </returns>
+    private bool ContainsDataSource(string dataSourceName)
+    {
+        return _dataSources
+                .Where(dataSource => dataSource.Name == dataSourceName)
+                .Any();
+    }
+
     /// <summary>
     /// Searches through repository for data source with specified name.
     /// </summary>
