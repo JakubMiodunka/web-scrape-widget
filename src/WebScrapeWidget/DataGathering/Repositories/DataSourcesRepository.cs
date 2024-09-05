@@ -17,7 +17,7 @@ namespace WebScrapeWidget.DataGathering.Repositories;
 /// Keep in mind, that initially data from all sources contained by the repository is not gathered
 /// and attempt to accedes it will result in raised exception.
 /// </remarks>
-public sealed class DataSourcesRepository
+public sealed class DataSourcesRepository : IDataSourcesRepository
 {
     #region Singleton
     public static DataSourcesRepository Instance
@@ -178,6 +178,54 @@ public sealed class DataSourcesRepository
 
     #region Interactions
     /// <summary>
+    /// Searches through repository for data source with specified name.
+    /// </summary>
+    /// <param name="dataSourceName">
+    /// Name of data source, which shall be returned.
+    /// </param>
+    /// <returns>
+    /// Data source contained by the repository, with specified name.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown, when repository does not contain data source with specified name. 
+    /// </exception>
+    public IDataSource GetDataSource(string dataSourceName)
+    {
+        if (dataSourceName is null)
+        {
+            string argumentName = nameof(dataSourceName);
+            const string ErrorMessage = "Provided data source name is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        try
+        {
+            return _dataSources
+                .Where(dataSource => dataSource.Name == dataSourceName)
+                .First();
+        }
+        catch (InvalidOperationException)
+        {
+            string errorMessage = $"Data source with provided name does not exist in repository: {dataSourceName}";
+            throw new ArgumentOutOfRangeException(errorMessage);
+        }
+    }
+    
+    /// <summary>
+    /// Removes not subscribed data sources from repository.
+    /// </summary>
+    public void RemoveNotSubscribedDataSources()
+    {
+        _dataSources
+            .Where(source => !source.IsSubscribed)
+            .ToList()
+            .ForEach(source => _dataSources.Remove(source));
+    }
+
+    /// <summary>
     /// Adds provided data source to repository.
     /// </summary>
     /// <param name="dataSource">
@@ -255,54 +303,6 @@ public sealed class DataSourcesRepository
         return _dataSources
                 .Where(dataSource => dataSource.Name == dataSourceName)
                 .Any();
-    }
-
-    /// <summary>
-    /// Searches through repository for data source with specified name.
-    /// </summary>
-    /// <param name="dataSourceName">
-    /// Name of data source, which shall be returned.
-    /// </param>
-    /// <returns>
-    /// Data source contained by the repository, with specified name.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown, when repository does not contain data source with specified name. 
-    /// </exception>
-    public IDataSource GetDataSource(string dataSourceName)
-    {
-        if (dataSourceName is null)
-        {
-            string argumentName = nameof(dataSourceName);
-            const string ErrorMessage = "Provided data source name is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        try
-        {
-            return _dataSources
-                .Where(dataSource => dataSource.Name == dataSourceName)
-                .First();
-        }
-        catch (InvalidOperationException)
-        {
-            string errorMessage = $"Data source with provided name does not exist in repository: {dataSourceName}";
-            throw new ArgumentOutOfRangeException(errorMessage);
-        }
-    }
-    
-    /// <summary>
-    /// Removes not subscribed data sources from repository.
-    /// </summary>
-    public void RemoveNotSubscribedDataSources()
-    {
-        _dataSources
-            .Where(source => !source.IsSubscribed)
-            .ToList()
-            .ForEach(source => _dataSources.Remove(source));
     }
     #endregion
 }

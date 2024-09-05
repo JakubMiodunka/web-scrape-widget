@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using System.Windows.Controls;
+using WebScrapeWidget.DataGathering.Interfaces;
 
 
 namespace WebScrapeWidget.CustomControls;
@@ -16,8 +17,11 @@ internal sealed class Tab : TabItem
     /// Creates a new tab corresponding to definition
     /// contained by provided XML element.
     /// </summary>
-    /// <param name="tabElement">
+    /// <param name="tabDefinitionElement">
     /// XML element, containing tab definition.
+    /// </param>
+    /// <param name="dataSourcesRepository">
+    /// Data sources repository, which shall be used to obtain displayed data.
     /// </param>
     /// <returns>
     /// New tab corresponding to definition contained by provided XML element.
@@ -25,23 +29,30 @@ internal sealed class Tab : TabItem
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    internal static Tab FromXml(XElement tabElement)
+    internal static Tab FromXml(XElement tabDefinitionElement, IDataSourcesRepository dataSourcesRepository)
     {
-        if (tabElement is null)
+        if (tabDefinitionElement is null)
         {
-            string argumentName = nameof(tabElement);
+            string argumentName = nameof(tabDefinitionElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        string name = tabElement
+        if (dataSourcesRepository is null)
+        {
+            string argumentName = nameof(dataSourcesRepository);
+            const string ErrorMessage = "Provided data sources repository is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        string name = tabDefinitionElement
             .Attributes("Name")
             .Select(attribute => attribute.Value)
             .First();
 
-        Section[] sections = tabElement
+        Section[] sections = tabDefinitionElement
             .Elements("Section")
-            .Select(Section.FromXml)
+            .Select(sectionDefinitionElement => Section.FromXml(sectionDefinitionElement, dataSourcesRepository))
             .ToArray();
 
         return new Tab(name, sections);

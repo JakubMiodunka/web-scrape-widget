@@ -33,18 +33,29 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
     /// <param name="entryElement">
     /// XML element, containing entry definition.
     /// </param>
+    /// <param name="dataSourcesRepository">
+    /// Data sources repository, which shall be used to obtain displayed data.
+    /// </param>
+    /// <returns>
     /// <returns>
     /// New entry corresponding to definition contained by provided XML element.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    internal static Entry FromXml(XElement entryElement)
+    internal static Entry FromXml(XElement entryElement, IDataSourcesRepository dataSourcesRepository)
     {
         if (entryElement is null)
         {
             string argumentName = nameof(entryElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        if (dataSourcesRepository is null)
+        {
+            string argumentName = nameof(dataSourcesRepository);
+            const string ErrorMessage = "Provided data sources repository is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
@@ -58,7 +69,9 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
             .Select(attribute => attribute.Value)
             .First();
 
-        return new Entry(label, dataSourceName);
+        IDataSource dataSource = dataSourcesRepository.GetDataSource(dataSourceName);
+
+        return new Entry(label, dataSource);
     }
 
     /// <summary>
@@ -67,8 +80,8 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
     /// <param name="label">
     /// String, which shall be used as label for value shown by the entry.
     /// </param>
-    /// <param name="dataSourceName">
-    /// Name of data source, to which entry shall be subscribed.
+    /// <param name="dataSource">
+    /// Data source, to which entry shall be subscribed.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -76,7 +89,7 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown ,when value of at least one argument will be considered as invalid.
     /// </exception>
-    private Entry(string label, string dataSourceName) : base()
+    private Entry(string label, IDataSource dataSource) : base()
     {
         if (label is null)
         {
@@ -92,18 +105,11 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
             throw new ArgumentOutOfRangeException(argumentName, label, ErrorMessage);
         }
 
-        if (dataSourceName is null)
+        if (dataSource is null)
         {
-            string argumentName = nameof(dataSourceName);
-            const string ErrorMessage = "Provided data source name is a null reference:";
+            string argumentName = nameof(dataSource);
+            const string ErrorMessage = "Provided data source is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (dataSourceName == string.Empty)
-        {
-            string argumentName = nameof(dataSourceName);
-            const string ErrorMessage = "Provided data source name is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, dataSourceName, ErrorMessage);
         }
 
         while (ColumnDefinitions.Count() < 2)
@@ -123,12 +129,9 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
         SetColumn(_value, 1);
         Children.Add( _value);
 
-        IDataSource dataSource = DataSourcesRepository.Instance
-            .GetDataSource(dataSourceName);
+        dataSource.AddSubscriber(this);
 
         UpdateToolTip(dataSource);
-
-        dataSource.AddSubscriber(this);
     }
     #endregion
 

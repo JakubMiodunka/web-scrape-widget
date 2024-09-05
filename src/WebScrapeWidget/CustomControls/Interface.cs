@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using WebScrapeWidget.Utilities;
+using WebScrapeWidget.DataGathering.Interfaces;
 
 
 namespace WebScrapeWidget.CustomControls;
@@ -37,13 +38,19 @@ public class Interface : TabControl
     /// <param name="filePath">
     /// Path to *.xml file, containing user interface definition.
     /// </param>
+    /// <param name="dataSourcesRepository">
+    /// Data sources repository, which shall be used to obtain displayed data.
+    /// </param>
     /// <returns>
     /// New custom WPF control corresponding to user interface defined within provided file.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown, when format of provided file will be considered as invalid.
     /// </exception>
-    public static Interface FromFile(string filePath)
+    public static Interface FromFile(string filePath, IDataSourcesRepository dataSourcesRepository)
     {
         if (!IsInterfaceDefinition(filePath))
         {
@@ -51,11 +58,18 @@ public class Interface : TabControl
             throw new FormatException(errorMessage);
         }
 
+        if (dataSourcesRepository is null)
+        {
+            string argumentName = nameof(dataSourcesRepository);
+            const string ErrorMessage = "Provided data sources repository is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
         XElement interfaceElement = XDocument.Load(filePath)
             .Elements("InterfaceDefinition")
             .First();
 
-        return FromXml(interfaceElement);
+        return FromXml(interfaceElement, dataSourcesRepository);
     }
 
     /// <summary>
@@ -65,13 +79,16 @@ public class Interface : TabControl
     /// <param name="interfaceDefinitionElement">
     /// XML element, containing user interface definition.
     /// </param>
+    /// <param name="dataSourcesRepository">
+    /// Data sources repository, which shall be used to obtain displayed data.
+    /// </param>
     /// <returns>
     /// New custom WPF control corresponding to user interface defined within provided XML element.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    private static Interface FromXml(XElement interfaceDefinitionElement)
+    private static Interface FromXml(XElement interfaceDefinitionElement, IDataSourcesRepository dataSourcesRepository)
     {
         if (interfaceDefinitionElement is null)
         {
@@ -80,9 +97,16 @@ public class Interface : TabControl
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
+        if (dataSourcesRepository is null)
+        {
+            string argumentName = nameof(dataSourcesRepository);
+            const string ErrorMessage = "Provided data sources repository is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
         Tab[] tabs = interfaceDefinitionElement
             .Elements("Tab")
-            .Select(Tab.FromXml)
+            .Select(tabDefinitionElement => Tab.FromXml(tabDefinitionElement, dataSourcesRepository))
             .ToArray();
 
         return new Interface(tabs);

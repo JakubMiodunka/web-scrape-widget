@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Xml.Linq;
+using WebScrapeWidget.DataGathering.Interfaces;
 
 
 namespace WebScrapeWidget.CustomControls;
@@ -15,8 +16,11 @@ internal sealed class Section : GroupBox
     /// Creates a new section corresponding to definition
     /// contained by provided XML element.
     /// </summary>
-    /// <param name="sectionElement">
+    /// <param name="sectionDefinitionElement">
     /// XML element, containing section definition.
+    /// </param>
+    /// <param name="dataSourcesRepository">
+    /// Data sources repository, which shall be used to obtain displayed data.
     /// </param>
     /// <returns>
     /// New section corresponding to definition contained by provided XML element.
@@ -24,23 +28,30 @@ internal sealed class Section : GroupBox
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    internal static Section FromXml(XElement sectionElement)
+    internal static Section FromXml(XElement sectionDefinitionElement, IDataSourcesRepository dataSourcesRepository)
     {
-        if (sectionElement is null)
+        if (sectionDefinitionElement is null)
         {
-            string argumentName = nameof(sectionElement);
+            string argumentName = nameof(sectionDefinitionElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        string name = sectionElement
+        if (dataSourcesRepository is null)
+        {
+            string argumentName = nameof(dataSourcesRepository);
+            const string ErrorMessage = "Provided data sources repository is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        string name = sectionDefinitionElement
             .Attributes("Name")
             .Select(attribute => attribute.Value)
             .First();
 
-        Entry[] entries = sectionElement
+        Entry[] entries = sectionDefinitionElement
             .Elements("Entry")
-            .Select(Entry.FromXml)
+            .Select(entryDefinitionElement => Entry.FromXml(entryDefinitionElement, dataSourcesRepository))
             .ToArray();
 
         return new Section(name, entries);

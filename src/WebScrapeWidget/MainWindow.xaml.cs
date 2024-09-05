@@ -14,7 +14,10 @@ public partial class MainWindow : Window
     //TODO: Doc-string.
     public MainWindow()
     {
-        _interface = Interface.FromFile(AppConfig.Instance.InterfaceDefinitionPath);
+        string interfaceDefinitoinFile = AppConfig.Instance.InterfaceDefinitionPath;
+        var dataSourcesRepository = DataSourcesRepository.Instance;
+
+        _interface = Interface.FromFile(interfaceDefinitoinFile, dataSourcesRepository);
 
         DataSourcesRepository.Instance.RemoveNotSubscribedDataSources();
 
