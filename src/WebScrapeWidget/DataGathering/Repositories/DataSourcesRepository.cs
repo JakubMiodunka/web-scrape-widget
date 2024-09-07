@@ -15,52 +15,30 @@ namespace WebScrapeWidget.DataGathering.Repositories;
 /// </summary>
 /// <remarks>
 /// Keep in mind, that initially data from all sources contained by the repository is not gathered
-/// and attempt to accedes it will result in raised exception.
+/// and attempt to access it will result in raised exception.
 /// </remarks>
 public sealed class DataSourcesRepository : IDataSourcesRepository
 {
-    #region Singleton
-    public static DataSourcesRepository Instance
-    {
-        get
-        {
-            if (s_instance is null)
-            {
-                string directoryPath = AppConfig.Instance.DataSourcesStorage;
-                bool recursiveSearch = AppConfig.Instance.DataSourcesStorageRecursiveSearch;
-
-                s_instance = new DataSourcesRepository(directoryPath, recursiveSearch);
-            }
-
-            return s_instance;
-        }
-    }
-
-    private static DataSourcesRepository? s_instance;
-    #endregion
-
     #region Properties
-    public readonly string DirectoryPath;
-    
     private readonly List<IDataSource> _dataSources;
     #endregion
 
-    #region Class instantiation
+    #region Auxiliary methods
     /// <summary>
-    /// Creates a new data source basing on provided *.xml file. 
+    /// Creates a new data source basing on specified file. 
     /// </summary>
     /// <param name="filePath">
-    /// Path to *.xml file containing data source definition.
+    /// Path to file containing data source definition.
     /// </param>
     /// <returns>
-    /// Data source created basing on provided *.xml file.
+    /// Data source created basing on specified file.
     /// </returns>
     /// <exception cref="NotSupportedException">
-    /// Thrown, when data source definition contained by provided *.xml file is not supported.
+    /// Thrown, when data source definition contained by specified file is not supported.
     /// </exception>
     private static IDataSource CreateDataSourceFromFile(string filePath)
     {
-        FileSystemUtilities.ValidateFile(filePath, ".xml");
+        FileSystemUtilities.ValidateFile(filePath);
 
         if (WebsiteElement.IsWebsiteElementDefinition(filePath))
         {
@@ -72,59 +50,65 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     }
 
     /// <summary>
-    /// Creates a new repository of data sources.
-    /// </summary>
-    /// <param name="directoryPath">
-    /// Path to directory, where *.xml files containing data sources definitions
-    /// are stored.
-    /// </param>
-    /// /// <param name="recursiveSearch">
-    /// Flag, which specifies if provided directory shall be searched recursively.
-    /// </param>
-    private DataSourcesRepository(string directoryPath, bool recursiveSearch)
-    {
-        FileSystemUtilities.ValidateDirectory(directoryPath);
-
-        DirectoryPath = directoryPath;
-        _dataSources = new List<IDataSource>();
-
-        IDataSource[] dataSources = CreateDataSources(recursiveSearch);
-        AddDataSources(dataSources);
-
-        IDataSource[] specialDataSources = CreateSpecialDataSources();
-        AddDataSources(specialDataSources);
-    }
-
-    /// <summary>
     /// Creates special data sources.
     /// </summary>
-    /// <returns></returns>
-    private IDataSource[] CreateSpecialDataSources()
+    /// <returns>
+    /// Collection containing new instances of special data sources.
+    /// </returns>
+    private static IDataSource[] CreateSpecialDataSources()
     {
         var processorUsage = new ProcessorUsage("processor-usage", TimeSpan.FromSeconds(2));
         var ramUsage = new RamUsage("ram-usage", TimeSpan.FromSeconds(3));
 
         return [processorUsage, ramUsage];
     }
+    #endregion
 
+    #region Class instantiation
     /// <summary>
-    /// Creates data sources from *.xml files contained by directory,
-    /// to which repository is referring to.
+    /// Creates data sources repository,
+    /// which contains data sources created basing on files contained by specified directory.
     /// </summary>
-    /// <param name="recursiveSearch">
+    /// <param name="directoryPath">
+    /// Path to directory, where files containing data sources definitions are stored.
+    /// </param>
+    /// <param name="searchRecursively">
     /// Flag, which specifies if provided directory shall be searched recursively.
+    /// Recursive search is disabled by default.
     /// </param>
     /// <returns>
-    /// Data sources created basing on *.xml files contained by directory,
-    /// to which repository is referring to.
+    /// Data sources repository,
+    /// which contains data sources created basing on files contained by specified directory.
     /// </returns>
-    private IDataSource[] CreateDataSources(bool recursiveSearch)
+    public static DataSourcesRepository FromDirectory(string directoryPath, bool searchRecursively = false)
     {
-        var searchOption  = (recursiveSearch) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        FileSystemUtilities.ValidateDirectory(directoryPath);
 
-        return Directory.EnumerateFiles(DirectoryPath, "*.xml", searchOption)
+        var searchOption = (searchRecursively) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+        IDataSource[] dataSources = Directory.EnumerateFiles(directoryPath, "*", searchOption)
             .Select(CreateDataSourceFromFile)
             .ToArray();
+
+        return new DataSourcesRepository(dataSources);
+    }
+
+    /// <summary>
+    /// Creates a new repository of data sources.
+    /// </summary>
+    /// <param name="dataSources">
+    /// Collection of data sources, which shall be contained by created repository.
+    /// Shall not contain data sources considered as special ones - those
+    /// are added automatically to repository content.
+    /// </param>
+    private DataSourcesRepository(IEnumerable<IDataSource> dataSources)
+    {
+        _dataSources = new List<IDataSource>();
+
+        IDataSource[] specialDataSources = CreateSpecialDataSources();
+        AddDataSources(specialDataSources);
+
+        AddDataSources(dataSources);
     }
     #endregion
 
@@ -215,7 +199,7 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     }
     
     /// <summary>
-    /// Removes not subscribed data sources from repository.
+    /// Removes not subscribed data sources from repository content.
     /// </summary>
     public void RemoveNotSubscribedDataSources()
     {
@@ -223,6 +207,22 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
             .Where(source => !source.IsSubscribed)
             .ToList()
             .ForEach(source => _dataSources.Remove(source));
+    }
+
+    /// <summary>
+    /// Checks if repository contains data source with specified name.
+    /// </summary>
+    /// <param name="dataSourceName">
+    /// Name of data source, which shall be checked.
+    /// </param>
+    /// <returns>
+    /// True or false, depending on check result.
+    /// </returns>
+    private bool ContainsDataSource(string dataSourceName)
+    {
+        return _dataSources
+                .Where(dataSource => dataSource.Name == dataSourceName)
+                .Any();
     }
 
     /// <summary>
@@ -287,22 +287,6 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
         dataSources
             .ToList()
             .ForEach(AddDataSource);
-    }
-
-    /// <summary>
-    /// Checks if repository contains data source with specified name.
-    /// </summary>
-    /// <param name="dataSourceName">
-    /// Name of data source, which shall be checked.
-    /// </param>
-    /// <returns>
-    /// True or false, depending on check result.
-    /// </returns>
-    private bool ContainsDataSource(string dataSourceName)
-    {
-        return _dataSources
-                .Where(dataSource => dataSource.Name == dataSourceName)
-                .Any();
     }
     #endregion
 }

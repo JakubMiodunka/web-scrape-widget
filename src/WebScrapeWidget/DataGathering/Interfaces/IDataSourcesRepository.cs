@@ -1,4 +1,6 @@
-﻿namespace WebScrapeWidget.DataGathering.Interfaces;
+﻿using WebScrapeWidget.DataGathering.DataSources;
+
+namespace WebScrapeWidget.DataGathering.Interfaces;
 
 /// <summary>
 /// Interface, which shall be implemented
@@ -16,4 +18,18 @@ public interface IDataSourcesRepository
     /// Data source contained by the repository, with specified name.
     /// </returns>
     IDataSource GetDataSource(string dataSourceName);
+
+    /// <summary>
+    /// Gathers data from all sources contained by repository.
+    /// </summary>
+    /// <returns>
+    /// Task, which will be completed, when data will be gathered
+    /// from all data sources contained by the repository.
+    /// </returns>
+    Task GatherDataFromAllSources();
+
+    /// <summary>
+    /// Removes not subscribed data sources from repository content.
+    /// </summary>
+    void RemoveNotSubscribedDataSources();
 }

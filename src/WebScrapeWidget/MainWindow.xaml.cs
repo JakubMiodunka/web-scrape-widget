@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 
 using WebScrapeWidget.CustomControls;
+using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.DataGathering.Repositories;
 
 
@@ -9,27 +10,26 @@ namespace WebScrapeWidget;
 //TODO: Doc-string.
 public partial class MainWindow : Window
 {
-    private readonly Interface _interface;
+    private readonly IDataSourcesRepository _dataSourcesRepository;
     
-    //TODO: Doc-string.
-    public MainWindow()
+    //TODO: Doc-string. Re-factor.
+    public MainWindow(IDataSourcesRepository dataSourcesRepository)
     {
         string interfaceDefinitoinFile = AppConfig.Instance.InterfaceDefinitionPath;
-        var dataSourcesRepository = DataSourcesRepository.Instance;
 
-        _interface = Interface.FromFile(interfaceDefinitoinFile, dataSourcesRepository);
+        var mainInterface = Interface.FromFile(interfaceDefinitoinFile, dataSourcesRepository);
 
-        DataSourcesRepository.Instance.RemoveNotSubscribedDataSources();
+        dataSourcesRepository.RemoveNotSubscribedDataSources();
 
         InitializeComponent();
 
-        MainUserInterface.Content = _interface;
+        MainUserInterface.Content = mainInterface;
+        _dataSourcesRepository = dataSourcesRepository;
     }
 
     //TODO: Doc-string.
     public async void GatherData(object sender, RoutedEventArgs eventData)
     {
-        var dataSourcesRepository = DataSourcesRepository.Instance;
-        await dataSourcesRepository.GatherDataFromAllSources();
+        await _dataSourcesRepository.GatherDataFromAllSources();
     }
 }

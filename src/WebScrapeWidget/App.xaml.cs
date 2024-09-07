@@ -22,9 +22,18 @@ namespace WebScrapeWidget
         /// <param name="eventArguments">
         /// Arguments of raised event.
         /// </param>
+        /// TODO: Re-factor after getting rid of AppConfig singleton.
         private async void ApplicationStartup(object sender, StartupEventArgs eventArguments)
         {
-            await DataSourcesRepository.Instance.StartPeriodicDataGathering();
+            string dataSourcesStorage = AppConfig.Instance.DataSourcesStorage;
+            bool dataSourcesStorageRecursiveSearch = AppConfig.Instance.DataSourcesStorageRecursiveSearch;
+
+            var dataSourcesRepoisitory = DataSourcesRepository.FromDirectory(dataSourcesStorage, dataSourcesStorageRecursiveSearch);
+
+            var mainWindow = new MainWindow(dataSourcesRepoisitory);
+            mainWindow.Show();
+
+            await dataSourcesRepoisitory.StartPeriodicDataGathering();
         }
 
         /// <summary>
@@ -41,7 +50,7 @@ namespace WebScrapeWidget
             Exception unhandledException = eventArguments.Exception;
 
             var errorReport = new ErrorReport(unhandledException);
-            string errorReportFilePath = "x";// errorReport.SaveAsXml();
+            string errorReportFilePath = errorReport.SaveAsXml();
 
             const string Heading = "Unhanded Exception";
             const MessageBoxButton Button = MessageBoxButton.OK;
