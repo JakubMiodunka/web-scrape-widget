@@ -10,14 +10,14 @@ namespace WebScrapeWidget;
 //TODO: Doc-string.
 public partial class MainWindow : Window
 {
+    #region Properties
     private readonly IDataSourcesRepository _dataSourcesRepository;
-    
-    //TODO: Doc-string. Re-factor.
-    public MainWindow(IDataSourcesRepository dataSourcesRepository)
-    {
-        string interfaceDefinitoinFile = AppConfig.Instance.InterfaceDefinitionPath;
+    #endregion
 
-        var mainInterface = Interface.FromFile(interfaceDefinitoinFile, dataSourcesRepository);
+    //TODO: Doc-string. Re-factor.
+    public MainWindow(string interfaceDefinitionFile, IDataSourcesRepository dataSourcesRepository)
+    {
+        var mainInterface = Interface.FromFile(interfaceDefinitionFile, dataSourcesRepository);
 
         dataSourcesRepository.RemoveNotSubscribedDataSources();
 

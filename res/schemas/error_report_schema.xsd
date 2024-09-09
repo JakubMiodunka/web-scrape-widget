@@ -4,7 +4,7 @@
     <xs:attribute name="Timestamp">
         <xs:simpleType>
             <xs:restriction base="xs:string">
-                <xs:pattern value="\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d[+-]\d{2}:\d{2}"/>
+                <xs:pattern value="\d{4}-[0-1]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d[+-][0-1]\d:[0-2]\d"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:attribute>
@@ -42,6 +42,7 @@
             <xs:element name="StackTrace" type="xs:string"/>
             <xs:element name="InnerException" type="InnerExceptionType"/>
         </xs:sequence>
+        <xs:attribute ref="Type"/>
     </xs:complexType>
     <xs:complexType name="InnerExceptionType">
         <xs:sequence>
