@@ -147,7 +147,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
-    public WebsiteElement(string name, string description, string dataUnit, TimeSpan refreshRate, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
+    private WebsiteElement(string name, string description, string dataUnit, TimeSpan refreshRate, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
         : base(name, description, dataUnit, refreshRate)
     {
         if (websiteUrl is null)

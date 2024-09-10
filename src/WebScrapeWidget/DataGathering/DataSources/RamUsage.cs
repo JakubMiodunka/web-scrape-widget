@@ -15,7 +15,6 @@ namespace WebScrapeWidget.DataGathering.DataSources;
 public sealed class RamUsage : DataSource, IDataSource
 {
     #region Constants
-    // TODO: Prepare proper data source description.
     private const string DataSourceDescription = "Current RAM usage.";
     #endregion
 
@@ -36,7 +35,6 @@ public sealed class RamUsage : DataSource, IDataSource
     /// </param>
     public RamUsage(string name, TimeSpan refreshRate) : base(name, DataSourceDescription, "%", refreshRate)
     {
-
         // Validity of values passed to constructor of PerformanceCounter depends on currently used culture.
         using (var cultureContext = CultureContext.FromCultureName("en-US"))
         {
