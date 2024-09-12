@@ -14,10 +14,9 @@ internal sealed class Tab : TabItem
 {
     #region Class instantiation
     /// <summary>
-    /// Creates a new tab corresponding to definition
-    /// contained by provided XML element.
+    /// Creates a new tab corresponding to provided XML element.
     /// </summary>
-    /// <param name="tabDefinitionElement">
+    /// <param name="xmlElement">
     /// XML element, containing tab definition.
     /// </param>
     /// <param name="dataSourcesRepository">
@@ -29,30 +28,23 @@ internal sealed class Tab : TabItem
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    internal static Tab FromXml(XElement tabDefinitionElement, IDataSourcesRepository dataSourcesRepository)
+    public static Tab FromXmlElement(XElement xmlElement, IDataSourcesRepository dataSourcesRepository)
     {
-        if (tabDefinitionElement is null)
+        if (xmlElement is null)
         {
-            string argumentName = nameof(tabDefinitionElement);
+            string argumentName = nameof(xmlElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (dataSourcesRepository is null)
-        {
-            string argumentName = nameof(dataSourcesRepository);
-            const string ErrorMessage = "Provided data sources repository is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        string name = tabDefinitionElement
+        string name = xmlElement
             .Attributes("Name")
             .Select(attribute => attribute.Value)
             .First();
 
-        Section[] sections = tabDefinitionElement
+        Section[] sections = xmlElement
             .Elements("Section")
-            .Select(sectionDefinitionElement => Section.FromXml(sectionDefinitionElement, dataSourcesRepository))
+            .Select(sectionDefinitionElement => Section.FromXmlElement(sectionDefinitionElement, dataSourcesRepository))
             .ToArray();
 
         return new Tab(name, sections);
@@ -70,26 +62,16 @@ internal sealed class Tab : TabItem
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown ,when value of at least one argument will be considered as invalid.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
     private Tab(string name, IEnumerable<Section> sections)
     {
-        if (name is null)
+        if (string.IsNullOrWhiteSpace(name))
         {
             string argumentName = nameof(name);
-            const string ErrorMessage = "Provided tab name is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (name == string.Empty)
-        {
-            string argumentName = nameof(name);
-            const string ErrorMessage = "Provided tab name is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, name, ErrorMessage);
+            string errorMessage = $"Provided name is invalid: {name}";
+            throw new ArgumentException(argumentName, errorMessage);
         }
 
         if (sections is null)

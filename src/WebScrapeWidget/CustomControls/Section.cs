@@ -9,14 +9,13 @@ namespace WebScrapeWidget.CustomControls;
 /// Custom WPF control build around System.Windows.Controls.GroupBox.
 /// Its content is divided into entries.
 /// </summary>
-internal sealed class Section : GroupBox
+public sealed class Section : GroupBox
 {
     #region Class instantiation
     /// <summary>
-    /// Creates a new section corresponding to definition
-    /// contained by provided XML element.
+    /// Creates a new section corresponding to provided XML element.
     /// </summary>
-    /// <param name="sectionDefinitionElement">
+    /// <param name="xmlElement">
     /// XML element, containing section definition.
     /// </param>
     /// <param name="dataSourcesRepository">
@@ -28,30 +27,23 @@ internal sealed class Section : GroupBox
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    internal static Section FromXml(XElement sectionDefinitionElement, IDataSourcesRepository dataSourcesRepository)
+    public static Section FromXmlElement(XElement xmlElement, IDataSourcesRepository dataSourcesRepository)
     {
-        if (sectionDefinitionElement is null)
+        if (xmlElement is null)
         {
-            string argumentName = nameof(sectionDefinitionElement);
+            string argumentName = nameof(xmlElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (dataSourcesRepository is null)
-        {
-            string argumentName = nameof(dataSourcesRepository);
-            const string ErrorMessage = "Provided data sources repository is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        string name = sectionDefinitionElement
+        string name = xmlElement
             .Attributes("Name")
             .Select(attribute => attribute.Value)
             .First();
 
-        Entry[] entries = sectionDefinitionElement
+        Entry[] entries = xmlElement
             .Elements("Entry")
-            .Select(entryDefinitionElement => Entry.FromXml(entryDefinitionElement, dataSourcesRepository))
+            .Select(entryDefinitionElement => Entry.FromXmlElement(entryDefinitionElement, dataSourcesRepository))
             .ToArray();
 
         return new Section(name, entries);
@@ -69,26 +61,16 @@ internal sealed class Section : GroupBox
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown ,when value of at least one argument will be considered as invalid.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
     private Section(string name, IEnumerable<Entry> entries)
     {
-        if (name is null)
+        if (string.IsNullOrWhiteSpace(name))
         {
             string argumentName = nameof(name);
-            const string ErrorMessage = "Provided section name is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (name == string.Empty)
-        {
-            string argumentName = nameof(name);
-            const string ErrorMessage = "Provided section name is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, name, ErrorMessage);
+            string errorMessage = $"Provided name is invalid: {name}";
+            throw new ArgumentException(argumentName, errorMessage);
         }
 
         if (entries is null)

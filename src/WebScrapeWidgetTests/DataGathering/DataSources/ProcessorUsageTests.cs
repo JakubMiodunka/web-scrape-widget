@@ -15,24 +15,37 @@ namespace WebScrapeWidgetTests.DataGathering.DataSources;
 [Author("Jakub Miodunka")]
 public sealed class ProcessorUsageTests
 {
-    #region Default data source instance.
-    private static string _defaultName = nameof(ProcessorUsage);
-    private static TimeSpan _defaultRefreshRate = TimeSpan.FromHours(1);
+    #region Default values
+    public const string DefaultName = "Default name";
+    public static readonly TimeSpan DefaultRefreshRate = TimeSpan.FromHours(1);
+    #endregion
 
-    private static ProcessorUsage CreateDefaultDataSource()
+    #region Auxiliary methods
+    public static ProcessorUsage CreateDefaultDataSource()
     {
-        return new ProcessorUsage(_defaultName, _defaultRefreshRate);
+        return new ProcessorUsage(DefaultName, DefaultRefreshRate);
     }
     #endregion
 
     #region Test parameters
-    private static string?[] s_validNames = [_defaultName];
-    private static string?[] s_invalidNames = [null, string.Empty];
+    private static string[] s_validNames = [DefaultName];
+    private static string[] s_invalidNames = [string.Empty];
     private static TimeSpan[] s_validRefreshRates = [TimeSpan.FromSeconds(2), TimeSpan.MaxValue];
     private static TimeSpan[] s_invalidRefreshRates = [TimeSpan.MinValue, TimeSpan.Zero, TimeSpan.FromMilliseconds(1999)];
     #endregion
 
     #region Test cases
+    /// <summary>
+    /// Checks if instantiation of data source using null reference as data source name is possible not possible.
+    /// </summary>
+    [Test]
+    public void InstantiationImpossibleUsingNullReferenceAsName()
+    {
+        TestDelegate dataSourceCreation = () => new ProcessorUsage(null, DefaultRefreshRate);
+
+        Assert.Throws<ArgumentNullException>(dataSourceCreation);
+    }
+
     /// <summary>
     /// Checks if instantiation of data source using specified name is possible.
     /// </summary>
@@ -44,7 +57,7 @@ public sealed class ProcessorUsageTests
     {
         string expectedName = validName;
 
-        var dataSourceUnderTest = new ProcessorUsage(expectedName, _defaultRefreshRate);
+        var dataSourceUnderTest = new ProcessorUsage(expectedName, DefaultRefreshRate);
         
         string actualName = dataSourceUnderTest.Name;
 
@@ -52,24 +65,17 @@ public sealed class ProcessorUsageTests
     }
 
     /// <summary>
-    /// Checks if instantiation of data source using specified name is possible not possible.
+    /// Checks if instantiation of data source using specified name is not possible.
     /// </summary>
     /// <param name="invalidName">
     /// Name of data source, using which instantiation of data source shall not be possible.
     /// </param>
     [TestCaseSource(nameof(s_invalidNames))]
-    public void InstantiationImpossibleUsingInvalidName(string? invalidName)
+    public void InstantiationImpossibleUsingInvalidName(string invalidName)
     {
-        TestDelegate dataSourceCreation = () => new ProcessorUsage(invalidName, _defaultRefreshRate);
+        TestDelegate dataSourceCreation = () => new ProcessorUsage(invalidName, DefaultRefreshRate);
 
-        if (invalidName is null)
-        {
-            Assert.Throws<ArgumentNullException>(dataSourceCreation);
-        }
-        else
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
     }
 
     /// <summary>
@@ -112,7 +118,7 @@ public sealed class ProcessorUsageTests
     {
         TimeSpan expectedRefreshRate = validRefreshRate;
 
-        var dataSourceUnderTest = new ProcessorUsage(_defaultName, expectedRefreshRate);
+        var dataSourceUnderTest = new ProcessorUsage(DefaultName, expectedRefreshRate);
         
         TimeSpan actualRefreshRate = dataSourceUnderTest.RefreshRate;
 
@@ -128,7 +134,7 @@ public sealed class ProcessorUsageTests
     [TestCaseSource(nameof(s_invalidRefreshRates))]
     public void InstantiationImpossibleUsingInvalidRefreshRate(TimeSpan invalidRefreshRate)
     {
-        TestDelegate dataSourceCreation = () => new ProcessorUsage(_defaultName, invalidRefreshRate);
+        TestDelegate dataSourceCreation = () => new ProcessorUsage(DefaultName, invalidRefreshRate);
 
         Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
     }
@@ -242,10 +248,10 @@ public sealed class ProcessorUsageTests
     [Test]
     public void PresenceOfSubscribersIndicatedViaPropertyValue()
     {
-        var dataSourceSubscriberMock = new Mock<IDataSourceSubscriber>();
+        var dataSourceSubscriberStub = new Mock<IDataSourceSubscriber>();
         
         ProcessorUsage dataSourceUnderTest = CreateDefaultDataSource();
-        dataSourceUnderTest.AddSubscriber(dataSourceSubscriberMock.Object);
+        dataSourceUnderTest.AddSubscriber(dataSourceSubscriberStub.Object);
 
         Assert.True(dataSourceUnderTest.IsSubscribed);
     }

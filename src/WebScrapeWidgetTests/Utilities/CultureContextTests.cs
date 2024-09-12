@@ -7,6 +7,7 @@ namespace WebScrapeWidgetTests.Utilities;
 /// <summary>
 /// Test fixture for WebScrapeWidgetTests.Utilities.CultureContext;
 /// </summary>
+/// TODO: Re-factor.
 [Author("Jakub Miodunka")]
 [TestOf(typeof(CultureContext))]
 public sealed class CultureContextTests

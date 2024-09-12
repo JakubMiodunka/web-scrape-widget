@@ -15,24 +15,37 @@ namespace WebScrapeWidgetTests.DataGathering.DataSources;
 [Author("Jakub Miodunka")]
 public sealed class RamUsageTests
 {
-    #region Default data source instance.
-    private static string _defaultName = nameof(RamUsage);
-    private static TimeSpan _defaultRefreshRate = TimeSpan.FromHours(1);
+    #region Default values
+    public const string DefaultName = "Default name";
+    public static readonly TimeSpan _defaultRefreshRate = TimeSpan.FromHours(1);
+    #endregion
 
-    private static RamUsage CreateDefaultDataSource()
+    #region Auxiliary methods
+    public static RamUsage CreateDefaultDataSource()
     {
-        return new RamUsage(_defaultName, _defaultRefreshRate);
+        return new RamUsage(DefaultName, _defaultRefreshRate);
     }
     #endregion
 
     #region Test parameters
-    private static string?[] s_validNames = [_defaultName];
-    private static string?[] s_invalidNames = [null, string.Empty];
+    private static string[] s_validNames = [DefaultName];
+    private static string[] s_invalidNames = [string.Empty];
     private static TimeSpan[] s_validRefreshRates = [TimeSpan.FromSeconds(2), TimeSpan.MaxValue];
     private static TimeSpan[] s_invalidRefreshRates = [TimeSpan.MinValue, TimeSpan.Zero, TimeSpan.FromMilliseconds(1999)];
     #endregion
 
     #region Test cases
+    /// <summary>
+    /// Checks if instantiation of data source using null reference as its name is not possible.
+    /// </summary>
+    [Test]
+    public void InstantiationImpossibleUsingNullReferenceAsName()
+    {
+        TestDelegate dataSourceCreation = () => new RamUsage(null, _defaultRefreshRate);
+
+        Assert.Throws<ArgumentNullException>(dataSourceCreation);
+    }
+
     /// <summary>
     /// Checks if instantiation of data source using specified name is possible.
     /// </summary>
@@ -58,18 +71,11 @@ public sealed class RamUsageTests
     /// Name of data source, using which instantiation of data source shall not be possible.
     /// </param>
     [TestCaseSource(nameof(s_invalidNames))]
-    public void InstantiationImpossibleUsingInvalidName(string? invalidName)
+    public void InstantiationImpossibleUsingInvalidName(string invalidName)
     {
         TestDelegate dataSourceCreation = () => new RamUsage(invalidName, _defaultRefreshRate);
 
-        if (invalidName is null)
-        {
-            Assert.Throws<ArgumentNullException>(dataSourceCreation);
-        }
-        else
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
     }
 
     /// <summary>
@@ -112,7 +118,7 @@ public sealed class RamUsageTests
     {
         TimeSpan expectedRefreshRate = validRefreshRate;
 
-        var dataSourceUnderTest = new RamUsage(_defaultName, expectedRefreshRate);
+        var dataSourceUnderTest = new RamUsage(DefaultName, expectedRefreshRate);
 
         TimeSpan actualRefreshRate = dataSourceUnderTest.RefreshRate;
 
@@ -128,7 +134,7 @@ public sealed class RamUsageTests
     [TestCaseSource(nameof(s_invalidRefreshRates))]
     public void InstantiationImpossibleUsingInvalidRefreshRate(TimeSpan invalidRefreshRate)
     {
-        TestDelegate dataSourceCreation = () => new RamUsage(_defaultName, invalidRefreshRate);
+        TestDelegate dataSourceCreation = () => new RamUsage(DefaultName, invalidRefreshRate);
 
         Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
     }
@@ -242,10 +248,10 @@ public sealed class RamUsageTests
     [Test]
     public void PresenceOfSubscribersIndicatedViaPropertyValue()
     {
-        var dataSourceSubscriberMock = new Mock<IDataSourceSubscriber>();
+        var dataSourceSubscriberStub = new Mock<IDataSourceSubscriber>();
 
         RamUsage dataSourceUnderTest = CreateDefaultDataSource();
-        dataSourceUnderTest.AddSubscriber(dataSourceSubscriberMock.Object);
+        dataSourceUnderTest.AddSubscriber(dataSourceSubscriberStub.Object);
 
         Assert.True(dataSourceUnderTest.IsSubscribed);
     }

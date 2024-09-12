@@ -1,8 +1,9 @@
 ﻿using System.Windows;
-
+using System.Xml.Linq;
 using WebScrapeWidget.CustomControls;
 using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.DataGathering.Repositories;
+using WebScrapeWidget.Utilities;
 
 
 namespace WebScrapeWidget;
@@ -17,7 +18,11 @@ public partial class MainWindow : Window
     //TODO: Doc-string. Re-factor.
     public MainWindow(string interfaceDefinitionFile, IDataSourcesRepository dataSourcesRepository)
     {
-        var mainInterface = Interface.FromFile(interfaceDefinitionFile, dataSourcesRepository);
+        FileSystemUtilities.ValidateFile(interfaceDefinitionFile, ".xml");
+
+        var interfaceDefinition = XDocument.Load(interfaceDefinitionFile);
+
+        var mainInterface = Interface.FromXmlDocument(interfaceDefinition, dataSourcesRepository);
 
         dataSourcesRepository.RemoveNotSubscribedDataSources();
 

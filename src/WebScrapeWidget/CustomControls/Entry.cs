@@ -3,9 +3,7 @@
 using System.Text;
 using System.Windows.Controls;
 using System.Xml.Linq;
-
 using WebScrapeWidget.DataGathering.Interfaces;
-using WebScrapeWidget.DataGathering.Repositories;
 
 
 namespace WebScrapeWidget.CustomControls;
@@ -14,7 +12,7 @@ namespace WebScrapeWidget.CustomControls;
 /// Custom WPF control build around System.Windows.Controls.Grid.
 /// Displays details about data contained by subscribed data source.
 /// </summary>
-internal sealed class Entry : Grid, IDataSourceSubscriber
+public sealed class Entry : Grid, IDataSourceSubscriber
 {
     #region Constants
     private const string UnknownValueIndicator = "-";
@@ -27,27 +25,25 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
 
     #region Class instantiation
     /// <summary>
-    /// Creates a new entry corresponding to definition
-    /// contained by provided XML element.
+    /// Creates a new entry corresponding provided XML element.
     /// </summary>
-    /// <param name="entryElement">
+    /// <param name="xmlElement">
     /// XML element, containing entry definition.
     /// </param>
     /// <param name="dataSourcesRepository">
     /// Data sources repository, which shall be used to obtain displayed data.
     /// </param>
     /// <returns>
-    /// <returns>
     /// New entry corresponding to definition contained by provided XML element.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    internal static Entry FromXml(XElement entryElement, IDataSourcesRepository dataSourcesRepository)
+    public static Entry FromXmlElement(XElement xmlElement, IDataSourcesRepository dataSourcesRepository)
     {
-        if (entryElement is null)
+        if (xmlElement is null)
         {
-            string argumentName = nameof(entryElement);
+            string argumentName = nameof(xmlElement);
             const string ErrorMessage = "Provided XML element is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
@@ -59,12 +55,12 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        string label = entryElement
+        string label = xmlElement
             .Attributes("Label")
             .Select(attribute => attribute.Value)
             .First();
 
-        string dataSourceName = entryElement
+        string dataSourceName = xmlElement
             .Attributes("DataSourceName")
             .Select(attribute => attribute.Value)
             .First();
@@ -89,20 +85,16 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown ,when value of at least one argument will be considered as invalid.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
+    /// </exception>
     private Entry(string label, IDataSource dataSource) : base()
     {
-        if (label is null)
+        if (string.IsNullOrWhiteSpace(label))
         {
             string argumentName = nameof(label);
-            const string ErrorMessage = "Provided entry label is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (label == string.Empty)
-        {
-            string argumentName = nameof(label);
-            const string ErrorMessage = "Provided entry label is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, label, ErrorMessage);
+            string errorMessage = $"Provided label is invalid: {label}";
+            throw new ArgumentException(argumentName, errorMessage);
         }
 
         if (dataSource is null)
@@ -173,18 +165,8 @@ internal sealed class Entry : Grid, IDataSourceSubscriber
     /// <param name="dataSource">
     /// Data source, which will be used to update control tool tip content.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
     private void UpdateToolTip(IDataSource dataSource)
     {
-        if (dataSource is null)
-        {
-            string argumentName = nameof(dataSource);
-            const string ErrorMessage = "Provided data source is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
         const string Indentation = "  ";
 
         string[] descriptionLines = dataSource.Description

@@ -13,107 +13,62 @@ namespace WebScrapeWidget.CustomControls;
 /// </summary>
 public class Interface : TabControl
 {
+    #region Constants
+    const string InterfaceDefinitionSchema = @"..\..\..\..\..\res\schemas\interface_definition_schema.xsd";
+    #endregion
+
     #region Class instantiation
     /// <summary>
-    /// Checks if provided file can be used to obtain
-    /// the definition of application user interface.
+    /// Checks if provided XML document contains application interface definition.
     /// </summary>
-    /// <param name="filePath">
-    /// Path to *.xml file, which shall be checked.
+    /// <param name="xmlDocument">
+    /// XML document, which shall be checked.
     /// </param>
     /// <returns>
     /// True or false, depending on check result.
     /// </returns>
-    private static bool IsInterfaceDefinition(string filePath)
+    public static bool IsInterfaceDefinition(XDocument xmlDocument)
     {
-        const string InterfaceDefinitionSchema = @"..\..\..\..\..\res\schemas\interface_definition_schema.xsd";
-
-        return FileSystemUtilities.ValidateXmlFile(filePath, InterfaceDefinitionSchema);
+        return XmlUtilities.ValidateXmlDocument(xmlDocument, InterfaceDefinitionSchema);
     }
 
     /// <summary>
-    /// Creates a new custom WPF control corresponding to definition of user interface
-    /// provided within specified file.
+    /// Creates a new application interface corresponding to provided XML document.
     /// </summary>
-    /// <param name="filePath">
-    /// Path to *.xml file, containing user interface definition.
+    /// <param name="xmlDocument">
+    /// XML document, containing application interface definition.
     /// </param>
     /// <param name="dataSourcesRepository">
     /// Data sources repository, which shall be used to obtain displayed data.
     /// </param>
     /// <returns>
-    /// New custom WPF control corresponding to user interface defined within provided file.
+    /// New application interface instance corresponding to definition contained by provided XML file.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown, when format of provided file will be considered as invalid.
     /// </exception>
-    public static Interface FromFile(string filePath, IDataSourcesRepository dataSourcesRepository)
+    public static Interface FromXmlDocument(XDocument xmlDocument, IDataSourcesRepository dataSourcesRepository)
     {
-        if (!IsInterfaceDefinition(filePath))
+        if (!IsInterfaceDefinition(xmlDocument))
         {
-            string errorMessage = $"Invalid format of provided config file: {filePath}";
-            throw new FormatException(errorMessage);
+            const string ErrorMessage = $"Invalid format of provided XML document:";
+            throw new FormatException(ErrorMessage);
         }
 
-        if (dataSourcesRepository is null)
-        {
-            string argumentName = nameof(dataSourcesRepository);
-            const string ErrorMessage = "Provided data sources repository is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        XElement interfaceElement = XDocument.Load(filePath)
+        XElement interfaceDefinitionElement = xmlDocument
             .Elements("InterfaceDefinition")
             .First();
 
-        return FromXml(interfaceElement, dataSourcesRepository);
-    }
-
-    /// <summary>
-    /// Creates a new custom WPF control corresponding to definition of user interface
-    /// provided within specified XML element.
-    /// </summary>
-    /// <param name="interfaceDefinitionElement">
-    /// XML element, containing user interface definition.
-    /// </param>
-    /// <param name="dataSourcesRepository">
-    /// Data sources repository, which shall be used to obtain displayed data.
-    /// </param>
-    /// <returns>
-    /// New custom WPF control corresponding to user interface defined within provided XML element.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
-    private static Interface FromXml(XElement interfaceDefinitionElement, IDataSourcesRepository dataSourcesRepository)
-    {
-        if (interfaceDefinitionElement is null)
-        {
-            string argumentName = nameof(interfaceDefinitionElement);
-            const string ErrorMessage = "Provided XML element is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (dataSourcesRepository is null)
-        {
-            string argumentName = nameof(dataSourcesRepository);
-            const string ErrorMessage = "Provided data sources repository is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
         Tab[] tabs = interfaceDefinitionElement
             .Elements("Tab")
-            .Select(tabDefinitionElement => Tab.FromXml(tabDefinitionElement, dataSourcesRepository))
+            .Select(tabDefinitionElement => Tab.FromXmlElement(tabDefinitionElement, dataSourcesRepository))
             .ToArray();
 
         return new Interface(tabs);
     }
 
     /// <summary>
-    /// Creates a new instance of custom WPF control.
+    /// Creates a new instance of application interface.
     /// </summary>
     /// <param name="tabs">
     /// Collection of tabs, which shall be contained by created interface.
