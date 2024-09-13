@@ -16,11 +16,17 @@ namespace WebScrapeWidgetTests.DataGathering.DataSources;
 public sealed class RamUsageTests
 {
     #region Default values
-    public const string DefaultName = "Default name";
+    public const string DefaultName = "Ram usage name";
     public static readonly TimeSpan _defaultRefreshRate = TimeSpan.FromHours(1);
     #endregion
 
     #region Auxiliary methods
+    /// <summary>
+    /// Creates data source instance with default properties.
+    /// </summary>
+    /// <returns>
+    /// New data source instance with default properties.
+    /// </returns>
     public static RamUsage CreateDefaultDataSource()
     {
         return new RamUsage(DefaultName, _defaultRefreshRate);

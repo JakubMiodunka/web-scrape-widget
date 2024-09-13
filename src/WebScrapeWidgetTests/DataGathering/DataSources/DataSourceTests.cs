@@ -16,10 +16,12 @@ namespace WebScrapeWidgetTests.DataGathering.DataSources;
 public sealed class DataSourceTests
 {
     #region Default values
-    public const string DefaultDataSourceName = "Data source name";
-    public const string DefaultDataSourceDescription = "Data source description";
-    public static readonly TimeSpan DefaultDataSourceRefreshRate = TimeSpan.FromHours(1);
-    public static readonly DateTime DefaultDataSourceLastRefreshTimestamp = new DateTime(2024, 9, 12);
+    public const string DefaultName = "Data source name";
+    public const string DefaultDescription = "Data source description";
+    public static readonly TimeSpan DefaultRefreshRate = TimeSpan.FromHours(1);
+    public static readonly DateTime DefaultLastRefreshTimestamp = new DateTime(2024, 9, 12);
+    public const string DefaultGatheredData = "Data gathered by data source";
+    public const string DefaultDataUnit = "Data unit of gathered data";
     #endregion
 
     #region Fakes creation
@@ -41,13 +43,23 @@ public sealed class DataSourceTests
     /// <returns>
     /// Fake implementation of data source according to specified arguments.
     /// </returns>
-    public static Mock<IDataSource> CreateFakeDataSource(string name, string description, TimeSpan refreshRate, DateTime lastRefreshTimestamp)
+    public static Mock<IDataSource> CreateFakeDataSource(
+        string name,
+        string description,
+        TimeSpan refreshRate,
+        DateTime lastRefreshTimestamp,
+        bool wasDataGathered,
+        string gatheredData,
+        string dataUnit)
     {
         var fakeDataSource = new Mock<IDataSource>();
         fakeDataSource.Setup(dataSource => dataSource.Name).Returns(name);
         fakeDataSource.Setup(dataSource => dataSource.Description).Returns(description);
         fakeDataSource.Setup(dataSource => dataSource.RefreshRate).Returns(refreshRate);
         fakeDataSource.Setup(dataSource => dataSource.LastRefreshTimestamp).Returns(lastRefreshTimestamp);
+        fakeDataSource.Setup(dataSource => dataSource.WasDataGathered).Returns(wasDataGathered);
+        fakeDataSource.Setup(dataSource => dataSource.GatheredData).Returns(gatheredData);
+        fakeDataSource.Setup(dataSource => dataSource.DataUnit).Returns(dataUnit);
         fakeDataSource.Setup(dataSource => dataSource.AddSubscriber(It.IsAny<Entry>()));
 
         return fakeDataSource;
@@ -61,7 +73,14 @@ public sealed class DataSourceTests
     /// </returns>
     public static Mock<IDataSource> CreateFakeDefaultDataSource()
     {
-        return CreateFakeDataSource(DefaultDataSourceName, DefaultDataSourceDescription, DefaultDataSourceRefreshRate, DefaultDataSourceLastRefreshTimestamp);
+        return CreateFakeDataSource(
+            DefaultName,
+            DefaultDescription,
+            DefaultRefreshRate,
+            DefaultLastRefreshTimestamp,
+            true,
+            DefaultGatheredData,
+            DefaultDataUnit);
     }
     #endregion
 }

@@ -33,7 +33,7 @@ public sealed class CultureContextTests
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
-    private CultureInfo GetRandomCulture(params CultureInfo[] ignore)
+    private static CultureInfo GetRandomCulture(params CultureInfo[] ignore)
     {
         if (ignore is null)
         {
@@ -79,7 +79,7 @@ public sealed class CultureContextTests
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
-    private CultureInfo GetRandomCulture(params string[] ignore)
+    private static CultureInfo GetRandomCulture(params string[] ignore)
     {
         if (ignore is null)
         {

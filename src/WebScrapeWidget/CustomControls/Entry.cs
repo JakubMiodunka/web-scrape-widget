@@ -19,8 +19,12 @@ public sealed class Entry : Grid, IDataSourceSubscriber
     #endregion
 
     #region Properties
-    private readonly TextBlock _label;
-    private readonly TextBlock _value;
+    /*
+     * Below properties are marked as public as they are added to
+     * Grid.Children collection during the runtime - access to this collection is public.
+     */
+    public readonly TextBlock Label;
+    public readonly TextBlock Value;
     #endregion
 
     #region Class instantiation
@@ -110,16 +114,16 @@ public sealed class Entry : Grid, IDataSourceSubscriber
             ColumnDefinitions.Add(newColumnDefinition);
         }
         
-        _label = new TextBlock();
-        _label.Text = label;
-        SetColumn(_label, 0);
-        Children.Add( _label);
+        Label = new TextBlock();
+        Label.Text = label;
+        SetColumn(Label, 0);
+        Children.Add( Label);
 
-        _value = new TextBlock();
-        _value.TextAlignment = System.Windows.TextAlignment.Right;
-        _value.Text = UnknownValueIndicator;
-        SetColumn(_value, 1);
-        Children.Add( _value);
+        Value = new TextBlock();
+        Value.TextAlignment = System.Windows.TextAlignment.Right;
+        Value.Text = UnknownValueIndicator;
+        SetColumn(Value, 1);
+        Children.Add( Value);
 
         dataSource.AddSubscriber(this);
 
@@ -148,11 +152,11 @@ public sealed class Entry : Grid, IDataSourceSubscriber
 
         if (sender.DataUnit == string.Empty)
         {
-            _value.Text = sender.GatheredData;
+            Value.Text = sender.GatheredData;
         }
         else
         {
-            _value.Text = $"{sender.GatheredData} {sender.DataUnit}";
+            Value.Text = $"{sender.GatheredData} {sender.DataUnit}";
         }
 
         UpdateToolTip(sender);

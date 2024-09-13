@@ -10,7 +10,7 @@ namespace WebScrapeWidget.CustomControls;
 /// Custom WPF control build around System.Windows.Controls.TabItem.
 /// Its content is divided into sections.
 /// </summary>
-internal sealed class Tab : TabItem
+public sealed class Tab : TabItem
 {
     #region Class instantiation
     /// <summary>

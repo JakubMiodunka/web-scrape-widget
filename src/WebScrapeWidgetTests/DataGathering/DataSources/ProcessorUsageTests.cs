@@ -16,11 +16,17 @@ namespace WebScrapeWidgetTests.DataGathering.DataSources;
 public sealed class ProcessorUsageTests
 {
     #region Default values
-    public const string DefaultName = "Default name";
+    public const string DefaultName = "Processor usage name";
     public static readonly TimeSpan DefaultRefreshRate = TimeSpan.FromHours(1);
     #endregion
 
     #region Auxiliary methods
+    /// <summary>
+    /// Creates data source instance with default properties.
+    /// </summary>
+    /// <returns>
+    /// New data source instance with default properties.
+    /// </returns>
     public static ProcessorUsage CreateDefaultDataSource()
     {
         return new ProcessorUsage(DefaultName, DefaultRefreshRate);

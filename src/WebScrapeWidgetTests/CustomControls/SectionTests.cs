@@ -1,5 +1,4 @@
 ﻿using Moq;
-using System.DirectoryServices;
 using System.Xml.Linq;
 using WebScrapeWidget.CustomControls;
 using WebScrapeWidget.DataGathering.Interfaces;
@@ -16,10 +15,24 @@ namespace WebScrapeWidgetTests.CustomControls;
 public sealed class SectionTests
 {
     #region Default values
-    public const string DefaultSectionName = "Section name";
+    public const string DefaultName = "Section name";
     #endregion
 
     #region Auxiliary methods
+    /// <summary>
+    /// Creates XML element, which defines section with specified name
+    /// and containing set of provided entries definitions. 
+    /// </summary>
+    /// <param name="name">
+    /// Name of section, to which created definition shall refer to.
+    /// </param>
+    /// <param name="entriesDefinitions">
+    /// Definitions of entries, which shall be contained by defined section.
+    /// </param>
+    /// <returns>
+    /// XML element, which defines section with specified name
+    /// and containing set of provided entries definitions. 
+    /// </returns>
     public static XElement CreateSectionDefinition(string name, params XElement[] entriesDefinitions)
     {
         var sectionDefinition = new XElement("Section",
@@ -30,13 +43,25 @@ public sealed class SectionTests
         return sectionDefinition;
     }
 
+    /// <summary>
+    /// Creates XML element, which defines section with default properties.
+    /// </summary>
+    /// <returns>
+    /// XML element, which defines section with default properties.
+    /// </returns>
     public static XElement CreateDefaultSectionDefinition()
     {
         XElement defaultEntryDefinition = EntryTests.CreateDefaultEntryDefinition();
         
-        return CreateSectionDefinition(DefaultSectionName, defaultEntryDefinition);
+        return CreateSectionDefinition(DefaultName, defaultEntryDefinition);
     }
-    
+
+    /// <summary>
+    /// Creates section instance with default properties.
+    /// </summary>
+    /// <returns>
+    /// New section instance with default properties.
+    /// </returns>
     public static Section CreateDefaultSection()
     {
         XElement defaultSectionDefinition = CreateDefaultSectionDefinition();
@@ -47,7 +72,7 @@ public sealed class SectionTests
     #endregion
 
     #region Test parameters
-    private static string[] s_validNames = [DefaultSectionName];
+    private static string[] s_validNames = [DefaultName];
     private static string[] s_invalidNames = [string.Empty, " ", "\t", "\n"];
     #endregion
 
@@ -127,7 +152,7 @@ public sealed class SectionTests
     {
         Section sectionUnderTest = CreateDefaultSection();
 
-        Assert.IsInstanceOf<string>(sectionUnderTest.Header);
+        Assert.That(sectionUnderTest.Header is string);
     }
 
     /// <summary>
@@ -139,7 +164,10 @@ public sealed class SectionTests
     {
         Section sectionUnderTest = CreateDefaultSection();
 
-        Assert.That(sectionUnderTest.Header.ToString() == DefaultSectionName);
+        string expectedHeader = DefaultName;
+        string? actualHeader = sectionUnderTest.Header as string;
+
+        Assert.That(actualHeader == expectedHeader);
     }
     #endregion
 }
