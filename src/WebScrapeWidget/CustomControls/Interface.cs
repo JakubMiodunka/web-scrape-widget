@@ -29,7 +29,7 @@ public class Interface : TabControl
     /// </returns>
     public static bool IsInterfaceDefinition(XDocument xmlDocument)
     {
-        return XmlUtilities.ValidateXmlDocument(xmlDocument, InterfaceDefinitionSchema);
+        return XmlUtilities.IsMatchingToSchema(xmlDocument, InterfaceDefinitionSchema);
     }
 
     /// <summary>

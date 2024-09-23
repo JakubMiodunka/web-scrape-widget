@@ -15,6 +15,10 @@ namespace WebScrapeWidget.DataGathering.DataSources;
 /// </summary>
 public sealed class WebsiteElement : DataSource, IDataSource
 {
+    #region Constants
+    const string WebsiteElementDefinitionSchema = @"..\..\..\..\..\res\schemas\website_element_schema.xsd";
+    #endregion
+
     #region Static properties
     private static HtmlWeb? s_httpClient;
     #endregion
@@ -27,44 +31,33 @@ public sealed class WebsiteElement : DataSource, IDataSource
 
     #region Class instantiation
     /// <summary>
-    /// Checks if provided file contains definition of a website element.
+    /// Checks if provided XML document contains definition of a website element.
     /// </summary>
-    /// <param name="filePath">
-    /// Path to *.xml file, which shall be checked.
+    /// <param name="xmlDocument">
+    /// XML document, which shall be checked.
     /// </param>
     /// <returns>
     /// True or false, depending on check result.
     /// </returns>
-    public static bool IsWebsiteElementDefinition(string filePath)
+    public static bool IsWebsiteElementDefinition(XDocument xmlDocument)
     {
-        const string WebsiteElementDefinitionSchema =
-            @"..\..\..\..\..\res\schemas\website_element_schema.xsd";
-
-        return FileSystemUtilities.ValidateXmlFile(filePath, WebsiteElementDefinitionSchema);
+        return XmlUtilities.IsMatchingToSchema(xmlDocument, WebsiteElementDefinitionSchema);
     }
 
     /// <summary>
     /// Creates a new representational of website element.
     /// </summary>
-    /// <param name="filePath">
-    /// Path to *.xml file, containing definition of a website element.
+    /// <param name="xmlDocument">
+    /// XML document, containing definition of a website element.
     /// </param>
     /// <returns>
     /// New website element representation created basing on provided file.
     /// </returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown, when at least one argument will be considered as invalid.
-    /// </exception>
-    public static WebsiteElement FromFile(string filePath)
+    public static WebsiteElement FromXmlDocument(XDocument xmlDocument)
     {
-        if (!IsWebsiteElementDefinition(filePath))
-        {
-            string argumentName = nameof(filePath);
-            string errorEmassage = $"Provided file is not website element definition: {filePath}";
-            throw new ArgumentException(errorEmassage, argumentName);
-        }
+        XmlUtilities.ValidateXmlDocument(xmlDocument, WebsiteElementDefinitionSchema);
 
-        XElement dataSourceElement = XDocument.Load(filePath)
+        XElement dataSourceElement = xmlDocument
             .Elements("DataSource")
             .First();
 
@@ -147,6 +140,9 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when value of at least one argument will be considered as invalid.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
+    /// </exception>
     private WebsiteElement(string name, string description, string dataUnit, TimeSpan refreshRate, Uri websiteUrl, string htmlNodeXPath, Regex nodeContentFilter)
         : base(name, description, dataUnit, refreshRate)
     {
@@ -164,18 +160,11 @@ public sealed class WebsiteElement : DataSource, IDataSource
             throw new ArgumentOutOfRangeException(argumentName, websiteUrl, errorMessage);
         }
 
-        if (htmlNodeXPath is null)
+        if (string.IsNullOrWhiteSpace(htmlNodeXPath))
         {
             string argumentName = nameof(htmlNodeXPath);
-            const string ErrorMessage = "Provided HTML node XPath is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (htmlNodeXPath == string.Empty)
-        {
-            string argumentName = nameof(htmlNodeXPath);
-            const string ErrorMessage = "Provided HTML node XPath is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, htmlNodeXPath, ErrorMessage);
+            string errorMessage = $"Provided HTML node XPath is invalid: {htmlNodeXPath}";
+            throw new ArgumentException(argumentName, errorMessage);
         }
 
         if (nodeContentFilter is null)

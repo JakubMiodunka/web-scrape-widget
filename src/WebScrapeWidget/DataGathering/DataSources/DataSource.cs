@@ -1,6 +1,7 @@
 ﻿// Ignore Spelling: Timestamp
 
 using WebScrapeWidget.DataGathering.Interfaces;
+using WebScrapeWidget.Utilities;
 
 
 namespace WebScrapeWidget.DataGathering.DataSources;
@@ -48,42 +49,6 @@ public abstract class DataSource : IDataSource
     protected List<IDataSourceSubscriber> _subscribers;
     #endregion
 
-    #region Utilities
-    /// <summary>
-    /// Normalizes provided multi line string.
-    /// </summary>
-    /// <remarks>
-    /// Normalization process consists of removal empty lines,
-    /// lines which consists of whitespace characters only
-    /// and trimming the lines both at their begging and end.
-    /// </remarks>
-    /// <param name="input">
-    /// String, which shall be normalized.
-    /// </param>
-    /// <returns>
-    /// Normalized version of provided input string.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
-    private static string NormalizeMultilineString(string input)
-    {
-        if (input is null)
-        {
-            string argumentName = nameof(input);
-            const string ErrorMessage = "Provided input string is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        string[] normalizedInputLines = input.Split('\n')
-            .Where(line => !string.IsNullOrWhiteSpace(line))
-            .Select(line => line.Trim())
-            .ToArray();
-
-        return string.Join('\n', normalizedInputLines);
-    }
-    #endregion
-
     #region Class instantiation
     /// <summary>
     /// Base constructor of every data source type.
@@ -107,20 +72,16 @@ public abstract class DataSource : IDataSource
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown, when provided data source name is already occupied. 
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
+    /// </exception>
     protected DataSource(string name, string description, string dataUnit, TimeSpan refreshRate)
     {
-        if (name is null)
+        if (string.IsNullOrWhiteSpace(name))
         {
             string argumentName = nameof(name);
-            const string ErrorMessage = "Provided data source name is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (name == string.Empty)
-        {
-            string argumentName = nameof(name);
-            const string ErrorMessage = "Provided data source name is an empty string:";
-            throw new ArgumentOutOfRangeException(argumentName, name, ErrorMessage);
+            string errorMessage = $"Provided name is invalid: {name}";
+            throw new ArgumentException(argumentName, errorMessage);
         }
 
         if (description is null)
@@ -145,7 +106,7 @@ public abstract class DataSource : IDataSource
         }
        
         Name = name;
-        Description = NormalizeMultilineString(description);
+        Description = StringUtilities.NormalizeMultilineString(description);
         DataUnit = dataUnit;
         RefreshRate = refreshRate;
         LastRefreshTimestamp = DateTime.MinValue;
@@ -169,9 +130,6 @@ public abstract class DataSource : IDataSource
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown, when at least one argument will be considered as invalid.
-    /// </exception>
     public void AddSubscriber(IDataSourceSubscriber newSubscriber)
     {
         if (newSubscriber is null)
@@ -183,9 +141,7 @@ public abstract class DataSource : IDataSource
 
         if (_subscribers.Contains(newSubscriber))
         {
-            string argumentName = nameof(newSubscriber);
-            const string ErrorMessage = "Provided object is already a subscriber of the data source:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            return;
         }
 
         _subscribers.Add(newSubscriber);

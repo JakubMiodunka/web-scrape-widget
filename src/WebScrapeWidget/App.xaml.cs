@@ -33,9 +33,13 @@ namespace WebScrapeWidget
         /// </summary>
         public App() : base()
         {
-            FileSystemUtilities.ValidateXmlFile(AppConfigFilePath, AppConfigSchema);
+            FileSystemUtilities.ValidateFile(AppConfigFilePath, ".xml");
 
-            XElement appConfigElement = XDocument.Load(AppConfigFilePath)
+            var appConfigDocument = XDocument.Load(AppConfigFilePath);
+
+            XmlUtilities.ValidateXmlDocument(appConfigDocument, AppConfigSchema);
+
+            XElement appConfigElement = appConfigDocument
                 .Elements("AppConfig")
                 .First();
 

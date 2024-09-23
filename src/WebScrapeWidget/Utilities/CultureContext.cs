@@ -34,7 +34,7 @@ public sealed class CultureContext : IDisposable
     /// <summary>
     /// Creates a new culture context and swaps the culture used by the thread.
     /// </summary>
-    /// <param name="cultureName">
+    /// <param name="swapCultureName">
     /// Name of culture, to which thread culture shall be swapped.
     /// </param>
     /// <exception cref="ArgumentNullException">

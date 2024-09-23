@@ -125,9 +125,6 @@ public sealed class ErrorReport
     /// <param name="filePath">
     /// File path, under which generated XML file shall be saved.
     /// </param>
-    /// <exception cref="FormatException">
-    /// Thrown, when format of saved error report is invalid.
-    /// </exception>
     public void SaveAsXml(string filePath)
     {
         FileSystemUtilities.ValidateFile(filePath, ".xml", false);
@@ -136,13 +133,7 @@ public sealed class ErrorReport
 
         xmlDocument.Save(filePath, SaveOptions.None);
 
-        bool isErrorReportValid = FileSystemUtilities.ValidateXmlFile(filePath, ErrorReportSchema);
-
-        if (!isErrorReportValid)
-        {
-            string errorMessage = $"Invalid format of saved error report: {filePath}";
-            throw new FormatException(errorMessage);
-        }
+        XmlUtilities.ValidateXmlFile(filePath, ErrorReportSchema);
     }
     #endregion
 }

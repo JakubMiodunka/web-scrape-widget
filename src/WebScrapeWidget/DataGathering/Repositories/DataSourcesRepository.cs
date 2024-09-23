@@ -2,7 +2,7 @@
 
 using System.Data;
 using System.IO;
-
+using System.Xml.Linq;
 using WebScrapeWidget.DataGathering.DataSources;
 using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.Utilities;
@@ -40,11 +40,18 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     {
         FileSystemUtilities.ValidateFile(filePath);
 
-        if (WebsiteElement.IsWebsiteElementDefinition(filePath))
-        {
-            return WebsiteElement.FromFile(filePath);
-        }
+        string fileExtension = Path.GetExtension(filePath);
 
+        if (fileExtension == ".xml")
+        {
+            var xmlDocument = XDocument.Load(filePath);
+            
+            if (WebsiteElement.IsWebsiteElementDefinition(xmlDocument))
+            {
+                return WebsiteElement.FromXmlDocument(xmlDocument);
+            }
+        }
+        
         string errorMessage = $"Data source creation basing on provided file is not supported: {filePath}";
         throw new NotSupportedException(errorMessage);
     }
