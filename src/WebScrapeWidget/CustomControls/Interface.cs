@@ -1,15 +1,14 @@
-﻿using System.Xml.Linq;
-using System.Windows.Controls;
-
-using WebScrapeWidget.Utilities;
+﻿using System.Windows.Controls;
+using System.Xml.Linq;
 using WebScrapeWidget.DataGathering.Interfaces;
+using WebScrapeWidget.Utilities;
 
 
 namespace WebScrapeWidget.CustomControls;
 
 /// <summary>
 /// Custom WPF control build around System.Windows.Controls.TabControl.
-/// Contains the main part of application interface.
+/// Its content is divided into tabs.
 /// </summary>
 public class Interface : TabControl
 {
@@ -18,20 +17,6 @@ public class Interface : TabControl
     #endregion
 
     #region Class instantiation
-    /// <summary>
-    /// Checks if provided XML document contains application interface definition.
-    /// </summary>
-    /// <param name="xmlDocument">
-    /// XML document, which shall be checked.
-    /// </param>
-    /// <returns>
-    /// True or false, depending on check result.
-    /// </returns>
-    public static bool IsInterfaceDefinition(XDocument xmlDocument)
-    {
-        return XmlUtilities.IsMatchingToSchema(xmlDocument, InterfaceDefinitionSchema);
-    }
-
     /// <summary>
     /// Creates a new application interface corresponding to provided XML document.
     /// </summary>
@@ -44,16 +29,9 @@ public class Interface : TabControl
     /// <returns>
     /// New application interface instance corresponding to definition contained by provided XML file.
     /// </returns>
-    /// <exception cref="FormatException">
-    /// Thrown, when format of provided file will be considered as invalid.
-    /// </exception>
     public static Interface FromXmlDocument(XDocument xmlDocument, IDataSourcesRepository dataSourcesRepository)
     {
-        if (!IsInterfaceDefinition(xmlDocument))
-        {
-            const string ErrorMessage = $"Invalid format of provided XML document:";
-            throw new FormatException(ErrorMessage);
-        }
+        XmlUtilities.ValidateXmlDocument(xmlDocument, InterfaceDefinitionSchema);
 
         XElement interfaceDefinitionElement = xmlDocument
             .Elements("InterfaceDefinition")
@@ -79,7 +57,7 @@ public class Interface : TabControl
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
-    private Interface(IEnumerable<Tab> tabs)
+    private Interface(IEnumerable<Tab> tabs) : base()
     {
         if (tabs is null)
         {

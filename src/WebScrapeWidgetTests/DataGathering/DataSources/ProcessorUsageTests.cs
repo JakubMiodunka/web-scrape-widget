@@ -49,7 +49,7 @@ public sealed class ProcessorUsageTests
     {
         TestDelegate dataSourceCreation = () => new ProcessorUsage(null, DefaultRefreshRate);
 
-        Assert.Throws<ArgumentNullException>(dataSourceCreation);
+        Assert.Throws<ArgumentException>(dataSourceCreation);
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public sealed class ProcessorUsageTests
     {
         TestDelegate dataSourceCreation = () => new ProcessorUsage(invalidName, DefaultRefreshRate);
 
-        Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
+        Assert.Throws<ArgumentException>(dataSourceCreation);
     }
 
     /// <summary>

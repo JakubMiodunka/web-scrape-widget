@@ -4,6 +4,9 @@ using System.Xml.Schema;
 
 namespace WebScrapeWidget.Utilities;
 
+/// <summary>
+/// Set of utilities related to XML format.
+/// </summary>
 public sealed class XmlUtilities
 {
     /// <summary>

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-
 using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.Utilities;
 
@@ -35,9 +34,8 @@ public sealed class ProcessorUsage : DataSource, IDataSource
     /// </param>
     public ProcessorUsage(string name, TimeSpan refreshRate) : base(name, DataSourceDescription, "%", refreshRate)
     {
-        
         // Validity of values passed to constructor of PerformanceCounter depends on currently used culture.
-        using (var cultureContext = CultureContext.FromCultureName("en-US"))
+        using (CultureContext.FromCultureName("en-US"))
         {
             _performanceCounter = new PerformanceCounter("Processor Information", "% Processor Utility", "_Total");
         }
@@ -54,7 +52,7 @@ public sealed class ProcessorUsage : DataSource, IDataSource
     /// <returns>
     /// Task related to data gathering process.
     /// </returns>
-    public new async Task GatherData()
+    public override async Task GatherData()
     {
         await Task.Yield();
 

@@ -73,7 +73,6 @@ public sealed class TabTests
 
     #region Test parameters
     private static string[] s_validNames = [DefaultName];
-    private static string[] s_invalidNames = [string.Empty, " ", "\t", "\n"];
     #endregion
 
     #region Test cases
@@ -108,26 +107,6 @@ public sealed class TabTests
         TestDelegate tabInstantiation = () => Tab.FromXmlElement(tabDefinition, dataSourcesRepositoryStub.Object);
 
         Assert.DoesNotThrow(tabInstantiation);
-    }
-
-    /// <summary>
-    /// Checks if tab instantiation is impossible using provided string as tab name.
-    /// </summary>
-    /// <param name="invalidName">
-    /// Name, using which tab instantiation shall not be possible.
-    /// </param>
-    [Apartment(ApartmentState.STA)]
-    [TestCaseSource(nameof(s_invalidNames))]
-    public void InstantiationImpossibleUsingInvalidLabel(string invalidName)
-    {
-        Mock<IDataSourcesRepository> dataSourcesRepositoryStub = DataSourcesRepositoryTests.CreateFakeDefaultDataSourcesRepository();
-        XElement defaultSectionDefiniton = SectionTests.CreateDefaultSectionDefinition();
-
-        var tabDefinition = CreateTabDefinition(invalidName, defaultSectionDefiniton);
-
-        TestDelegate tabInstantiation = () => Tab.FromXmlElement(tabDefinition, dataSourcesRepositoryStub.Object);
-
-        Assert.Throws<ArgumentException>(tabInstantiation);
     }
 
     /// <summary>

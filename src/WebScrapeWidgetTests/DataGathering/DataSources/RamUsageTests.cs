@@ -49,7 +49,7 @@ public sealed class RamUsageTests
     {
         TestDelegate dataSourceCreation = () => new RamUsage(null, _defaultRefreshRate);
 
-        Assert.Throws<ArgumentNullException>(dataSourceCreation);
+        Assert.Throws<ArgumentException>(dataSourceCreation);
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public sealed class RamUsageTests
     {
         TestDelegate dataSourceCreation = () => new RamUsage(invalidName, _defaultRefreshRate);
 
-        Assert.Throws<ArgumentOutOfRangeException>(dataSourceCreation);
+        Assert.Throws<ArgumentException>(dataSourceCreation);
     }
 
     /// <summary>

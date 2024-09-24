@@ -81,13 +81,12 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     /// </param>
     /// <param name="searchRecursively">
     /// Flag, which specifies if provided directory shall be searched recursively.
-    /// Recursive search is disabled by default.
     /// </param>
     /// <returns>
     /// Data sources repository,
     /// which contains data sources created basing on files contained by specified directory.
     /// </returns>
-    public static DataSourcesRepository FromDirectory(string directoryPath, bool searchRecursively = false)
+    public static DataSourcesRepository FromDirectory(string directoryPath, bool searchRecursively)
     {
         FileSystemUtilities.ValidateDirectory(directoryPath);
 
@@ -177,21 +176,8 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     /// <returns>
     /// Data source contained by the repository, with specified name.
     /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown, when at least one reference-type argument is a null reference.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown, when repository does not contain data source with specified name. 
-    /// </exception>
     public IDataSource GetDataSource(string dataSourceName)
     {
-        if (dataSourceName is null)
-        {
-            string argumentName = nameof(dataSourceName);
-            const string ErrorMessage = "Provided data source name is a null reference:";
-            throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
         try
         {
             return _dataSources
@@ -241,8 +227,8 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown, when repository does not contain data source with specified name. 
+    /// <exception cref="ArgumentException">
+    /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
     private void AddDataSource(IDataSource dataSource)
     {
@@ -272,9 +258,6 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown, when at least one argument will be considered as invalid.
-    /// </exception>
     private void AddDataSources(IEnumerable<IDataSource> dataSources)
     {
         if (dataSources is null)
@@ -282,13 +265,6 @@ public sealed class DataSourcesRepository : IDataSourcesRepository
             string argumentName = nameof(dataSources);
             const string ErrorMessage = "Provided data sources collection is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
-        }
-
-        if (dataSources.Contains(null))
-        {
-            string argumentName = nameof(dataSources);
-            string ErrorMessage = "Provided data sources collection contains a null reference:";
-            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         dataSources

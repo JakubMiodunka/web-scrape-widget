@@ -64,13 +64,13 @@ public sealed class Section : GroupBox
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
-    private Section(string name, IEnumerable<Entry> entries)
+    private Section(string name, IEnumerable<Entry> entries) : base()
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (name is null)
         {
             string argumentName = nameof(name);
-            string errorMessage = $"Provided name is invalid: {name}";
-            throw new ArgumentException(argumentName, errorMessage);
+            const string ErrorMessage = "Provided name is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
         if (entries is null)

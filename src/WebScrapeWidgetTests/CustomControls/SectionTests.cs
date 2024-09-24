@@ -73,7 +73,6 @@ public sealed class SectionTests
 
     #region Test parameters
     private static string[] s_validNames = [DefaultName];
-    private static string[] s_invalidNames = [string.Empty, " ", "\t", "\n"];
     #endregion
 
     #region Test cases
@@ -108,26 +107,6 @@ public sealed class SectionTests
         TestDelegate entryInstantiation = () => Section.FromXmlElement(sectionDefinition, dataSourcesRepositoryStub.Object);
 
         Assert.DoesNotThrow(entryInstantiation);
-    }
-
-    /// <summary>
-    /// Checks if section instantiation is impossible using provided string as section name.
-    /// </summary>
-    /// <param name="invalidName">
-    /// Name, using which entry instantiation shall not be possible.
-    /// </param>
-    [Apartment(ApartmentState.STA)]
-    [TestCaseSource(nameof(s_invalidNames))]
-    public void InstantiationImpossibleUsingInvalidLabel(string invalidName)
-    {
-        Mock<IDataSourcesRepository> dataSourcesRepositoryStub = DataSourcesRepositoryTests.CreateFakeDefaultDataSourcesRepository();
-        XElement defaultEntryDefiniton = EntryTests.CreateDefaultEntryDefinition();
-        
-        var sectionDefinition = CreateSectionDefinition(invalidName, defaultEntryDefiniton);
-
-        TestDelegate entryInstantiation = () => Section.FromXmlElement(sectionDefinition, dataSourcesRepositoryStub.Object);
-
-        Assert.Throws<ArgumentException>(entryInstantiation);
     }
 
     /// <summary>

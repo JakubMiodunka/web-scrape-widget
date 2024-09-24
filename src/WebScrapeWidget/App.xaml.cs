@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml.Linq;
-
 using WebScrapeWidget.DataGathering.Repositories;
 using WebScrapeWidget.Utilities;
 

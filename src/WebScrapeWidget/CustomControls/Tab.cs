@@ -1,6 +1,5 @@
-﻿using System.Xml.Linq;
-
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using System.Xml.Linq;
 using WebScrapeWidget.DataGathering.Interfaces;
 
 
@@ -65,13 +64,13 @@ public sealed class Tab : TabItem
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
-    private Tab(string name, IEnumerable<Section> sections)
+    private Tab(string name, IEnumerable<Section> sections) : base()
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (name is null)
         {
             string argumentName = nameof(name);
-            string errorMessage = $"Provided name is invalid: {name}";
-            throw new ArgumentException(argumentName, errorMessage);
+            const string ErrorMessage = "Provided name is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
         if (sections is null)

@@ -64,7 +64,7 @@ public abstract class DataSource : IDataSource
     /// </param>
     /// <param name="refreshRate">
     /// Refresh rate of data gathered from source expressed in time period.
-    /// Shall be not smaller than 2 second.
+    /// Shall be not shorter than 2 second.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -106,15 +106,10 @@ public abstract class DataSource : IDataSource
         }
        
         Name = name;
-        Description = StringUtilities.NormalizeMultilineString(description);
+        Description = StringUtilities.NormalizeMultiLineString(description);
         DataUnit = dataUnit;
         RefreshRate = refreshRate;
         LastRefreshTimestamp = DateTime.MinValue;
-
-        description.Split('\n')
-            .Where(line => !string.IsNullOrWhiteSpace(line))
-            .Select(line => line.Trim());
-
 
         _subscribers = new List<IDataSourceSubscriber>();
     }
@@ -126,6 +121,8 @@ public abstract class DataSource : IDataSource
     /// </summary>
     /// <param name="newSubscriber">
     /// Object, which shall be added to data source subscriber list.
+    /// If provided subscriber is already on the list,
+    /// method will exit without performing any action. 
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
@@ -139,7 +136,7 @@ public abstract class DataSource : IDataSource
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
-        if (_subscribers.Contains(newSubscriber))
+        if (_subscribers.Any(subscriber => ReferenceEquals(subscriber, newSubscriber)))
         {
             return;
         }
@@ -158,22 +155,10 @@ public abstract class DataSource : IDataSource
 
     #region Data gathering
     /// <summary>
-    /// Dummy implementation of data gathering mechanism of data source.
+    /// Dummy data gathering mechanism of data source.
     /// Shall be overwritten by derivative classes - non abstract
     /// implementations of data sources.
     /// </summary>
-    /// <returns>
-    /// Failed task.
-    /// </returns>
-    /// <exception cref="NotImplementedException">
-    /// Thrown, when derivative class does not implement data gathering mechanism.
-    /// </exception>
-    public async Task GatherData()
-    {
-        const string ErrorMessage = "Data gathering mechanism not implemented:";
-        var exception = new NotImplementedException(ErrorMessage);
-
-        await Task.FromException(exception);
-    }
+    public abstract Task GatherData();
     #endregion
 }

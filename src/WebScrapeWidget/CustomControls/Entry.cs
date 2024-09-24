@@ -86,19 +86,13 @@ public sealed class Entry : Grid, IDataSourceSubscriber
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown ,when value of at least one argument will be considered as invalid.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown, when at least one argument will be considered as invalid.
-    /// </exception>
     private Entry(string label, IDataSource dataSource) : base()
     {
-        if (string.IsNullOrWhiteSpace(label))
+        if (label is null)
         {
-            string argumentName = nameof(label);
-            string errorMessage = $"Provided label is invalid: {label}";
-            throw new ArgumentException(argumentName, errorMessage);
+            string argumentName = nameof(dataSource);
+            const string ErrorMessage = "Provided label is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
         }
 
         if (dataSource is null)
@@ -121,12 +115,12 @@ public sealed class Entry : Grid, IDataSourceSubscriber
 
         Value = new TextBlock();
         Value.TextAlignment = System.Windows.TextAlignment.Right;
-        Value.Text = UnknownValueIndicator;
         SetColumn(Value, 1);
         Children.Add( Value);
 
         dataSource.AddSubscriber(this);
 
+        UpdateValue(UnknownValueIndicator, string.Empty);
         UpdateToolTip(dataSource);
     }
     #endregion
@@ -149,17 +143,40 @@ public sealed class Entry : Grid, IDataSourceSubscriber
             const string ErrorMessage = "Provided sender instance is a null reference:";
             throw new ArgumentNullException(argumentName, ErrorMessage);
         }
+        
+        UpdateValue(sender.GatheredData, sender.DataUnit);
+        UpdateToolTip(sender);
+    }
 
-        if (sender.DataUnit == string.Empty)
+    /// <summary>
+    /// Updates the value displayed by the entry.
+    /// </summary>
+    /// <param name="newValue">
+    /// String-based representation of value, which shall be displayed by the entry.
+    /// </param>
+    /// <param name="dataUnit">
+    /// Data unit of value presented by the entry.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    private void UpdateValue(string newValue, string? dataUnit)
+    {
+        if (newValue is null)
         {
-            Value.Text = sender.GatheredData;
+            string argumentName = nameof(newValue);
+            const string ErrorMessage = "Provided value is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        if (string.IsNullOrWhiteSpace(dataUnit))
+        {
+            Value.Text = newValue;
         }
         else
         {
-            Value.Text = $"{sender.GatheredData} {sender.DataUnit}";
+            Value.Text = $"{newValue} {dataUnit}";
         }
-
-        UpdateToolTip(sender);
     }
 
     /// <summary>
@@ -169,8 +186,18 @@ public sealed class Entry : Grid, IDataSourceSubscriber
     /// <param name="dataSource">
     /// Data source, which will be used to update control tool tip content.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
     private void UpdateToolTip(IDataSource dataSource)
     {
+        if (dataSource is null)
+        {
+            string argumentName = nameof(dataSource);
+            const string ErrorMessage = "Provided data source is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
         const string Indentation = "  ";
 
         string[] descriptionLines = dataSource.Description

@@ -1,5 +1,8 @@
 ﻿namespace WebScrapeWidget.Utilities;
 
+/// <summary>
+/// Set of utilities related to string formatting.
+/// </summary>
 public static class StringUtilities
 {
     /// <summary>
@@ -19,7 +22,7 @@ public static class StringUtilities
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    public static string NormalizeMultilineString(string input)
+    public static string NormalizeMultiLineString(string input)
     {
         if (input is null)
         {

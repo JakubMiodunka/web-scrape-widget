@@ -3,6 +3,9 @@
 
 namespace WebScrapeWidget.Utilities;
 
+/// <summary>
+/// Set of utilities related to file system.
+/// </summary>
 public static class FileSystemUtilities
 {
     /// <summary>
@@ -111,27 +114,6 @@ public static class FileSystemUtilities
             string errorMessage = $"Invalid extension: {actualExtension}";
             throw new IOException(errorMessage);
         }
-    }
-
-    /// <summary>
-    /// Checks if extension of specified file system entry is equal to expected one.
-    /// If validation condition would not be fulfilled, according exception will be thrown.
-    /// </summary>
-    /// <remarks>
-    /// Check is based entirely on provided path - method does not check
-    /// if specified entry exists within file system.
-    /// </remarks>
-    /// <param name="path">
-    /// Path to file system entry, which shall be validated.
-    /// </param>
-    /// <param name="validExtension">
-    /// Extension, which shall be considered as valid for validated file.
-    /// </param>
-    public static void ValidateExtension(string path, string validExtension)
-    {
-        string[] validExtensions = { validExtension };
-
-        ValidateExtension(path, validExtensions);
     }
 
     /// <summary>

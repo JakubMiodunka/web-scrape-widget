@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-
 using WebScrapeWidget.DataGathering.Interfaces;
 using WebScrapeWidget.Utilities;
 
@@ -36,7 +35,7 @@ public sealed class RamUsage : DataSource, IDataSource
     public RamUsage(string name, TimeSpan refreshRate) : base(name, DataSourceDescription, "%", refreshRate)
     {
         // Validity of values passed to constructor of PerformanceCounter depends on currently used culture.
-        using (var cultureContext = CultureContext.FromCultureName("en-US"))
+        using (CultureContext.FromCultureName("en-US"))
         {
             _performanceCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
         }
@@ -53,7 +52,7 @@ public sealed class RamUsage : DataSource, IDataSource
     /// <returns>
     /// Task related to data gathering process.
     /// </returns>
-    public new async Task GatherData()
+    public override async Task GatherData()
     {
         await Task.Yield();
 

@@ -1,6 +1,4 @@
-﻿using WebScrapeWidget.DataGathering.DataSources;
-
-namespace WebScrapeWidget.DataGathering.Interfaces;
+﻿namespace WebScrapeWidget.DataGathering.Interfaces;
 
 /// <summary>
 /// Interface, which shall be implemented

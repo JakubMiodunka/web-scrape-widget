@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using HtmlAgilityPack;
+using System.Text.RegularExpressions;
 
-using HtmlAgilityPack;
 
 namespace WebScrapeWidget.Utilities;
 
@@ -24,9 +24,6 @@ public static class HtmlUtilities
     /// <exception cref="ArgumentNullException">
     /// Thrown, when at least one reference-type argument is a null reference.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown, when value of at least one argument will be considered as invalid.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown, when at least one argument will be considered as invalid.
     /// </exception>
@@ -39,18 +36,11 @@ public static class HtmlUtilities
             throw new ArgumentNullException(argumentName, ErrorMesage);
         }
 
-        if (xPath is null)
+        if (string.IsNullOrWhiteSpace(xPath))
         {
             string argumentName = nameof(xPath);
-            const string ErrorMesage = "Provided XPath is a null reference.";
-            throw new ArgumentNullException(argumentName, ErrorMesage);
-        }
-
-        if (xPath == string.Empty)
-        {
-            string argumentName = nameof(xPath);
-            const string ErrorMesage = "Provided XPath is an empty string.";
-            throw new ArgumentOutOfRangeException(argumentName, xPath, ErrorMesage);
+            string errorMesage = $"Provided XPath is invalid: {xPath}";
+            throw new ArgumentException(argumentName, errorMesage);
         }
 
         HtmlNode[] matchingNodes = htmlDocument

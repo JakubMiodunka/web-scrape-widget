@@ -122,6 +122,10 @@ public sealed class ErrorReport
     /// <summary>
     /// Saves error report as XML file under specified file path.
     /// </summary>
+    /// <remarks>
+    /// After saving the file, it is validated against the XML schema.
+    /// If validation will fail according exception will be raised.
+    /// </remarks>
     /// <param name="filePath">
     /// File path, under which generated XML file shall be saved.
     /// </param>

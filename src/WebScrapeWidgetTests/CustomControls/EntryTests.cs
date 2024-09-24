@@ -25,7 +25,6 @@ public sealed class EntryTests
 
     #region Test parameters
     private static string[] s_validLabels = [DefaultLabel];
-    private static string[] s_invalidLabels = [string.Empty, " ", "\t", "\n"];
     #endregion
 
     #region Auxiliary methods
@@ -131,25 +130,6 @@ public sealed class EntryTests
         TestDelegate entryInstantiation = () => Entry.FromXmlElement(entryDefinition, dataSourcesRepositoryStub.Object);
 
         Assert.DoesNotThrow(entryInstantiation);
-    }
-
-    /// <summary>
-    /// Checks if entry instantiation is impossible using provided string as entry label.
-    /// </summary>
-    /// <param name="invalidLabel">
-    /// Label, using which entry instantiation shall not be possible.
-    /// </param>
-    [Apartment(ApartmentState.STA)]
-    [TestCaseSource(nameof(s_invalidLabels))]
-    public void InstantiationImpossibleUsingInvalidLabel(string invalidLabel)
-    {
-        Mock<IDataSourcesRepository> dataSourcesRepositoryStub = DataSourcesRepositoryTests.CreateFakeDefaultDataSourcesRepository();
-
-        var entryDefinition = CreateEntryDefinition(invalidLabel, DataSourceTests.DefaultName);
-
-        TestDelegate entryInstantiation = () => Entry.FromXmlElement(entryDefinition, dataSourcesRepositoryStub.Object);
-
-        Assert.Throws<ArgumentException>(entryInstantiation);
     }
 
     /// <summary>

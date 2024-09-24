@@ -1,11 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using HtmlAgilityPack;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-
-using WebScrapeWidget.Utilities;
 using WebScrapeWidget.DataGathering.Interfaces;
-
-using HtmlAgilityPack;
+using WebScrapeWidget.Utilities;
 
 
 namespace WebScrapeWidget.DataGathering.DataSources;
@@ -29,7 +27,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
     public readonly Regex NodeContentFilter;
     #endregion
 
-    #region Class instantiation
+    #region Identification
     /// <summary>
     /// Checks if provided XML document contains definition of a website element.
     /// </summary>
@@ -43,15 +41,17 @@ public sealed class WebsiteElement : DataSource, IDataSource
     {
         return XmlUtilities.IsMatchingToSchema(xmlDocument, WebsiteElementDefinitionSchema);
     }
+    #endregion
 
+    #region Class instantiation
     /// <summary>
-    /// Creates a new representational of website element.
+    /// Creates a new representational of website element basing on provided XML document.
     /// </summary>
     /// <param name="xmlDocument">
     /// XML document, containing definition of a website element.
     /// </param>
     /// <returns>
-    /// New website element representation created basing on provided file.
+    /// New website element representation created basing on provided XML document.
     /// </returns>
     public static WebsiteElement FromXmlDocument(XDocument xmlDocument)
     {
@@ -61,28 +61,52 @@ public sealed class WebsiteElement : DataSource, IDataSource
             .Elements("DataSource")
             .First();
 
-        string name = dataSourceElement
+        return FromXmlElement(dataSourceElement);
+    }
+
+    /// <summary>
+    /// Creates a new representational of website element basing on provided XML element.
+    /// </summary>
+    /// <param name="xmlElement">
+    /// XML element, containing definition of a website element.
+    /// </param>
+    /// <returns>
+    /// New website element representation created basing on provided XML element.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown, when at least one reference-type argument is a null reference.
+    /// </exception>
+    private static WebsiteElement FromXmlElement(XElement xmlElement)
+    {
+        if (xmlElement is null)
+        {
+            string argumentName = nameof(xmlElement);
+            const string ErrorMessage = "Provided XML element is a null reference:";
+            throw new ArgumentNullException(argumentName, ErrorMessage);
+        }
+
+        string name = xmlElement
             .Attributes("Name")
             .Select(attribute => attribute.Value)
             .First();
 
-        string description = dataSourceElement
+        string description = xmlElement
             .Elements("Description")
             .First()
             .Value;
 
-        string dataUnit = dataSourceElement
+        string dataUnit = xmlElement
             .Attributes("DataUnit")
             .Select(attribute => attribute.Value)
             .First();
 
-        TimeSpan refreshRate = dataSourceElement
+        TimeSpan refreshRate = xmlElement
             .Attributes("RefreshRate")
             .Select(attribute => attribute.Value)
             .Select(XmlConvert.ToTimeSpan)
             .First();
 
-        XElement websiteElement = dataSourceElement
+        XElement websiteElement = xmlElement
             .Elements("WebsiteElement")
             .First();
 
@@ -205,7 +229,7 @@ public sealed class WebsiteElement : DataSource, IDataSource
     /// <exception cref="InvalidOperationException">
     /// Thrown, when HTTP client is not initialized.
     /// </exception>
-    public new async Task GatherData()
+    public override async Task GatherData()
     {
         if (s_httpClient is null)
         {
