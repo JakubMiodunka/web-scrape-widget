@@ -49,7 +49,7 @@ public sealed class CultureContext : IDisposable
         {
             string argumentName = nameof(swapCultureName);
             string errorMessage = $"Provided culture name is invalid: {swapCultureName}";
-            throw new ArgumentException(argumentName, errorMessage);
+            throw new ArgumentException(errorMessage, argumentName);
         }
 
         CultureInfo swapCulture;

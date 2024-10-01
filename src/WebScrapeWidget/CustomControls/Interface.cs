@@ -70,7 +70,7 @@ public class Interface : TabControl
         {
             string argumentName = nameof(tabs);
             const string ErrorMessage = "Provided tabs collection contains a null reference:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         tabs.ToList().ForEach(tab => Items.Add(tab));

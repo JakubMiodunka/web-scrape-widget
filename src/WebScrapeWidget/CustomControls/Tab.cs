@@ -84,7 +84,7 @@ public sealed class Tab : TabItem
         {
             string argumentName = nameof(sections);
             const string ErrorMessage = "Provided sections collection contains a null reference:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         Header = name;

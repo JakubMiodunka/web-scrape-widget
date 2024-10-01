@@ -84,7 +84,7 @@ public sealed class Section : GroupBox
         {
             string argumentName = nameof(entries);
             const string ErrorMessage = "Provided entries collection contains a null reference:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         Header = name;

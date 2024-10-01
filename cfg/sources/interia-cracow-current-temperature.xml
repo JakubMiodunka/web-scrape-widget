@@ -7,6 +7,6 @@
     <WebsiteElement>
         <Website Url="https://pogoda.interia.pl/prognoza-szczegolowa-krakow,cId,4970"/>
         <HtmlNode XPath="/html/body/div[4]/section/div[2]/div[1]/div/div[3]/div"/>
-        <NodeContentFilter Regex="\d*"/>
+        <NodeContentFilter Regex="-?\d*"/>
     </WebsiteElement>
 </DataSource>

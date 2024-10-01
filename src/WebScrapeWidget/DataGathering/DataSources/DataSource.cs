@@ -81,7 +81,7 @@ public abstract class DataSource : IDataSource
         {
             string argumentName = nameof(name);
             string errorMessage = $"Provided name is invalid: {name}";
-            throw new ArgumentException(argumentName, errorMessage);
+            throw new ArgumentException(errorMessage, argumentName);
         }
 
         if (description is null)

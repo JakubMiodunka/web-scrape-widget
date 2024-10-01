@@ -40,7 +40,7 @@ public static class HtmlUtilities
         {
             string argumentName = nameof(xPath);
             string errorMesage = $"Provided XPath is invalid: {xPath}";
-            throw new ArgumentException(argumentName, errorMesage);
+            throw new ArgumentException(errorMesage, argumentName);
         }
 
         HtmlNode[] matchingNodes = htmlDocument

@@ -35,7 +35,7 @@ public static class FileSystemUtilities
         {
             string argumentName = nameof(path);
             string errorMessage = $"Provided path is invalid: {path}";
-            throw new ArgumentException(argumentName, errorMessage);
+            throw new ArgumentException(errorMessage, argumentName);
         }
 
         if (shallExist)
@@ -90,7 +90,7 @@ public static class FileSystemUtilities
         {
             string argumentName = nameof(path);
             string errorMessage = $"Provided path is invalid: {path}";
-            throw new ArgumentException(argumentName, errorMessage);
+            throw new ArgumentException(errorMessage, argumentName);
         }
 
         if (validExtensions is null)
@@ -104,7 +104,7 @@ public static class FileSystemUtilities
         {
             string argumentName = nameof(path);
             const string ErrorMessage = "Provided extensions collection contains invalid extension:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         string actualExtension = Path.GetExtension(path);
@@ -144,7 +144,7 @@ public static class FileSystemUtilities
         {
             string argumentName = nameof(path);
             string errorMessage = $"Provided file path is invalid: {path}";
-            throw new ArgumentException(argumentName, errorMessage);
+            throw new ArgumentException(errorMessage, argumentName);
         }
 
         if (shallExist)

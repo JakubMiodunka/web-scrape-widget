@@ -46,7 +46,7 @@ public sealed class CultureContextTests
         {
             string argumentName = nameof(ignore);
             const string ErrorMessage = "Provided ignore list contains a null reference:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         string[] culturesToIgnore = ignore
@@ -92,7 +92,7 @@ public sealed class CultureContextTests
         {
             string argumentName = nameof(ignore);
             const string ErrorMessage = "Provided ignore list contains a null reference:";
-            throw new ArgumentException(argumentName, ErrorMessage);
+            throw new ArgumentException(ErrorMessage, argumentName);
         }
 
         CultureInfo[] culturesToIgnore = ignore
