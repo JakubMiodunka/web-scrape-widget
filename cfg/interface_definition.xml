@@ -25,5 +25,4 @@
             <Entry Label="Wind Speed" DataSourceName="interia-london-current-wind-speed"/>
         </Section>
     </Tab>
-    
 </InterfaceDefinition>
