@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ErrorReport Timestamp="2024-10-09T07:55:39+02:00">
+  <Exception Type="System.ArgumentOutOfRangeException">
+    <Source Class="WebScrapeWidget" Method="GetDataSource" />
+    <Message>Specified argument was out of the range of valid values. (Parameter 'Data source with provided name does not exist in repository: non-existing-data-source')</Message>
+    <StackTrace>   at WebScrapeWidget.DataGathering.Repositories.DataSourcesRepository.GetDataSource(String dataSourceName) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\DataGathering\Repositories\DataSourcesRepository.cs:line 190
+   at WebScrapeWidget.CustomControls.Entry.FromXmlElement(XElement xmlElement, IDataSourcesRepository dataSourcesRepository) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Entry.cs:line 72
+   at WebScrapeWidget.CustomControls.Section.&lt;&gt;c__DisplayClass0_0.&lt;FromXmlElement&gt;b__1(XElement entryDefinitionElement) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Section.cs:line 46
+   at System.Linq.Enumerable.SelectEnumerableIterator`2.ToArray()
+   at WebScrapeWidget.CustomControls.Section.FromXmlElement(XElement xmlElement, IDataSourcesRepository dataSourcesRepository) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Section.cs:line 44
+   at WebScrapeWidget.CustomControls.Tab.&lt;&gt;c__DisplayClass0_0.&lt;FromXmlElement&gt;b__1(XElement sectionDefinitionElement) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Tab.cs:line 46
+   at System.Linq.Enumerable.SelectEnumerableIterator`2.ToArray()
+   at WebScrapeWidget.CustomControls.Tab.FromXmlElement(XElement xmlElement, IDataSourcesRepository dataSourcesRepository) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Tab.cs:line 44
+   at WebScrapeWidget.CustomControls.Interface.&lt;&gt;c__DisplayClass1_0.&lt;FromXmlDocument&gt;b__0(XElement tabDefinitionElement) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Interface.cs:line 42
+   at System.Linq.Enumerable.SelectEnumerableIterator`2.ToArray()
+   at WebScrapeWidget.CustomControls.Interface.FromXmlDocument(XDocument xmlDocument, IDataSourcesRepository dataSourcesRepository) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\CustomControls\Interface.cs:line 40
+   at WebScrapeWidget.MainWindow..ctor(String interfaceDefinitionFile, IDataSourcesRepository dataSourcesRepository) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\MainWindow.xaml.cs:line 24
+   at WebScrapeWidget.App.StartupProcedure(Object sender, StartupEventArgs eventArguments) in D:\My Local Files\Repositories\Git\web-scrape-widget\src\WebScrapeWidget\App.xaml.cs:line 114
+   at System.Threading.Tasks.Task.&lt;&gt;c.&lt;ThrowAsync&gt;b__128_0(Object state)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)</StackTrace>
+    <InnerException />
+  </Exception>
+</ErrorReport>

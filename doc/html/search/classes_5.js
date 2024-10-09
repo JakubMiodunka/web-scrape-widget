@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['processorusage_0',['ProcessorUsage',['../class_web_scrape_widget_1_1_data_gathering_1_1_data_sources_1_1_processor_usage.html',1,'WebScrapeWidget::DataGathering::DataSources']]]
+  ['htmlutilities_0',['HtmlUtilities',['../class_web_scrape_widget_1_1_utilities_1_1_html_utilities.html',1,'WebScrapeWidget::Utilities']]]
 ];

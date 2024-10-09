@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>WebScrapeWidget: WebScrapeWidget.DataGathering.DataSources.DataSource Class Reference</title>
+<title>Web-Scape Widget: WebScrapeWidget.DataGathering.DataSources.DataSource Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">WebScrapeWidget
+   <div id="projectname">Web-Scape Widget
    </div>
   </td>
  </tr>
@@ -98,7 +98,7 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
-<p>Base class for all more specific types of data sources. It manages the data shared between all instances of derivative classes and secures their integrity.  
+<p>Base class for all more specific types of data sources.  
  <a href="#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for WebScrapeWidget.DataGathering.DataSources.DataSource:</div>
@@ -118,9 +118,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5ae2a25949cae65bc31bb9b3f8b18ea9" id="r_a5ae2a25949cae65bc31bb9b3f8b18ea9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ae2a25949cae65bc31bb9b3f8b18ea9">AddSubscriber</a> (<a class="el" href="interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source_subscriber.html">IDataSourceSubscriber</a> newSubscriber)</td></tr>
 <tr class="memdesc:a5ae2a25949cae65bc31bb9b3f8b18ea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new object to subscribers list of data source.  <br /></td></tr>
 <tr class="separator:a5ae2a25949cae65bc31bb9b3f8b18ea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a092eb0bcf86284e5ddfc86d4c6705e36" id="r_a092eb0bcf86284e5ddfc86d4c6705e36"><td class="memItemLeft" align="right" valign="top">async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a092eb0bcf86284e5ddfc86d4c6705e36">GatherData</a> ()</td></tr>
-<tr class="memdesc:a092eb0bcf86284e5ddfc86d4c6705e36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dummy implementation of data gathering mechanism of data source. Shall be overwritten by derivative classes - non abstract implementations of data sources.  <br /></td></tr>
-<tr class="separator:a092eb0bcf86284e5ddfc86d4c6705e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad487582515f9d2160e2398405cd2a4b7" id="r_ad487582515f9d2160e2398405cd2a4b7"><td class="memItemLeft" align="right" valign="top">Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad487582515f9d2160e2398405cd2a4b7">GatherData</a> ()</td></tr>
+<tr class="memdesc:ad487582515f9d2160e2398405cd2a4b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dummy data gathering mechanism of data source. Shall be overwritten by derivative classes - non abstract implementations of data sources.  <br /></td></tr>
+<tr class="separator:ad487582515f9d2160e2398405cd2a4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source.html">WebScrapeWidget.DataGathering.Interfaces.IDataSource</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -163,7 +163,7 @@ Properties</h2></td></tr>
 <tr class="inherit_header properties_interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source"><td colspan="2" onclick="javascript:dynsection.toggleInherit('properties_interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source.html">WebScrapeWidget.DataGathering.Interfaces.IDataSource</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Base class for all more specific types of data sources. It manages the data shared between all instances of derivative classes and secures their integrity. </p>
+<div class="textblock"><p>Base class for all more specific types of data sources. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5882e53f7a979dead678d5204b2ac79a" name="a5882e53f7a979dead678d5204b2ac79a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5882e53f7a979dead678d5204b2ac79a">&#9670;&#160;</a></span>DataSource()</h2>
@@ -208,7 +208,7 @@ Properties</h2></td></tr>
     <tr><td class="paramname">name</td><td>Unique name of represented data source. </td></tr>
     <tr><td class="paramname">description</td><td>Description of created data source. </td></tr>
     <tr><td class="paramname">dataUnit</td><td>Unit, in which data gathered from source is presented. </td></tr>
-    <tr><td class="paramname">refreshRate</td><td>Refresh rate of data gathered from source expressed in time period. Shall be not smaller than 1 second. </td></tr>
+    <tr><td class="paramname">refreshRate</td><td>Refresh rate of data gathered from source expressed in time period. Shall be not shorter than 2 second. </td></tr>
   </table>
   </dd>
 </dl>
@@ -216,6 +216,7 @@ Properties</h2></td></tr>
   <table class="exception">
     <tr><td class="paramname">ArgumentNullException</td><td>Thrown, when at least one reference-type argument is a null reference. </td></tr>
     <tr><td class="paramname">ArgumentOutOfRangeException</td><td>Thrown, when provided data source name is already occupied. </td></tr>
+    <tr><td class="paramname">ArgumentException</td><td>Thrown, when at least one argument will be considered as invalid. </td></tr>
   </table>
   </dd>
 </dl>
@@ -241,14 +242,13 @@ Properties</h2></td></tr>
 <p>Adds a new object to subscribers list of data source. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">newSubscriber</td><td>Object, which shall be added to data source subscriber list. </td></tr>
+    <tr><td class="paramname">newSubscriber</td><td>Object, which shall be added to data source subscriber list. If provided subscriber is already on the list, method will exit without performing any action. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">ArgumentNullException</td><td>Thrown, when at least one reference-type argument is a null reference. </td></tr>
-    <tr><td class="paramname">ArgumentException</td><td>Thrown, when at least one argument will be considered as invalid. </td></tr>
   </table>
   </dd>
 </dl>
@@ -257,29 +257,30 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a092eb0bcf86284e5ddfc86d4c6705e36" name="a092eb0bcf86284e5ddfc86d4c6705e36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a092eb0bcf86284e5ddfc86d4c6705e36">&#9670;&#160;</a></span>GatherData()</h2>
+<a id="ad487582515f9d2160e2398405cd2a4b7" name="ad487582515f9d2160e2398405cd2a4b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad487582515f9d2160e2398405cd2a4b7">&#9670;&#160;</a></span>GatherData()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">async Task WebScrapeWidget.DataGathering.DataSources.DataSource.GatherData </td>
+          <td class="memname">Task WebScrapeWidget.DataGathering.DataSources.DataSource.GatherData </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Dummy implementation of data gathering mechanism of data source. Shall be overwritten by derivative classes - non abstract implementations of data sources. </p>
-<dl class="section return"><dt>Returns</dt><dd>Failed task. </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">NotImplementedException</td><td>Thrown, when derivative class does not implement data gathering mechanism. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Dummy data gathering mechanism of data source. Shall be overwritten by derivative classes - non abstract implementations of data sources. </p>
 
 <p>Implements <a class="el" href="interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_source.html#ab4b86b1ec2003acd405f191697af2dcb">WebScrapeWidget.DataGathering.Interfaces.IDataSource</a>.</p>
 
@@ -479,7 +480,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/My Local Files/Repositories/Git/web-scrape-widget/src/WebScrapeWidget/DataGathering/DataSources/<b>DataSource.cs</b></li>
+<li>D:/My Local Files/Repositories/Git/web-scrape-widget/src/WebScrapeWidget/DataGathering/DataSources/<b>DataSource.cs</b></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

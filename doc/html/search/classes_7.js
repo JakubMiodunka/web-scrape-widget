@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['websiteelement_0',['WebsiteElement',['../class_web_scrape_widget_1_1_data_gathering_1_1_data_sources_1_1_website_element.html',1,'WebScrapeWidget::DataGathering::DataSources']]]
+  ['mainwindow_0',['MainWindow',['../class_web_scrape_widget_1_1_main_window.html',1,'WebScrapeWidget']]]
 ];

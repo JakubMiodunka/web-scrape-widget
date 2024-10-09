@@ -1,8 +1,15 @@
-# web-scrape-widget
+# Web-Scape Widget
 
 ## Description
 
-TODO
+Repository contains a project of application called *Web-Scape Widget* build using *.NET 8*
+and *Windows Presentation Foundation* (*WPF*).
+As the name suggest it is a desktop widget, which aggregates data from web sources
+defined/specified by the user - it can be an element of a website, which will be scraped, API call
+or one of predefined special data sources.
+Most obvious examples of program usage is to monitor metrics provided by local weather station
+or current currencies exchange rates, but the possibilities are endless - limited only
+by the content provided by the web/Internet.
 
 ## Repository Structure
 
@@ -25,13 +32,13 @@ program implementation please open */doc/html/index.html* file.
 You can also run unit tests to make sure that everything works as expected.
 3. Adjust program configuration placed in */cfg* directory according to Your needs.
 For more details on how to do it, please refer to *Configuration* section of this *README*.
-4. Launch the program and inspect, that Your configuration changes were applied successful.
+4. Launch the program and inspect, that Your configuration changes were applied successfully.
 
 ## Configuration
 
 Configuration of the program is stored in */cfg* directory.
 It is divided into three main parts - general configuration of the app,
-definitions of data sources used by the widget and interface layout defining how gathered data
+definitions of data sources used by the widget and interface layout defining, how gathered data
 shall be displayed within application window.
 
 ### General configuration
@@ -53,9 +60,12 @@ WARNING: Path to this file is hardcoded within the code. File cannot be moved or
 
 ### Data sources definitions
 
-Definitions of all data sources used by the application are placed in */cfg/sources* directory.
+Definitions of data sources used by the application are placed by default in */cfg/sources* directory.
 Data sources can be divided into couple of different types:
 special data sources, website elements which program shall scrape and API calls.
+
+Keep in mind, that data sources are distinguished by the names - program will not work,
+when there would be multiple data sources named the same.
 
 #### Special data sources
 
@@ -68,7 +78,7 @@ They can be referenced in interface definition directly.
 
 #### Website elements
 
-Data sources, which obtains their data from element of particular website pointed in their definition file.
+Data sources, which obtains their data from element of particular website, pointed in their definition file.
 Its structure is defined in */res/schemas/website_element_schema.xsd* XML schema - example of the file content below:
 
 ```XML
@@ -88,7 +98,7 @@ Its structure is defined in */res/schemas/website_element_schema.xsd* XML schema
 Most of configuration parameters of this type of data source is self explanatory, but there are some,
 which requires some additional comment:
 
-* Data source *Description* - Description of data source available on application interface in entry tool tip prompt.
+* Data source *Description* - Description of data source, available on application interface in entry tool tip prompt.
 * *RefreshRate* property - Time interval of scraping new value from specified website element and updating application interface with it.
 * *NodeContentFilter* - Regular expression, which first match from specified HTML node text content
 shall be used as data obtained from particular data source.
@@ -120,6 +130,17 @@ Its structure is defined in */res/schemas/interface_definition_schema.xsd* XML s
 
 Interface is fully configurable by the user and is divided into tabs, which contains sections and those contains entries.
 Each entry shall specify, from which data source it shall obtain its content to display.
+
+## Diagnostics and error reporting
+
+When an exception will he thrown application will generate an error report file build around XML format.
+It will be saved by default in */deb* directory and can be used as additional source  of information during debugging.
+Its structure is defined in */res/schemas/interface_definition_schema.xsd* XML schema - example of such file is saved as
+*/deb/error_report_20241009T075559.xml* file within the repository.
+
+## Dependencies
+
+* [*Html Agility Pack* (*HAP*)](https://html-agility-pack.net/) library.
 
 ## Used Tools
 

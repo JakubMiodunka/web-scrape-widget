@@ -1,11 +1,5 @@
 var searchData=
 [
-  ['webscrapewidget_0',['WebScrapeWidget',['../namespace_web_scrape_widget.html',1,'']]],
-  ['webscrapewidget_3a_3acustomcontrols_1',['CustomControls',['../namespace_web_scrape_widget_1_1_custom_controls.html',1,'WebScrapeWidget']]],
-  ['webscrapewidget_3a_3adatagathering_2',['DataGathering',['../namespace_web_scrape_widget_1_1_data_gathering.html',1,'WebScrapeWidget']]],
-  ['webscrapewidget_3a_3adatagathering_3a_3adatasources_3',['DataSources',['../namespace_web_scrape_widget_1_1_data_gathering_1_1_data_sources.html',1,'WebScrapeWidget::DataGathering']]],
-  ['webscrapewidget_3a_3adatagathering_3a_3ainterfaces_4',['Interfaces',['../namespace_web_scrape_widget_1_1_data_gathering_1_1_interfaces.html',1,'WebScrapeWidget::DataGathering']]],
-  ['webscrapewidget_3a_3adatagathering_3a_3arepositories_5',['Repositories',['../namespace_web_scrape_widget_1_1_data_gathering_1_1_repositories.html',1,'WebScrapeWidget::DataGathering']]],
-  ['webscrapewidget_3a_3autilities_6',['Utilities',['../namespace_web_scrape_widget_1_1_utilities.html',1,'WebScrapeWidget']]],
-  ['websiteelement_7',['WebsiteElement',['../class_web_scrape_widget_1_1_data_gathering_1_1_data_sources_1_1_website_element.html',1,'WebScrapeWidget.DataGathering.DataSources.WebsiteElement'],['../class_web_scrape_widget_1_1_data_gathering_1_1_data_sources_1_1_website_element.html#a7ba10e29c62d2bd603f6d61f65cd2194',1,'WebScrapeWidget.DataGathering.DataSources.WebsiteElement.WebsiteElement()']]]
+  ['ramusage_0',['RamUsage',['../class_web_scrape_widget_1_1_data_gathering_1_1_data_sources_1_1_ram_usage.html',1,'WebScrapeWidget.DataGathering.DataSources.RamUsage'],['../class_web_scrape_widget_1_1_data_gathering_1_1_data_sources_1_1_ram_usage.html#a5505f8c60eef8ab4fd4549a07ae16ae5',1,'WebScrapeWidget.DataGathering.DataSources.RamUsage.RamUsage()']]],
+  ['removenotsubscribeddatasources_1',['RemoveNotSubscribedDataSources',['../interface_web_scrape_widget_1_1_data_gathering_1_1_interfaces_1_1_i_data_sources_repository.html#a8e07feeff8e0aca84263dbb4b206c2d4',1,'WebScrapeWidget.DataGathering.Interfaces.IDataSourcesRepository.RemoveNotSubscribedDataSources()'],['../class_web_scrape_widget_1_1_data_gathering_1_1_repositories_1_1_data_sources_repository.html#a8582747f78f3b7cae46c2be5b959a5d4',1,'WebScrapeWidget.DataGathering.Repositories.DataSourcesRepository.RemoveNotSubscribedDataSources()']]]
 ];
